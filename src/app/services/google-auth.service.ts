@@ -47,7 +47,7 @@ export class GoogleAuthService {
   sendTokenToBackend(idToken: string, role?: string): Observable<any> {
     const apiUrl = window.location.hostname === 'localhost'
       ? 'https://localhost:7045/api/Auth/google'
-      : 'http://akelni.tryasp.net/api/Auth/google';
+      : 'https://akelni.tryasp.net/api/Auth/google';
 
     return this.http.post(apiUrl, {
       Provider: "Google",
