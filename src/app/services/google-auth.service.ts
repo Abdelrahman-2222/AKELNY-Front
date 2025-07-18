@@ -55,4 +55,11 @@ export class GoogleAuthService {
       Role: role || 'Customer' // Correct casing
     });
   }
+  register(userData: any): Observable<any> {
+    const apiUrl = window.location.hostname === 'localhost'
+      ? 'https://localhost:7045/api/Auth/register'
+      : 'https://akelni.tryasp.net/api/Auth/register';
+
+    return this.http.post(apiUrl, userData);
+  }
 }
