@@ -1,0 +1,97 @@
+.register-container {
+  background-color: #f8f9fa;
+}
+
+.bg-primary-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.register-form-wrapper {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 3rem 2.5rem;
+  margin: 2rem 0;
+  min-width: 340px;
+}
+
+.divider {
+  margin: 2rem 0;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #dee2e6;
+}
+
+.divider-text {
+  background: white;
+  padding: 0 1rem;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.feature-item {
+  font-size: 1.1rem;
+}
+
+.role-selection .btn-check:checked + .btn {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+.social-login .btn {
+  font-size: 1.3rem;
+  padding: 0.75rem 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-login .btn i {
+  margin-right: 0.5rem;
+}
+
+.social-login .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.form-control:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+@media (max-width: 991.98px) {
+  .register-form-wrapper {
+    margin: 1rem;
+    padding: 2rem 1rem;
+    min-width: unset;
+  }
+}
+
+.register-image {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+}
+
+.overlay-content {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2rem;
+  border-radius: 15px;
+}
+
+/* Rest of your existing CSS remains the same */

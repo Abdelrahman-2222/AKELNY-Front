@@ -1,10 +1,14 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {SignUp} from './auth/sign-up/sign-up';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+// import {Register} from './auth/register/register';
+// import { ReactiveFormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SignUp],
+  standalone: true,
+  imports: [RouterOutlet, FontAwesomeModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

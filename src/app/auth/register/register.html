@@ -1,0 +1,155 @@
+<div class="register-container">
+  <div class="container-fluid">
+    <div class="row min-vh-100">
+      <!-- Left side - Image/Branding -->
+      <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center position-relative">
+        <img src="/assets/images/sign-up.png"
+             alt="Sign Up"
+             class="img-fluid register-image">
+      </div>
+
+      <!-- Right side - Registration Form -->
+      <div class="col-lg-6 d-flex align-items-center justify-content-center p-4">
+        <div class="register-form-wrapper w-100" style="max-width: 500px;">
+          <div class="text-center mb-5">
+            <h2 class="fw-bold text-dark">Create Account</h2>
+            <p class="text-muted">Sign up to get started</p>
+          </div>
+
+          <!-- Social Login Buttons -->
+          <div class="social-login mb-4">
+            <div class="row g-2">
+              <!-- Update the Google button section -->
+              <div class="col-4">
+                <div id="google-signin-button"></div>
+                <!-- Keep your custom button as backup -->
+                <button (click)="loginWithGoogle()"
+                        [disabled]="isLoading"
+                        class="btn btn-outline-danger w-100 py-2"
+                        style="display: none;">
+                  <i class="fab fa-google"></i>
+                  <span *ngIf="!isLoading">Google</span>
+                  <span *ngIf="isLoading">...</span>
+                </button>
+              </div>
+              <div class="col-4">
+                <button type="button"
+                        class="btn btn-outline-primary w-100 py-2"
+                        (click)="onSocialLogin('Facebook')">
+                  <i class="fab fa-facebook-f"></i>
+                </button>
+              </div>
+              <div class="col-4">
+                <button type="button"
+                        class="btn btn-outline-dark w-100 py-2"
+                        (click)="onSocialLogin('Twitter')">
+                  <i class="fab fa-x-twitter"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+<!--          <div class="divider mb-4">-->
+<!--            <span class="divider-text">or sign up with email</span>-->
+<!--          </div>-->
+
+          <!-- Registration Form -->
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                <input type="email"
+                       id="email"
+                       class="form-control"
+                       [class.is-invalid]="email?.invalid && email?.touched"
+                       [class.is-valid]="email?.valid && email?.touched"
+                       placeholder="Enter your email"
+                       formControlName="email">
+              </div>
+              <div class="invalid-feedback" *ngIf="email?.invalid && email?.touched">
+                <small *ngIf="email?.errors?.['required']">Email is required</small>
+                <small *ngIf="email?.errors?.['email']">Please enter a valid email</small>
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-lock"></i>
+                </span>
+                <input [type]="showPassword ? 'text' : 'password'"
+                       id="password"
+                       class="form-control"
+                       [class.is-invalid]="password?.invalid && password?.touched"
+                       [class.is-valid]="password?.valid && password?.touched"
+                       placeholder="Enter your password"
+                       formControlName="password">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        (click)="togglePasswordVisibility()">
+                  <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback" *ngIf="password?.invalid && password?.touched">
+                <small *ngIf="password?.errors?.['required']">Password is required</small>
+                <small *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</small>
+              </div>
+            </div>
+
+            <!-- Role Selection -->
+            <div class="mb-4">
+              <label class="form-label">Sign up as</label>
+              <div class="role-selection">
+                <div class="row g-2">
+                  <div class="col-4" *ngFor="let roleOption of roles">
+                    <input type="radio"
+                           class="btn-check"
+                           [id]="roleOption.value"
+                           [value]="roleOption.value"
+                           formControlName="role">
+                    <label class="btn btn-outline-primary w-100 py-3 text-center"
+                           [for]="roleOption.value">
+                      <i [class]="roleOption.icon + ' d-block mb-2'"></i>
+                      <small class="fw-semibold">{{roleOption.label}}</small>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="alert alert-info mt-3" *ngIf="registerForm.get('role')?.value">
+              <small><i class="fas fa-info-circle"></i>
+                Social sign-up will register you as: <strong>{{registerForm.get('role')?.value}}</strong>
+              </small>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-3">
+              <button type="submit"
+                      class="btn btn-primary btn-lg py-3"
+                      [disabled]="registerForm.invalid || isLoading">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                <span *ngIf="!isLoading">Create Account</span>
+                <span *ngIf="isLoading">Creating Account...</span>
+              </button>
+            </div>
+
+            <!-- Login Link -->
+            <div class="text-center">
+              <p class="text-muted">
+                Already have an account?
+                <a routerLink="/login" class="text-primary text-decoration-none fw-semibold">Sign in</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -57,3 +57,4 @@ yarn.lock
 
 # All log files
 *.log
+.vercel
