@@ -1,0 +1,25 @@
+<div class="bg-white rounded-2xl shadow-sm p-6 mt-4">
+  <h2 class="text-xl font-bold text-dark-text mb-6">Menu Management</h2>
+
+  <div class="flex flex-col sm:flex-row gap-4">
+    <button
+      class="bg-primary-orange hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full"
+    >
+      Add New Item
+    </button>
+    <button
+      class="border border-primary-green text-primary-green font-bold py-3 px-6 rounded-full"
+    >
+      Manage Categories
+    </button>
+  </div>
+
+  <div class="mt-6">
+    <h3 class="font-medium text-dark-text mb-4">Popular Dishes</h3>
+    <div class="space-y-3">
+      @for (i of [1,2,3]; track $index) {
+      <app-chef-dashboard-item></app-chef-dashboard-item>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<div class="flex items-center py-4 border-b border-gray-100 last:border-0">
+  <div class="bg-gray-200 border-2 border-dashed rounded-xl w-24 h-24"></div>
+
+  <div class="ml-4 flex-1">
+    <div class="flex justify-between items-start">
+      <div>
+        <h3 class="font-bold text-dark-text">{{ item.name }}</h3>
+        <p class="text-gray-text">Hums</p>
+      </div>
+      <button
+        (click)="cartService.removeItem(i)"
+        class="text-gray-400 hover:text-red-500"
+      >
+        <!-- <lucide-icon name="x" size="20"></lucide-icon> -->
+      </button>
+    </div>
+
+    <div class="mt-4 flex justify-between items-center">
+      <div class="flex items-center border border-gray-200 rounded-full">
+        <button
+          (click)="cartService.updateQuantity(item, -1)"
+          class="px-3 py-1 text-gray-500 hover:text-primary-orange"
+        >
+          -
+        </button>
+        <span class="px-3">{{ item.quantity }}</span>
+        <button
+          (click)="cartService.updateQuantity(item, 1)"
+          class="px-3 py-1 text-gray-500 hover:text-primary-orange"
+        >
+          +
+        </button>
+      </div>
+      <p class="text-lg font-bold">${{ item.price * item.quantity }}</p>
+    </div>
+  </div>
+</div>

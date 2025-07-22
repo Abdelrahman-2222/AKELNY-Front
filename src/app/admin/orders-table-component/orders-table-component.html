@@ -1,0 +1,50 @@
+ <div class="bg-white shadow rounded-lg overflow-hidden">
+      <div class="px-6 py-4 border-b flex justify-between items-center">
+        <h3 class="text-lg font-medium text-gray-800">All Orders</h3>
+        <button class="text-green-600 hover:text-green-800 transition-colors">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            @for (header of tableHeaders; track header.key) {
+              <th
+                (click)="sortTable(header.key)"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+              >
+                {{ header.label }}
+                @if (sortColumn === header.key) {
+                  <i [class]="'fas ' + (sortDirection === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down') + ' ml-1'"></i>
+                }
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          @for (order of orders; track order.id) {
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">{{ order.customer }}</div>
+                <div class="text-sm text-gray-500">WittJear / Chef</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  [ngClass]="getStatusClasses(order.status)"
+                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                >
+                  {{ order.status }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ order.intervention }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ order.total | currency }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>

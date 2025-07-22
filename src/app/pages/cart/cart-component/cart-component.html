@@ -1,0 +1,40 @@
+<app-navbar></app-navbar>
+<!-- cart.component.html -->
+<section class="pt-24 pb-16 bg-cream min-h-screen">
+  <div class="container mx-auto px-4">
+    <h1 class="text-3xl font-bold text-dark-text mb-8">Shopping Cart</h1>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- Cart Items -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-sm p-6">
+          <!-- <div *ngFor="let item of cartItems; let i = index" class="flex items-center py-4 border-b border-gray-100 last:border-0"> -->
+          <!-- cart-item -->
+          @for (item of cartService.cartItems; track item.name) {
+          <app-shopping-cart-item
+            [item]="item"
+            [i]="$index"
+          ></app-shopping-cart-item>
+          }
+          <!-- </div> -->
+
+          <div
+            *ngIf="cartService.cartItems.length === 0"
+            class="py-12 text-center"
+          >
+            <p class="text-gray-text text-lg">Your cart is empty</p>
+            <a
+              routerLink="/chefs"
+              class="mt-4 inline-block bg-primary-green hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full"
+            >
+              Browse Chefs
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <app-order-summary></app-order-summary>
+    </div>
+  </div>
+</section>

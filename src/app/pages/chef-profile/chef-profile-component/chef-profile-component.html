@@ -1,0 +1,68 @@
+<!-- chef-profile.component.html -->
+<section class="pt-24 pb-16 bg-gradient-to-b from-secondary-orange/10 to-cream">
+  <div class="container mx-auto px-4">
+    <!-- Chef Header -->
+    <app-chef-hero-section></app-chef-hero-section>
+    <!-- Tabs -->
+    <div class="border-b border-gray-200 mb-8">
+      <div class="flex gap-8">
+        <button
+          (click)="chefProfileService.setActiveTab('menu')"
+          [class]="
+            chefProfileService.activeTab === 'menu'
+              ? 'border-b-2 border-primary-orange text-primary-orange'
+              : 'text-gray-500'
+          "
+          class="pb-3 font-medium text-lg"
+        >
+          Menu
+        </button>
+        <button
+          (click)="chefProfileService.setActiveTab('reviews')"
+          [class]="
+            chefProfileService.activeTab === 'reviews'
+              ? 'border-b-2 border-primary-orange text-primary-orange'
+              : 'text-gray-500'
+          "
+          class="pb-3 font-medium text-lg"
+        >
+          Reviews
+        </button>
+        <button
+          (click)="chefProfileService.setActiveTab('about')"
+          [class]="
+            chefProfileService.activeTab === 'about'
+              ? 'border-b-2 border-primary-orange text-primary-orange'
+              : 'text-gray-500'
+          "
+          class="pb-3 font-medium text-lg"
+        >
+          About
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu Tab -->
+    <div *ngIf="chefProfileService.activeTab === 'menu'">
+      <div class="grid md:grid-cols-2 gap-6">
+        <app-chef-menu
+          [item]="item"
+          *ngFor="let item of chefProfileService.menuItems"
+        ></app-chef-menu>
+      </div>
+    </div>
+
+    <!-- Reviews Tab -->
+    <div *ngIf="chefProfileService.activeTab === 'reviews'">
+      <div class="space-y-8">
+        <app-chef-reviews
+          [review]="review"
+          *ngFor="let review of chefProfileService.reviews"
+        ></app-chef-reviews>
+      </div>
+    </div>
+
+    <!-- About Tab -->
+    <app-about *ngIf="chefProfileService.activeTab === 'about'"></app-about>
+  </div>
+</section>

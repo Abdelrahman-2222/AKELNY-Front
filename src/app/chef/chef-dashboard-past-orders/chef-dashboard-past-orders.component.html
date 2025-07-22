@@ -1,0 +1,10 @@
+<div class="bg-white rounded-2xl shadow-sm p-6">
+  <h2 class="text-xl font-bold text-dark-text mb-6">Past Orders</h2>
+
+  <div class="space-y-4">
+    <app-chef-dashboard-past-order
+      *ngFor="let order of chefDashboardService.pastOrders"
+      [order]="order"
+    ></app-chef-dashboard-past-order>
+  </div>
+</div>

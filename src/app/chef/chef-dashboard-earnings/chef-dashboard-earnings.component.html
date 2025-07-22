@@ -1,0 +1,19 @@
+<div class="bg-white rounded-2xl shadow-sm p-6 mt-4">
+  <h2 class="text-xl font-bold text-dark-text mb-4">Earnings</h2>
+  <p class="text-3xl font-bold text-primary-green mb-2">$218.00</p>
+  <p class="text-gray-text text-sm mb-6">Available for payout: $25.10</p>
+
+  <button
+    class="w-full bg-primary-green hover:bg-green-700 text-white font-bold py-3 rounded-full"
+  >
+    Request Payout
+  </button>
+
+  <div class="mt-6">
+    <h3 class="font-medium text-dark-text mb-3">Payout History</h3>
+
+    @for (item of [1,2,3]; track $index) {
+    <app-chef-payout></app-chef-payout>
+    }
+  </div>
+</div>

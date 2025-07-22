@@ -1,0 +1,16 @@
+<section class="py-16 bg-warm-white">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center mb-12">
+      <h2 class="text-3xl font-bold text-dark-text">Featured Home Chefs</h2>
+      <a routerLink="/chefs" class="text-primary-orange font-medium"
+        >View All Chefs →</a
+      >
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      @for (chef of featuredChefs; track chef.name) {
+      <app-featured-chef-card [chef]="chef"></app-featured-chef-card>
+      }
+    </div>
+  </div>
+</section>

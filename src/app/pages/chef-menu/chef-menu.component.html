@@ -1,0 +1,17 @@
+<div class="bg-white rounded-2xl shadow-md p-6 flex gap-4">
+  <div class="bg-gray-200 border-2 border-dashed rounded-xl w-24 h-24"></div>
+  <div class="flex-1">
+    <div class="flex justify-between">
+      <h3 class="font-bold text-dark-text">{{ item.name }}</h3>
+      <span class="font-bold text-dark-text">${{ item.price }}</span>
+    </div>
+    <p class="text-gray-text text-sm mt-1 mb-3">
+      {{ item.description }}
+    </p>
+    <button
+      class="bg-primary-green hover:bg-green-700 text-white text-sm font-bold py-2 px-4 rounded-full"
+    >
+      Add to Cart
+    </button>
+  </div>
+</div>

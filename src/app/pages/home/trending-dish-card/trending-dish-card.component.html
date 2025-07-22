@@ -1,0 +1,31 @@
+<div class="bg-white rounded-2xl shadow-md overflow-hidden">
+  <div class="h-56 bg-gray-200 border-2 border-dashed w-full"></div>
+  <div class="p-6">
+    <div class="flex justify-between items-start">
+      <div>
+        <h3 class="text-xl font-bold text-dark-text">{{ dish.name }}</h3>
+        <p class="text-gray-text">{{ dish.chef }}</p>
+      </div>
+      <div class="flex items-center">
+        <span class="font-bold text-dark-text">${{ dish.price }}</span>
+      </div>
+    </div>
+
+    <div class="mt-4 flex justify-between items-center">
+      <div class="flex items-center">
+        <!-- <lucide-icon
+                name="star"
+                class="text-amber-400"
+                fill="currentColor"
+                size="16"
+              ></lucide-icon> -->
+        <span class="ml-1 text-gray-700">{{ dish.rating }}</span>
+      </div>
+      <button
+        class="bg-primary-orange hover:bg-orange-600 text-white text-sm font-bold py-2 px-4 rounded-full transition-colors"
+      >
+        Add to Cart
+      </button>
+    </div>
+  </div>
+</div>

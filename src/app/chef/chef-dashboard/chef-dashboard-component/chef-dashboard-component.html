@@ -1,0 +1,27 @@
+<!-- chef-dashboard.component.html -->
+<section class="pt-24 pb-16 bg-cream min-h-screen">
+  <div class="container mx-auto px-4">
+    <!-- Dashboard Header -->
+    <app-chef-dashboard-header></app-chef-dashboard-header>
+    <!-- Stats Cards -->
+    <app-chef-dashboard-stats-cards></app-chef-dashboard-stats-cards>
+    <!-- Main Content -->
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- Left Column -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Current Orders -->
+        <app-chef-dashboard-current-orders></app-chef-dashboard-current-orders>
+        <!-- Menu Management -->
+         <app-chef-dashboard-menu></app-chef-dashboard-menu>
+      </div>
+
+      <!-- Right Column -->
+      <div class="space-y-8">
+        <!-- Past Orders -->
+        <app-chef-dashboard-past-orders></app-chef-dashboard-past-orders>
+        <!-- Earnings -->
+        <app-chef-dashboard-earnings></app-chef-dashboard-earnings>
+      </div>
+    </div>
+  </div>
+</section>

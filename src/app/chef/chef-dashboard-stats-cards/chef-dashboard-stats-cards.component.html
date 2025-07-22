@@ -1,0 +1,6 @@
+<div class="grid md:grid-cols-4 gap-6 mb-12">
+      <app-chef-dashboard-stat-card
+        *ngFor="let stat of chefDashboardService.stats"
+        [stat]="stat"
+      ></app-chef-dashboard-stat-card>
+    </div>

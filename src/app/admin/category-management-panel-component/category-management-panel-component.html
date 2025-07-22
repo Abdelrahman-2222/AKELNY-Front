@@ -1,0 +1,45 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <h3 class="text-lg font-medium text-gray-800 mb-4">Add Categories</h3>
+  <div class="flex">
+    <input
+      type="text"
+      [(ngModel)]="newCategory"
+      class="flex-1 border border-gray-300 rounded-l-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+      placeholder="Category name"
+    />
+    <button
+      (click)="addCategory()"
+      class="bg-green-600 text-white px-4 rounded-r-lg hover:bg-green-700 transition-colors"
+    >
+      Add
+    </button>
+  </div>
+
+  <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Mood Categories -->
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h4 class="font-medium text-gray-700">Mood Categories</h4>
+        <i class="fas fa-info-circle text-gray-400"></i>
+      </div>
+      <ul class="space-y-2">
+        @for (cat of moodCategories; track cat) {
+        <app-mood-category-item [cat]="cat"></app-mood-category-item>
+        }
+      </ul>
+    </div>
+
+    <!-- Chef Wich -->
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h4 class="font-medium text-gray-700">Chef Wich</h4>
+        <i class="fas fa-info-circle text-gray-400"></i>
+      </div>
+      <ul class="space-y-2">
+        @for (item of chefItems; track item) {
+        <app-chef-item [item]="item"></app-chef-item>
+        }
+      </ul>
+    </div>
+  </div>
+</div>
