@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm install --include=dev && npm run build",
-  "outputDirectory": "dist/AKELNY-Front",
+  "outputDirectory": "dist/AKELNY-Front/browser",
   "rewrites": [
     {
       "source": "/(.*)",
