@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm install --include=dev && npm run build",
+  "buildCommand": "npm install --include=dev && ng build --configuration=production",
   "outputDirectory": "dist/AKELNY-Front/browser",
   "rewrites": [
     {
