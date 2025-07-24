@@ -1,38 +1,25 @@
 import { Routes } from '@angular/router';
-import { App } from './app';
+import {authRoutes} from './auth/auth.routes';
+import {chefRoutes} from './chef/chef.routes';
+import {adminRoutes} from './admin/admin-routes';
+import {LayoutComponent} from './shared/layout/layout-component/layout-component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/register', pathMatch: 'full' },
+  ...authRoutes,
+  // ...chefRoutes,
+  // ...adminRoutes,
   {
-    path: 'register',
-    loadComponent: () =>
-      import('./auth/register/register').then((m) => m.Register),
-  },
-  {
-    path: 'forgot-password',
-    loadComponent: () =>
-      import('./auth/forgot-password/forgot-password').then(
-        (m) => m.ForgotPassword
-      ),
-  },
-  {
-    path : 'reset-password',
-    loadComponent: () =>
-      import('./auth/reset-password/reset-password').then(
-        (m) => m.ResetPassword
-      ),
-  },
-  {
-    path: 'login',
-    loadComponent: () => import('./auth/login/login').then((m) => m.Login),
-  },
-  {
-    path: 'external-login',
-    loadComponent: () => import('./auth/external-login/external-login').then((m) => m.ExternalLogin),
-  },
-  {
-    path: 'main',
-    loadComponent: () => import('./home/main/main').then((m) => m.Main),
+    path: '',
+    component: LayoutComponent,
+    children: [
+      ...chefRoutes,
+      ...adminRoutes,
+      {
+        path: 'main',
+        loadComponent: () => import('./home/main/main').then((m) => m.Main),
+      },
+    ]
   },
   { path: '**', redirectTo: '/register' },
 ];
