@@ -1,1 +1,154 @@
-<p>external-login works!</p>
+<div class="external-login-container">
+  <div class="w-full px-4">
+    <div class="flex flex-col lg:flex-row min-h-screen">
+      <!-- Left side - Image/Branding -->
+      <div class="hidden lg:flex flex-1 items-center justify-center relative">
+        <img src="/assets/images/external-login.png"
+             alt="External Login"
+             class="max-w-full h-auto external-login-image">
+      </div>
+
+      <!-- Right side - External Login Options -->
+      <div class="flex flex-1 items-center justify-center p-4">
+        <div class="external-login-wrapper w-full max-w-lg">
+          <div class="text-center mb-12">
+            <h2 class="font-bold text-3xl text-gray-900">Continue with Social Account</h2>
+            <p class="text-gray-500">Choose your preferred sign-in method</p>
+          </div>
+
+          <!-- Error/Success Message -->
+          <div class="mb-6" *ngIf="message">
+            <div class="bg-red-50 border border-red-200 text-red-700 rounded px-4 py-2 text-sm flex items-center gap-2"
+                 [ngClass]="{
+                   'bg-red-50 border-red-200 text-red-700': !isSuccess,
+                   'bg-green-50 border-green-200 text-green-700': isSuccess
+                 }">
+              <i class="fas fa-exclamation-circle" *ngIf="!isSuccess"></i>
+              <i class="fas fa-check-circle" *ngIf="isSuccess"></i>
+              <span>{{message}}</span>
+            </div>
+          </div>
+
+          <!-- Role Selection -->
+          <div class="mb-8">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Sign up as</label>
+            <div class="role-selection">
+              <div class="flex gap-2">
+                <div class="flex-1" *ngFor="let roleOption of roles">
+                  <input type="radio"
+                         class="hidden peer"
+                         [id]="roleOption.value"
+                         [value]="roleOption.value"
+                         [(ngModel)]="selectedRole"
+                         name="role">
+                  <label class="block border border-blue-500 text-blue-500 rounded py-3 text-center cursor-pointer peer-checked:bg-blue-500 peer-checked:text-white transition"
+                         [for]="roleOption.value"
+                         [ngClass]="{'bg-blue-500 text-white': selectedRole === roleOption.value}">
+                    <i [class]="roleOption.icon + ' block mb-2'"></i>
+                    <small class="font-semibold">{{roleOption.label}}</small>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border border-blue-200 text-blue-700 rounded px-4 py-2 mb-6 text-sm flex items-center gap-2"
+               *ngIf="selectedRole">
+            <i class="fas fa-info-circle"></i>
+            <span>
+              Social sign-up will register you as: <strong>{{selectedRole}}</strong>
+            </span>
+          </div>
+
+          <!-- Social Login Options -->
+          <div class="space-y-4">
+            <!-- Google Login -->
+            <div class="google-login-section">
+              <div id="google-signin-button-external" class="mb-4"></div>
+              <button (click)="loginWithGoogle()"
+                      [disabled]="isLoading || !selectedRole"
+                      class="w-full border-2 border-red-500 text-red-500 py-3 rounded-lg flex items-center justify-center gap-3 hover:bg-red-50 transition font-semibold">
+                <i class="fab fa-google text-xl"></i>
+                <span *ngIf="!isLoading">Continue with Google</span>
+                <span *ngIf="isLoading && currentProvider === 'Google'">
+                  <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                  </svg>
+                  Connecting...
+                </span>
+              </button>
+            </div>
+            </div>
+
+            <!-- Facebook Login -->
+            <button type="button"
+                    [disabled]="isLoading || !selectedRole"
+                    class="w-full border-2 border-blue-600 text-blue-600 py-3 rounded-lg flex items-center justify-center gap-3 hover:bg-blue-50 transition font-semibold"
+                    (click)="loginWithFacebook()">
+              <i class="fab fa-facebook-f text-xl"></i>
+              <span *ngIf="!isLoading || currentProvider !== 'Facebook'">Continue with Facebook</span>
+              <span *ngIf="isLoading && currentProvider === 'Facebook'">
+                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                </svg>
+                Connecting...
+              </span>
+            </button>
+
+            <!-- Twitter Login -->
+            <button type="button"
+                    [disabled]="isLoading || !selectedRole"
+                    class="w-full border-2 border-gray-800 text-gray-800 py-3 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 transition font-semibold"
+                    (click)="loginWithTwitter()">
+              <i class="fab fa-x-twitter text-xl"></i>
+              <span *ngIf="!isLoading || currentProvider !== 'Twitter'">Continue with Twitter</span>
+              <span *ngIf="isLoading && currentProvider === 'Twitter'">
+                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                </svg>
+                Connecting...
+              </span>
+            </button>
+
+          <!-- Role Selection Required Notice -->
+          <div class="bg-amber-50 border border-amber-200 text-amber-700 rounded px-4 py-2 mt-6 text-sm flex items-center gap-2"
+               *ngIf="!selectedRole">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Please select a role before continuing with social login.</span>
+          </div>
+
+          <!-- OR Divider -->
+          <div class="my-8 text-center">
+            <div class="relative">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-300"></div>
+              </div>
+              <div class="relative flex justify-center text-sm">
+                <span class="px-2 bg-white text-gray-500">or</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Traditional Login/Register Links -->
+          <div class="text-center space-y-3">
+            <p class="text-gray-500">Prefer traditional sign-in?</p>
+            <div class="flex gap-4">
+              <a routerLink="/login"
+                 class="flex-1 text-center py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                Sign In
+              </a>
+              <a routerLink="/register"
+                 class="flex-1 text-center py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                Create Account
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of external login container -->

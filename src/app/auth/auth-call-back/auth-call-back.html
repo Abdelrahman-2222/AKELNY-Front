@@ -1,1 +1,59 @@
-<p>auth-call-back works!</p>
+<div class="auth-callback-container min-h-screen flex items-center justify-center bg-gray-50">
+  <div class="max-w-md w-full bg-white shadow-lg rounded-lg p-8 text-center">
+    <!-- Loading State -->
+    <div *ngIf="isProcessing && !error && !success">
+      <div class="animate-spin mx-auto mb-4">
+        <svg class="w-12 h-12 text-blue-600" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Processing Authentication</h3>
+      <p class="text-gray-600">Please wait while we complete your sign-in...</p>
+    </div>
+
+    <!-- Success State -->
+    <div *ngIf="success && !isProcessing">
+      <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-check text-green-600 text-xl"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Authentication Successful</h3>
+      <p class="text-gray-600 mb-4">{{successMessage}}</p>
+      <div class="text-sm text-gray-500">
+        Redirecting in {{countdown}} seconds...
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !isProcessing">
+      <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Authentication Failed</h3>
+      <p class="text-gray-600 mb-6">{{errorMessage}}</p>
+      <div class="space-y-3">
+        <button class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+                (click)="retryAuthentication()">
+          Try Again
+        </button>
+        <button class="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-50 transition"
+                (click)="goToLogin()">
+          Back to Login
+        </button>
+      </div>
+    </div>
+
+    <!-- Generic Fallback State -->
+    <div *ngIf="!isProcessing && !error && !success">
+      <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-info-circle text-gray-600 text-xl"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Authentication Callback</h3>
+      <p class="text-gray-600 mb-6">Redirecting you to the appropriate page...</p>
+      <button class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+              (click)="goToLogin()">
+        Continue to Login
+      </button>
+    </div>
+  </div>
+</div>

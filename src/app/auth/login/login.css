@@ -1,0 +1,95 @@
+/* Login Container Background */
+.login-container {
+  background: linear-gradient(135deg, #fefce8 0%, #ffffff 50%, #fef3c7 100%);
+  min-height: 100vh;
+}
+
+/* Alternative elegant background option */
+.login-container-alt {
+  background: linear-gradient(to bottom right, #fffbeb, #ffffff, #fef7cd);
+  min-height: 100vh;
+}
+
+/* Image side enhancement */
+.login-image {
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.1));
+  border-radius: 16px;
+}
+
+/* Form wrapper styling */
+.login-form-wrapper {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Input field enhancements */
+.login-form-wrapper input[type="email"],
+.login-form-wrapper input[type="password"] {
+  transition: all 0.3s ease;
+}
+
+.login-form-wrapper input[type="email"]:focus,
+.login-form-wrapper input[type="password"]:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+/* Button hover effects */
+.login-form-wrapper button[type="submit"] {
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+}
+
+.login-form-wrapper button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Social buttons enhancement */
+.social-button {
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.social-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal styling */
+.login-container .fixed {
+  backdrop-filter: blur(5px);
+}
+
+.login-container .bg-white.rounded-lg {
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+}
+
+/* Responsive background pattern */
+@media (max-width: 1024px) {
+  .login-container {
+    background: linear-gradient(180deg, #fefce8 0%, #ffffff 100%);
+  }
+}
+
+/* Subtle animation for the container */
+.login-container {
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
