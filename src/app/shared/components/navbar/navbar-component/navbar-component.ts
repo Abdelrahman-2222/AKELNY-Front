@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import {
   LucideAngularModule,
   Search,
@@ -10,7 +10,7 @@ import {
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterModule, LucideAngularModule, NgIf],
+  imports: [CommonModule, RouterModule, LucideAngularModule],
   templateUrl: './navbar-component.html',
   styleUrl: './navbar-component.css',
 })
@@ -19,6 +19,13 @@ export class NavbarComponent {
   isMobileMenuOpen = false;
   cartCount = 3;
 
+  // Expose icons to template
+  readonly Search = Search;
+  readonly ShoppingCart = ShoppingCart;
+  readonly User = User;
+
+  constructor(private router: Router) {}
+
   @HostListener('window:scroll')
   onWindowScroll() {
     this.isScrolled = window.scrollY > 20;
@@ -26,5 +33,15 @@ export class NavbarComponent {
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userData');
+    this.isMobileMenuOpen = false;
+    this.router.navigate(['/login']);
   }
 }

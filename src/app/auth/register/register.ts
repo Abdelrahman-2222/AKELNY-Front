@@ -9,6 +9,11 @@ import { GoogleAuthService } from '../../services/google-auth.service';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
+interface GoogleCredentialResponse {
+  credential: string;
+  select_by?: string;
+}
+
 // At the top of register.ts
 const COMMON_WEAK_PASSWORDS = [
   'password', '123456', '12345678', 'qwerty', 'abc123', '111111', '123123', 'letmein', 'welcome', 'admin'
@@ -210,8 +215,15 @@ export class Register implements OnInit {
       const apiUrl = `${environment.apiUrl}/Auth/register`;
 
       this.http.post(apiUrl, registerDto).subscribe({
-        next: () => {
+        next: (response: any) => {
           this.isLoading = false;
+
+          // Store the JWT token from the registration response
+          if (response.token) {
+            localStorage.setItem('authToken', response.token);
+          }
+
+
           this.message = "Registration successful! You are redirecting to the main page.";
           console.log('Navigating to /main');
           this.router.navigateByUrl('/main');
@@ -265,13 +277,15 @@ export class Register implements OnInit {
   }
 
   private initializeGoogleSignIn(): void {
-    if (typeof (window as any).google === 'undefined') {
+    // if (typeof (window as any).google === 'undefined') {
+    if (typeof google === 'undefined') {
       const script = document.createElement('script');
       script.src = 'https://accounts.google.com/gsi/client';
       script.async = true;
       script.defer = true;
       script.onload = () => {
-        (window as any).google.accounts.id.initialize({
+        // (window as any).google.accounts.id.initialize({
+        google.accounts.id.initialize({
           client_id: environment.googleClientId,
           callback: (response: any) => this.handleGoogleResponse(response),
           auto_select: false,
@@ -281,7 +295,8 @@ export class Register implements OnInit {
       };
       document.head.appendChild(script);
     } else {
-      (window as any).google.accounts.id.initialize({
+      // (window as any).google.accounts.id.initialize({
+      google.accounts.id.initialize({
         client_id: environment.googleClientId,
         callback: (response: any) => this.handleGoogleResponse(response),
         auto_select: false,
@@ -293,8 +308,10 @@ export class Register implements OnInit {
 
   private renderGoogleButton(): void {
     const buttonContainer = document.getElementById('google-signin-button');
-    if (buttonContainer && (window as any).google) {
-      (window as any).google.accounts.id.renderButton(buttonContainer, {
+    // if (buttonContainer && (window as any).google) {
+    //   (window as any).google.accounts.id.renderButton(buttonContainer, {
+    if (buttonContainer && typeof google !== 'undefined') {
+      google.accounts.id.renderButton(buttonContainer, {
         theme: 'outline',
         size: 'large',
         type: 'standard',
@@ -306,22 +323,55 @@ export class Register implements OnInit {
     }
   }
 
+  // public loginWithGoogle(): void {
+  //   this.isLoading = true;
+  //
+  //   // if (typeof (window as any).google === 'undefined') {
+  //   if (typeof google === 'undefined') {
+  //
+  //     console.error('Google API not loaded');
+  //     this.isLoading = false;
+  //     return;
+  //   }
+  //
+  //   try {
+  //     // (window as any).google.accounts.id.prompt({
+  //     // google.accounts.id.prompt({
+  //     //
+  //     //   moment_callback: (promptMoment: any) => {
+  //     //     console.log('Prompt moment:', promptMoment);
+  //     //     if (promptMoment.isNotDisplayed() || promptMoment.isSkippedMoment()) {
+  //     //       this.showGoogleSignInFallback();
+  //     //     }
+  //     //   }
+  //     // });
+  //     // To this:
+  //     google.accounts.id.prompt((promptMoment: PromptMomentNotification) => {
+  //       console.log('Prompt moment:', promptMoment);
+  //       if (promptMoment.isNotDisplayed() || promptMoment.isSkippedMoment()) {
+  //         this.showGoogleSignInFallback();
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.error('Google One Tap error:', error);
+  //     this.showGoogleSignInFallback();
+  //   }
+  // }
+
   public loginWithGoogle(): void {
     this.isLoading = true;
 
-    if (typeof (window as any).google === 'undefined') {
+    if (typeof google === 'undefined') {
       console.error('Google API not loaded');
       this.isLoading = false;
       return;
     }
 
     try {
-      (window as any).google.accounts.id.prompt({
-        moment_callback: (promptMoment: any) => {
-          console.log('Prompt moment:', promptMoment);
-          if (promptMoment.isNotDisplayed() || promptMoment.isSkippedMoment()) {
-            this.showGoogleSignInFallback();
-          }
+      google.accounts.id.prompt((promptMoment: PromptMomentNotification) => {
+        console.log('Prompt moment:', promptMoment);
+        if (promptMoment.isNotDisplayed() || promptMoment.isSkippedMoment()) {
+          this.showGoogleSignInFallback();
         }
       });
     } catch (error) {
@@ -329,7 +379,6 @@ export class Register implements OnInit {
       this.showGoogleSignInFallback();
     }
   }
-
   private showGoogleSignInFallback(): void {
     const existingButton = document.getElementById('temp-google-button');
     if (existingButton) {
@@ -365,7 +414,8 @@ export class Register implements OnInit {
     buttonDiv.appendChild(closeButton);
     document.body.appendChild(buttonDiv);
 
-    (window as any).google.accounts.id.renderButton(buttonDiv, {
+    // (window as any).google.accounts.id.renderButton(buttonDiv, {
+    google.accounts.id.renderButton(buttonDiv, {
       theme: 'outline',
       size: 'large',
       type: 'standard',
@@ -442,7 +492,7 @@ export class Register implements OnInit {
     window.addEventListener('message', messageListener);
   }
 
-  private handleGoogleResponse(response: any): void {
+  private handleGoogleResponse(response: GoogleCredentialResponse): void {
     console.log('Google credential:', response.credential);
 
     const selectedRole = this.registerForm.get('role')?.value || 'Customer';

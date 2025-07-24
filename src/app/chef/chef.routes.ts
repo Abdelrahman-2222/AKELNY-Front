@@ -89,5 +89,40 @@ export const chefRoutes: Routes = [
       import('./chef-payout/chef-payout.component').then(
         (m) => m.ChefPayoutComponent
       ),
+  },
+  {
+    path: 'chef-hero-section',
+    loadComponent: () =>
+      import('../pages/chef-hero-section/chef-hero-section.component').then(
+        (m) => m.ChefHeroSectionComponent
+      ),
+  },
+  {
+    path: 'chef-listing',
+    loadComponent: () =>
+      import('../pages/chef-listing/chef-listing-component/chef-listing-component').then(
+        (m) => m.ChefListingComponent
+      ),
+  },
+  {
+    path: 'chef-menu',
+    loadComponent: () =>
+      import('../pages/chef-menu/chef-menu.component').then(
+        (m) => m.ChefMenuComponent
+      ),
+  },
+  {
+    path: 'chef-profile',
+    loadComponent: () =>
+      import('../pages/chef-profile/chef-profile-component/chef-profile-component').then(
+        (m) => m.ChefProfileComponent
+      ),
+  },
+  {
+    path: 'chef-reviews',
+    loadComponent: () =>
+      import('../pages/chef-reviews/chef-reviews.component').then(
+        (m) => m.ChefReviewsComponent
+      ),
   }
 ]
