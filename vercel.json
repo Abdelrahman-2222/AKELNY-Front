@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm install --include=dev && npm run build",
+  "outputDirectory": "dist/AKELNY-Front",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
