@@ -204,9 +204,10 @@ export class Register implements OnInit {
         role: this.registerForm.value.role
       };
 
-      const apiUrl = window.location.hostname == 'localhost'
-        ? 'https://localhost:7045/api/Auth/register'
-        : 'http://akelni.tryasp.net/api/Auth/register';
+      // const apiUrl = window.location.hostname == 'localhost'
+      //   ? 'https://localhost:7045/api/Auth/register'
+      //   : 'http://akelni.tryasp.net/api/Auth/register';
+      const apiUrl = `${environment.apiUrl}/Auth/register`;
 
       this.http.post(apiUrl, registerDto).subscribe({
         next: () => {
