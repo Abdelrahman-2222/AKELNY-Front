@@ -3,6 +3,10 @@
   "outputDirectory": "dist/AKELNY-Front/browser",
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "http://akelni.tryasp.net/api/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
