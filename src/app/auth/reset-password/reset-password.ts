@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../environments/environment';
+
 
 @Component({
   selector: 'app-reset-password',
@@ -65,9 +67,11 @@ export class ResetPassword implements OnInit {
         newPassword: this.resetForm.get('newPassword')?.value
       };
 
-      const apiUrl = window.location.hostname === 'localhost'
-        ? 'https://localhost:7045/api/Auth/reset-password'
-        : 'http://akelni.tryasp.net/api/Auth/reset-password';
+      // const apiUrl = window.location.hostname === 'localhost'
+      //   ? 'https://localhost:7045/api/Auth/reset-password'
+      //   : 'http://akelni.tryasp.net/api/Auth/reset-password';
+      const apiUrl = `${environment.apiUrl}/Auth/reset-password`;
+
 
       this.http.post(apiUrl, resetData).subscribe({
         next: () => {

@@ -7,6 +7,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { GoogleAuthService } from '../../services/google-auth.service';
 
+
 export interface LoginDto {
   email: string;
   password: string;
@@ -71,9 +72,11 @@ export class Login implements OnInit {
         password: this.loginForm.get('password')?.value
       };
 
-      const apiUrl = window.location.hostname == 'localhost'
-        ? 'https://localhost:7045/api/Auth/login'
-        : 'http://akelni.tryasp.net/api/Auth/login';
+      // const apiUrl = window.location.hostname == 'localhost'
+      //   ? 'https://localhost:7045/api/Auth/login'
+      //   : 'http://akelni.tryasp.net/api/Auth/login';
+      const apiUrl = `${environment.apiUrl}/Auth/login`;
+
 
       this.http.post(apiUrl, loginDto).subscribe({
         next: (response: any) => {
@@ -302,9 +305,11 @@ export class Login implements OnInit {
         email: this.forgotPasswordForm.get('email')?.value
       };
 
-      const apiUrl = window.location.hostname == 'localhost'
-        ? 'https://localhost:7045/api/Auth/forgot-password'
-        : 'http://akelni.tryasp.net/api/Auth/forgot-password';
+      // const apiUrl = window.location.hostname == 'localhost'
+      //   ? 'https://localhost:7045/api/Auth/forgot-password'
+      //   : 'http://akelni.tryasp.net/api/Auth/forgot-password';
+
+      const apiUrl = `${environment.apiUrl}/Auth/forgot-password`;
 
       this.http.post(apiUrl, forgotPasswordDto).subscribe({
         next: () => {

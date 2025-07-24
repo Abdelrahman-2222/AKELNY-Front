@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../environments/environment';
+
 
 @Component({
   selector: 'app-forgot-password',
@@ -34,9 +36,10 @@ export class ForgotPassword {
 
       const email = this.forgotPasswordForm.get('email')?.value;
 
-      const apiUrl = window.location.hostname === 'localhost'
-        ? 'https://localhost:7045/api/Auth/forgot-password'
-        : 'http://akelni.tryasp.net/api/Auth/forgot-password';
+      // const apiUrl = window.location.hostname === 'localhost'
+      //   ? 'https://localhost:7045/api/Auth/forgot-password'
+      //   : 'http://akelni.tryasp.net/api/Auth/forgot-password';
+      const apiUrl = `${environment.apiUrl}/Auth/forgot-password`;
 
       this.http.post(apiUrl, { email }).subscribe({
         next: () => {
