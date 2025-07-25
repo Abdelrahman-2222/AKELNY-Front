@@ -1,6 +1,8 @@
 import {Routes} from '@angular/router';
 
 export const customerRoutes: Routes = [
+
+  {path: '', redirectTo: 'categories', pathMatch: 'full'},
   {
     path: 'cart-component',
     loadComponent: () =>

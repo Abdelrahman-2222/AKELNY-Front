@@ -1,0 +1,42 @@
+/* Category Management Panel Styles */
+.container {
+  max-width: 1200px;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark theme input styling */
+[data-theme="dark"] input {
+  background-color: #374151;
+  color: #f9fafb;
+}
+
+[data-theme="dark"] input::placeholder {
+  color: #9ca3af;
+}
+
+/* Category card hover effects */
+.group:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}

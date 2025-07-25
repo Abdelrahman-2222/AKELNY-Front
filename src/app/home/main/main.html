@@ -4,50 +4,54 @@
   <section class="relative py-20 px-4">
     <div class="container mx-auto text-center">
       <!-- Main Hero Content -->
-      <div class="max-w-4xl mx-auto">
-        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+      <div class="max-w-5xl mx-auto">
+        <h1 class="text-6xl md:text-8xl font-bold theme-text-primary mb-8 leading-tight">
           Connecting
-          <span class="text-yellow-300">Local Chefs</span>
+          <span class="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Local Chefs</span>
           with
-          <span class="text-orange-300">Food Lovers</span>
+          <span class="bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">Food Lovers</span>
         </h1>
-        <p class="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-          Experience authentic home-cooked meals from talented local chefs in your neighborhood.
-          Fresh, delicious, and made with love.
+        <p class="text-xl md:text-2xl theme-text-secondary mb-10 max-w-4xl mx-auto leading-relaxed">
+          🍳 Experience authentic home-cooked meals from talented local chefs in your neighborhood.
+          Fresh, delicious, and made with love! 🥘
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <button class="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-            Order Now
+        <div class="flex flex-col sm:flex-row gap-6 justify-center">
+          <button
+            (click)="handleOrderNow()"
+            class="px-10 py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl">
+            🛒 {{ isAuthenticated() ? 'Browse Menu' : 'Order Now' }}
           </button>
-          <button class="px-8 py-4 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full text-lg transition-all duration-300 backdrop-blur-sm border border-white/30">
-            Become a Chef
+          <button
+            (click)="handleBecomeChef()"
+            class="px-10 py-4 appetizing-card theme-text-primary font-bold rounded-full text-xl transition-all duration-300 backdrop-blur-sm hover:scale-105">
+            👨‍🍳 {{ getUserRole() === 'Chef' ? 'Chef Dashboard' : 'Become a Chef' }}
           </button>
         </div>
       </div>
 
       <!-- Floating Food Cards -->
-      <div class="relative mt-16">
+      <div class="relative mt-20">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:scale-105 transition-all duration-300 border border-white/20">
-            <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span class="text-2xl">🍳</span>
+          <div class="appetizing-card rounded-3xl p-8 hover:scale-105 transition-all duration-300">
+            <div class="w-20 h-20 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <span class="text-3xl">🍳</span>
             </div>
-            <h3 class="text-xl font-semibold text-white mb-2">Fresh Cooking</h3>
-            <p class="text-white/80">Made fresh to order by local home chefs</p>
+            <h3 class="text-2xl font-bold theme-text-primary mb-3">Fresh Cooking</h3>
+            <p class="theme-text-secondary text-lg">Made fresh to order by local home chefs with premium ingredients</p>
           </div>
-          <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:scale-105 transition-all duration-300 border border-white/20">
-            <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span class="text-2xl">🚚</span>
+          <div class="appetizing-card rounded-3xl p-8 hover:scale-105 transition-all duration-300">
+            <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <span class="text-3xl">🚚</span>
             </div>
-            <h3 class="text-xl font-semibold text-white mb-2">Fast Delivery</h3>
-            <p class="text-white/80">Quick delivery from kitchen to your door</p>
+            <h3 class="text-2xl font-bold theme-text-primary mb-3">Fast Delivery</h3>
+            <p class="theme-text-secondary text-lg">Lightning-fast delivery from kitchen to your doorstep in minutes</p>
           </div>
-          <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:scale-105 transition-all duration-300 border border-white/20">
-            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span class="text-2xl">❤️</span>
+          <div class="appetizing-card rounded-3xl p-8 hover:scale-105 transition-all duration-300">
+            <div class="w-20 h-20 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <span class="text-3xl">❤️</span>
             </div>
-            <h3 class="text-xl font-semibold text-white mb-2">Made with Love</h3>
-            <p class="text-white/80">Authentic recipes from passionate chefs</p>
+            <h3 class="text-2xl font-bold theme-text-primary mb-3">Made with Love</h3>
+            <p class="theme-text-secondary text-lg">Authentic family recipes from passionate home chefs</p>
           </div>
         </div>
       </div>
@@ -55,25 +59,25 @@
   </section>
 
   <!-- Stats Section -->
-  <section class="py-16 px-4">
+  <section class="py-20 px-4">
     <div class="container mx-auto">
-      <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+      <div class="appetizing-card rounded-3xl p-12">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
-            <h3 class="text-4xl font-bold text-white mb-2">500+</h3>
-            <p class="text-white/80">Local Chefs</p>
+            <h3 class="text-5xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent mb-3">500+</h3>
+            <p class="theme-text-secondary text-lg font-medium">Local Chefs</p>
           </div>
           <div>
-            <h3 class="text-4xl font-bold text-white mb-2">10K+</h3>
-            <p class="text-white/80">Happy Customers</p>
+            <h3 class="text-5xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent mb-3">10K+</h3>
+            <p class="theme-text-secondary text-lg font-medium">Happy Customers</p>
           </div>
           <div>
-            <h3 class="text-4xl font-bold text-white mb-2">50K+</h3>
-            <p class="text-white/80">Orders Delivered</p>
+            <h3 class="text-5xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent mb-3">50K+</h3>
+            <p class="theme-text-secondary text-lg font-medium">Orders Delivered</p>
           </div>
           <div>
-            <h3 class="text-4xl font-bold text-white mb-2">25+</h3>
-            <p class="text-white/80">Cities Served</p>
+            <h3 class="text-5xl font-bold bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent mb-3">25+</h3>
+            <p class="theme-text-secondary text-lg font-medium">Cities Served</p>
           </div>
         </div>
       </div>
@@ -81,107 +85,70 @@
   </section>
 
   <!-- How It Works Section -->
-  <section class="py-20 px-4">
+  <section class="py-24 px-4">
     <div class="container mx-auto">
-      <h2 class="text-4xl md:text-5xl font-bold text-white text-center mb-16">
-        How <span class="text-yellow-300">Akalni</span> Works
+      <h2 class="text-5xl md:text-6xl font-bold theme-text-primary text-center mb-20">
+        How <span class="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Akalni</span> Works
       </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-7xl mx-auto">
         <!-- Step 1 -->
         <div class="text-center group">
           <div class="relative">
-            <div class="w-24 h-24 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300">
-              <span class="text-3xl text-white font-bold">1</span>
+            <div class="w-32 h-32 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-all duration-300 shadow-2xl">
+              <span class="text-4xl text-white font-bold">1</span>
             </div>
-            <div class="absolute top-12 left-1/2 w-full h-0.5 bg-white/30 hidden md:block"></div>
           </div>
-          <h3 class="text-2xl font-semibold text-white mb-4">Browse Local Chefs</h3>
-          <p class="text-white/80 text-lg">Discover amazing home chefs in your area and explore their delicious offerings</p>
+          <h3 class="text-3xl font-bold theme-text-primary mb-6">🔍 Browse Local Chefs</h3>
+          <p class="theme-text-secondary text-xl leading-relaxed">Discover amazing home chefs in your area and explore their mouth-watering dishes</p>
         </div>
 
         <!-- Step 2 -->
         <div class="text-center group">
           <div class="relative">
-            <div class="w-24 h-24 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300">
-              <span class="text-3xl text-white font-bold">2</span>
+            <div class="w-32 h-32 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-all duration-300 shadow-2xl">
+              <span class="text-4xl text-white font-bold">2</span>
             </div>
-            <div class="absolute top-12 left-1/2 w-full h-0.5 bg-white/30 hidden md:block"></div>
           </div>
-          <h3 class="text-2xl font-semibold text-white mb-4">Place Your Order</h3>
-          <p class="text-white/80 text-lg">Choose your favorite dishes and place your order with just a few clicks</p>
+          <h3 class="text-3xl font-bold theme-text-primary mb-6">🛒 Place Your Order</h3>
+          <p class="theme-text-secondary text-xl leading-relaxed">Choose your favorite dishes and place your order with just a few simple clicks</p>
         </div>
 
         <!-- Step 3 -->
         <div class="text-center group">
-          <div class="w-24 h-24 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300">
-            <span class="text-3xl text-white font-bold">3</span>
+          <div class="w-32 h-32 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-all duration-300 shadow-2xl">
+            <span class="text-4xl text-white font-bold">3</span>
           </div>
-          <h3 class="text-2xl font-semibold text-white mb-4">Enjoy Fresh Food</h3>
-          <p class="text-white/80 text-lg">Receive your freshly prepared meal and enjoy the authentic taste of home cooking</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Mission Section -->
-  <section class="py-20 px-4">
-    <div class="container mx-auto">
-      <div class="bg-white/5 backdrop-blur-md rounded-3xl p-12 border border-white/10">
-        <div class="text-center max-w-4xl mx-auto">
-          <h2 class="text-4xl md:text-5xl font-bold text-white mb-8">
-            Our <span class="text-orange-300">Mission</span>
-          </h2>
-          <p class="text-xl md:text-2xl text-white/90 leading-relaxed mb-8">
-            We believe everyone deserves access to delicious, authentic home-cooked meals.
-            Our platform empowers local chefs to share their culinary passion while providing
-            food lovers with fresh, quality meals made with care.
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            <div class="text-center">
-              <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="text-3xl">👨‍🍳</span>
-              </div>
-              <h3 class="text-xl font-semibold text-white mb-2">Empower Chefs</h3>
-              <p class="text-white/80">Help talented home chefs build their business and reach more customers</p>
-            </div>
-            <div class="text-center">
-              <div class="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="text-3xl">🍽️</span>
-              </div>
-              <h3 class="text-xl font-semibold text-white mb-2">Feed Communities</h3>
-              <p class="text-white/80">Bring people together through authentic, locally-made food experiences</p>
-            </div>
-          </div>
+          <h3 class="text-3xl font-bold theme-text-primary mb-6">🍽️ Enjoy Fresh Food</h3>
+          <p class="theme-text-secondary text-xl leading-relaxed">Receive your freshly prepared meal and savor authentic home cooking</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- CTA Section -->
-  <section class="py-20 px-4">
+  <section class="py-24 px-4">
     <div class="container mx-auto text-center">
-      <div class="max-w-3xl mx-auto">
-        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
-          Ready to <span class="text-yellow-300">Taste</span> the Difference?
+      <div class="appetizing-card rounded-3xl p-16 max-w-5xl mx-auto">
+        <h2 class="text-5xl md:text-6xl font-bold theme-text-primary mb-8">
+          Ready to <span class="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Taste</span> the Difference?
         </h2>
-        <p class="text-xl text-white/90 mb-8">
-          Join thousands of food lovers who trust Akalni for their daily meals
+        <p class="text-2xl theme-text-secondary mb-12">
+          🌟 Join thousands of food lovers who trust Akalni for their daily meals! 🌟
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <button class="px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-xl">
-            Start Ordering
+        <div class="flex flex-col sm:flex-row gap-6 justify-center">
+          <button
+            (click)="handleOrderNow()"
+            class="px-12 py-5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl">
+            🍕 {{ isAuthenticated() ? 'Browse Menu' : 'Start Ordering' }}
           </button>
-          <button class="px-10 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-xl">
-            Join as Chef
+          <button
+            (click)="handleBecomeChef()"
+            class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl">
+            👨‍🍳 {{ getUserRole() === 'Chef' ? 'My Kitchen' : 'Join as Chef' }}
           </button>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- Floating Elements -->
-  <div class="fixed top-1/4 left-10 w-20 h-20 bg-orange-400/20 rounded-full blur-xl animate-pulse hidden lg:block"></div>
-  <div class="fixed top-1/2 right-10 w-32 h-32 bg-yellow-400/20 rounded-full blur-xl animate-pulse hidden lg:block"></div>
-  <div class="fixed bottom-1/4 left-1/4 w-24 h-24 bg-purple-400/20 rounded-full blur-xl animate-pulse hidden lg:block"></div>
 </div>

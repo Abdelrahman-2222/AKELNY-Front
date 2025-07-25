@@ -1,0 +1,47 @@
+/* Footer specific animations and enhancements */
+@keyframes footerFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.footer-float {
+  animation: footerFloat 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer-text {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Enhanced hover effects for footer links */
+footer a:hover {
+  text-shadow: 0 0 8px rgba(251, 146, 60, 0.3);
+}
+
+/* Social media icons pulse effect */
+footer .social-icon:hover {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Newsletter input focus enhancement */
+footer input:focus {
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.1);
+}
+
+/* Stats cards hover effect */
+.stats-card:hover {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+}

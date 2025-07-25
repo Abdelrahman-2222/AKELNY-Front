@@ -1,0 +1,95 @@
+<!-- Chat Toggle Button -->
+<div class="fixed bottom-6 right-6 z-50">
+  <!-- Chat Window -->
+  <div
+    *ngIf="isOpen"
+    class="mb-4 w-80 h-96 footer-card rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-300"
+  >
+    <!-- Chat Header -->
+    <div class="bg-gradient-to-r from-orange-500 to-amber-500 p-4 text-white">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <span class="text-2xl">🤖</span>
+          <div>
+            <h3 class="font-bold">Akalni Assistant</h3>
+            <p class="text-xs opacity-90">Online • Ready to help</p>
+          </div>
+        </div>
+        <div class="flex space-x-2">
+          <button (click)="clearChat()" class="hover:bg-white/20 p-1 rounded">
+            🗑️
+          </button>
+          <button (click)="toggleChat()" class="hover:bg-white/20 p-1 rounded">
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div #chatContainer class="h-64 overflow-y-auto p-4 bg-white dark:bg-gray-800">
+      <!-- Messages -->
+      <div *ngFor="let message of messages" class="mb-3">
+        <div [class]="message.isUser ? 'flex justify-end' : 'flex justify-start'">
+          <div [class]="message.isUser ?
+            'bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-2xl max-w-xs break-words' :
+            'footer-card px-4 py-2 rounded-2xl max-w-xs break-words footer-text'"
+          >
+            <p class="text-sm">{{ message.text }}</p>
+            <p class="text-xs opacity-70 mt-1">{{ message.timestamp | date:'short' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div *ngIf="isTyping" class="flex justify-start mb-3">
+        <div class="footer-card px-4 py-2 rounded-2xl">
+          <div class="flex space-x-1">
+            <div class="w-2 h-2 bg-orange-500 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Replies -->
+    <div class="p-2 border-t footer-border">
+      <div class="flex flex-wrap gap-1 mb-2">
+        <button
+          *ngFor="let reply of quickReplies"
+          (click)="sendQuickReply(reply)"
+          class="text-xs px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-600 rounded-full transition-colors"
+        >
+          {{ reply }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="p-4 border-t footer-border bg-gray-50 dark:bg-gray-700">
+      <div class="flex space-x-2">
+        <input
+          [(ngModel)]="currentMessage"
+          (keyup.enter)="sendMessage()"
+          placeholder="Type your message..."
+          class="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+        >
+        <button
+          (click)="sendMessage()"
+          class="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white p-2 rounded-full transition-all duration-300"
+        >
+          🚀
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toggle Button -->
+  <button
+    (click)="toggleChat()"
+    class="w-16 h-16 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-full shadow-lg transition-all duration-300 flex items-center justify-center transform hover:scale-110"
+  >
+    <span class="text-2xl">{{ isOpen ? '✕' : '💬' }}</span>
+  </button>
+</div>

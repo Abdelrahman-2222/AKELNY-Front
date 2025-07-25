@@ -2,76 +2,91 @@
 <nav
   [class]="
     isScrolled
-      ? 'bg-white/90 backdrop-blur-md shadow-sm py-3'
+      ? 'theme-card-bg backdrop-blur-md shadow-lg py-3'
       : 'bg-transparent py-5'
   "
   class="fixed top-0 w-full z-50 transition-all duration-300"
 >
   <div class="container mx-auto px-4 flex justify-between items-center">
     <!-- Logo -->
-    <a routerLink="/main" class="text-2xl font-bold text-primary-green">Akalni</a>
+    <a routerLink="/main" class="text-3xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+      🍽️ Akalni
+    </a>
 
     <!-- Desktop Navigation -->
     <div class="hidden md:flex items-center space-x-8">
       <a
         routerLink="/"
-        class="text-gray-700 hover:text-primary-orange transition-colors"
+        class="theme-text-primary hover:text-orange-500 transition-colors font-medium"
       >Home</a>
       <a
         routerLink="/chefs"
-        class="text-gray-700 hover:text-primary-orange transition-colors"
+        class="theme-text-primary hover:text-orange-500 transition-colors font-medium"
       >Chefs</a>
       <a
         href="#"
-        class="text-gray-700 hover:text-primary-orange transition-colors"
+        class="theme-text-primary hover:text-orange-500 transition-colors font-medium"
       >Categories</a>
       <a
         href="#"
-        class="text-gray-700 hover:text-primary-orange transition-colors"
+        class="theme-text-primary hover:text-orange-500 transition-colors font-medium"
       >About</a>
     </div>
 
     <!-- Right Section -->
     <div class="flex items-center space-x-4">
-      <button class="p-2 text-gray-700 hover:text-primary-orange">
+      <!-- Theme Toggle -->
+      <button
+        (click)="toggleTheme()"
+        class="p-3 theme-card-bg theme-border border rounded-full hover:scale-110 transition-all duration-300 theme-shadow"
+        [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+      >
+        <lucide-icon
+          [img]="isDarkMode ? Sun : Moon"
+          size="20"
+          class="text-orange-500"
+        ></lucide-icon>
+      </button>
+
+      <button class="p-2 theme-text-primary hover:text-orange-500 transition-colors">
         <lucide-icon [img]="Search" size="20"></lucide-icon>
       </button>
 
       <a
         routerLink="/cart"
-        class="relative p-2 text-gray-700 hover:text-primary-orange"
+        class="relative p-2 theme-text-primary hover:text-orange-500 transition-colors"
       >
         <lucide-icon [img]="ShoppingCart" size="20"></lucide-icon>
         <span
           *ngIf="cartCount > 0"
-          class="absolute top-0 right-0 bg-primary-orange text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+          class="absolute -top-1 -right-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold animate-pulse"
         >
           {{ cartCount }}
         </span>
       </a>
 
-      <button class="p-2 text-gray-700 hover:text-primary-orange">
+      <button class="p-2 theme-text-primary hover:text-orange-500 transition-colors">
         <lucide-icon [img]="User" size="20"></lucide-icon>
       </button>
 
       <!-- Logout Button -->
       <button
         (click)="logout()"
-        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+        class="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg font-medium"
       >
         Logout
       </button>
 
       <!-- Mobile Menu Button -->
       <button
-        class="md:hidden ml-2 p-2 text-gray-700"
+        class="md:hidden ml-2 p-2 theme-text-primary hover:text-orange-500 transition-colors"
         (click)="toggleMobileMenu()"
       >
         <span class="sr-only">Open menu</span>
         <div class="w-6 flex flex-col space-y-1">
-          <span class="block w-full h-0.5 bg-gray-700"></span>
-          <span class="block w-full h-0.5 bg-gray-700"></span>
-          <span class="block w-4/5 h-0.5 bg-gray-700 ml-auto"></span>
+          <span class="block w-full h-0.5 bg-current"></span>
+          <span class="block w-full h-0.5 bg-current"></span>
+          <span class="block w-4/5 h-0.5 bg-current ml-auto"></span>
         </div>
       </button>
     </div>
@@ -80,20 +95,20 @@
   <!-- Mobile Menu -->
   <div
     *ngIf="isMobileMenuOpen"
-    class="md:hidden bg-white shadow-lg absolute top-full left-0 right-0"
+    class="md:hidden theme-card-bg theme-shadow absolute top-full left-0 right-0 backdrop-blur-md"
   >
-    <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
-      <a routerLink="/" class="py-2 text-gray-700 hover:text-primary-orange">Home</a>
+    <div class="container mx-auto px-4 py-4 flex flex-col space-y-3">
+      <a routerLink="/" class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium">Home</a>
       <a
         routerLink="/chefs"
-        class="py-2 text-gray-700 hover:text-primary-orange"
+        class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium"
       >Chefs</a>
-      <a href="#" class="py-2 text-gray-700 hover:text-primary-orange">Categories</a>
-      <a href="#" class="py-2 text-gray-700 hover:text-primary-orange">About</a>
-      <div class="pt-3 border-t">
+      <a href="#" class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium">Categories</a>
+      <a href="#" class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium">About</a>
+      <div class="pt-3 border-t theme-border">
         <button
           (click)="logout()"
-          class="block w-full py-2 text-center bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+          class="block w-full py-3 text-center bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-300 font-medium"
         >
           Logout
         </button>

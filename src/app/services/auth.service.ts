@@ -6,26 +6,35 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class AuthService {
   getUserRole(): string | null {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      return null;
+    // First try to get role from user object
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        return user.role;
+      } catch (error) {
+        console.error('Error parsing user:', error);
+      }
     }
 
-    try {
-      const decodedToken: any = jwtDecode(token);
-      console.log('Decoded token:', decodedToken); // For debugging
-
-      // Your backend uses ClaimTypes.Role which maps to this claim name
-      return decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
-        decodedToken.role;
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      return null;
+    // Fallback: get role from token (check both keys)
+    const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        return decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
     }
+
+    return null;
   }
 
   isAuthenticated(): boolean {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+    // const user = localStorage.getItem('user');
+
     if (!token) return false;
 
     try {

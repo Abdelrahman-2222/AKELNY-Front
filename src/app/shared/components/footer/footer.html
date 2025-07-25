@@ -1,0 +1,189 @@
+<footer class="footer-bg border-t footer-border mt-auto">
+  <!-- Main Footer Content -->
+  <div class="container mx-auto px-4 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+
+      <!-- Brand Section -->
+      <div class="lg:col-span-1">
+        <div class="mb-6">
+          <h3 class="text-3xl font-bold bg-gradient-to-r from-yellow-300 to-yellow-100 bg-clip-text text-transparent mb-4">
+            🍽️ Akalni
+          </h3>
+          <p class="footer-text-muted text-lg leading-relaxed">
+            Connecting food lovers with passionate local chefs. Experience authentic home-cooked meals made with love and delivered fresh to your door.
+          </p>
+        </div>
+
+        <!-- Social Media -->
+        <div class="flex space-x-4">
+          <a href="#" class="w-12 h-12 footer-card rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300">
+            <span class="text-xl footer-text">📘</span>
+          </a>
+          <a href="#" class="w-12 h-12 footer-card rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300">
+            <span class="text-xl footer-text">📷</span>
+          </a>
+          <a href="#" class="w-12 h-12 footer-card rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300">
+            <span class="text-xl footer-text">🐦</span>
+          </a>
+          <a href="#" class="w-12 h-12 footer-card rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300">
+            <span class="text-xl footer-text">🔗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="text-xl font-bold footer-text mb-6">Quick Links</h4>
+        <ul class="space-y-3">
+          <li>
+            <a routerLink="/main" class="footer-text-muted hover:text-orange-500 transition-colors">🏠 Home</a>
+          </li>
+          <li>
+            <button (click)="handleCustomerNavigation()" class="footer-text-muted hover:text-orange-500 transition-colors text-left w-full">👨‍🍳 Browse Chefs</button>
+          </li>
+          <li>
+            <button (click)="handleCustomerNavigation()" class="footer-text-muted hover:text-orange-500 transition-colors text-left w-full">🍕 Categories</button>
+          </li>
+          <li>
+            <button (click)="handleCustomerNavigation()" class="footer-text-muted hover:text-orange-500 transition-colors text-left w-full">💫 Featured Dishes</button>
+          </li>
+          <li>
+            <button (click)="handleCustomerNavigation()" class="footer-text-muted hover:text-orange-500 transition-colors text-left w-full">ℹ️ About Us</button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- For Chefs -->
+      <div>
+        <h4 class="text-xl font-bold footer-text mb-6">For Chefs</h4>
+        <ul class="space-y-3">
+          <li>
+            <button (click)="handleChefNavigation()" class="footer-text-muted hover:text-orange-500 transition-colors text-left w-full">🚀 Join as Chef</button>
+          </li>
+          <li>
+            <button (click)="handleChefNavigation()" class="footer-text-muted hover:text-orange-500 transition-colors text-left w-full">📊 Chef Dashboard</button>
+          </li>
+          <li>
+            <button (click)="handleChefNavigation()" class="footer-text-muted hover:text-orange-500 transition-colors text-left w-full">💰 Earnings</button>
+          </li>
+          <li>
+            <button (click)="handleChefNavigation()" class="footer-text-muted hover:text-orange-500 transition-colors text-left w-full">📈 Analytics</button>
+          </li>
+          <li>
+            <button (click)="handleChefNavigation()" class="footer-text-muted hover:text-orange-500 transition-colors text-left w-full">🏆 Success Stories</button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div>
+        <h4 class="text-xl font-bold footer-text mb-6">Support</h4>
+        <ul class="space-y-3">
+          <li>
+            <a href="#" class="footer-text-muted hover:text-orange-500 transition-colors">❓ Help Center</a>
+          </li>
+          <li>
+            <a href="#" class="footer-text-muted hover:text-orange-500 transition-colors">📞 Contact Us</a>
+          </li>
+          <li>
+            <a href="#" class="footer-text-muted hover:text-orange-500 transition-colors">🔒 Privacy Policy</a>
+          </li>
+          <li>
+            <a href="#" class="footer-text-muted hover:text-orange-500 transition-colors">📋 Terms of Service</a>
+          </li>
+<!--          <li>-->
+<!--            <a href="#" class="footer-text-muted hover:text-orange-500 transition-colors">💬 Live Chat</a>-->
+<!--          </li>-->
+        </ul>
+      </div>
+
+    </div> <!-- Close the grid -->
+
+    <!-- Newsletter Section -->
+    <div class="mt-16 pt-12 border-t footer-border">
+      <div class="footer-card rounded-3xl p-8 text-center">
+        <h3 class="text-3xl font-bold footer-text mb-4">
+          Stay Updated with <span class="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Delicious</span> Offers!
+        </h3>
+        <p class="footer-text-muted text-lg mb-6">
+          🎉 Get exclusive deals, new chef spotlights, and mouth-watering recipes delivered to your inbox!
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+          <input
+            type="email"
+            placeholder="Enter your email address"
+            class="flex-1 px-4 py-3 rounded-full border footer-border bg-white footer-text placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent shadow-sm"
+          >
+          <button class="px-8 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
+            🚀 Subscribe
+          </button>
+        </div>
+      </div>
+    </div>
+
+<!--    &lt;!&ndash; App Download Section &ndash;&gt;-->
+<!--    <div class="mt-12 text-center">-->
+<!--      <h4 class="text-2xl font-bold footer-text mb-6">-->
+<!--        Download Our App for Better Experience!-->
+<!--      </h4>-->
+<!--      <div class="flex flex-col sm:flex-row gap-4 justify-center">-->
+<!--        <a href="#" class="footer-card px-8 py-4 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center space-x-3">-->
+<!--          <span class="text-3xl">📱</span>-->
+<!--          <div class="text-left">-->
+<!--            <p class="footer-text-muted text-sm">Download on the</p>-->
+<!--            <p class="footer-text font-bold text-lg">App Store</p>-->
+<!--          </div>-->
+<!--        </a>-->
+<!--        <a href="#" class="footer-card px-8 py-4 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center space-x-3">-->
+<!--          <span class="text-3xl">🤖</span>-->
+<!--          <div class="text-left">-->
+<!--            <p class="footer-text-muted text-sm">Get it on</p>-->
+<!--            <p class="footer-text font-bold text-lg">Google Play</p>-->
+<!--          </div>-->
+<!--        </a>-->
+<!--      </div>-->
+<!--    </div>-->
+
+  </div> <!-- Close the container -->
+
+  <!-- Bottom Bar -->
+  <div class="footer-bg-secondary border-t footer-border py-6">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center space-x-4 mb-4 md:mb-0">
+          <p class="footer-text-muted text-lg">
+            © {{ currentYear }} Akalni. All rights reserved. 🍳
+          </p>
+        </div>
+
+        <div class="flex items-center space-x-6">
+          <span class="footer-text-muted">Made with</span>
+          <span class="text-red-400 animate-pulse text-xl">❤️</span>
+          <span class="footer-text-muted">for food lovers</span>
+        </div>
+      </div>
+
+<!--      &lt;!&ndash; Fun Stats &ndash;&gt;-->
+<!--      <div class="mt-6 pt-6 border-t footer-border">-->
+<!--        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">-->
+<!--          <div class="footer-card rounded-2xl p-4 hover:scale-105 transition-all duration-300">-->
+<!--            <p class="text-2xl font-bold bg-gradient-to-r from-yellow-300 to-yellow-100 bg-clip-text text-transparent">🍳 500+</p>-->
+<!--            <p class="footer-text-muted text-sm">Local Chefs</p>-->
+<!--          </div>-->
+<!--          <div class="footer-card rounded-2xl p-4 hover:scale-105 transition-all duration-300">-->
+<!--            <p class="text-2xl font-bold bg-gradient-to-r from-green-300 to-green-100 bg-clip-text text-transparent">😊 10K+</p>-->
+<!--            <p class="footer-text-muted text-sm">Happy Customers</p>-->
+<!--          </div>-->
+<!--          <div class="footer-card rounded-2xl p-4 hover:scale-105 transition-all duration-300">-->
+<!--            <p class="text-2xl font-bold bg-gradient-to-r from-red-300 to-red-100 bg-clip-text text-transparent">🚚 50K+</p>-->
+<!--            <p class="footer-text-muted text-sm">Orders Delivered</p>-->
+<!--          </div>-->
+<!--          <div class="footer-card rounded-2xl p-4 hover:scale-105 transition-all duration-300">-->
+<!--            <p class="text-2xl font-bold bg-gradient-to-r from-purple-300 to-purple-100 bg-clip-text text-transparent">🏙️ 25+</p>-->
+<!--            <p class="footer-text-muted text-sm">Cities Served</p>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+    </div>
+  </div>
+</footer>

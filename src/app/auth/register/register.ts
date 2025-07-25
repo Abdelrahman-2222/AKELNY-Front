@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { GoogleAuthService } from '../../services/google-auth.service';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import {jwtDecode} from 'jwt-decode';
 
 interface GoogleCredentialResponse {
   credential: string;
@@ -220,12 +221,26 @@ export class Register implements OnInit {
 
           // Store the JWT token from the registration response
           if (response.token) {
-            localStorage.setItem('authToken', response.token);
+            // localStorage.setItem('authToken', response.token);
+            try {
+              const decodedToken: any = jwtDecode(response.token);
+              const user = {
+                id: decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+                email: decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
+                role: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+              };
+              localStorage.setItem('user', JSON.stringify(user));
+              localStorage.setItem('token', response.token); // Also save as 'token'
+
+              console.log('Saved user during registration:', user);
+            } catch (error) {
+              console.error('Error decoding token:', error);
+            }
           }
 
 
           this.message = "Registration successful! You are redirecting to the main page.";
-          console.log('Navigating to /main');
+          // console.log('Navigating to /main');
           this.router.navigateByUrl('/main');
         },
         error: err => {
@@ -502,7 +517,21 @@ export class Register implements OnInit {
         next: (backendResponse) => {
           console.log('Backend response:', backendResponse);
           if (backendResponse.token) {
-            localStorage.setItem('authToken', backendResponse.token);
+            // localStorage.setItem('authToken', backendResponse.token);
+            try {
+              const decodedToken: any = jwtDecode(backendResponse.token);
+              const user = {
+                id: decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+                email: decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
+                role: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+              };
+              localStorage.setItem('user', JSON.stringify(user));
+              localStorage.setItem('token', backendResponse.token);
+
+              console.log('Saved user during Google registration:', user);
+            } catch (error) {
+              console.error('Error decoding token:', error);
+            }
             this.router.navigateByUrl('/main');
           }
           this.isLoading = false;

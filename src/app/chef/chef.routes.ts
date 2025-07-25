@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 
 export const chefRoutes: Routes = [
+  { path: '', redirectTo: 'chef-dashboard', pathMatch: 'full' },
+
   {
     path: 'about',
     loadComponent: () =>

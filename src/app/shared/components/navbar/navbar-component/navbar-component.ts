@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import {
@@ -6,6 +6,8 @@ import {
   Search,
   ShoppingCart,
   User,
+  Sun,
+  Moon,
 } from 'lucide-angular';
 
 @Component({
@@ -14,17 +16,27 @@ import {
   templateUrl: './navbar-component.html',
   styleUrl: './navbar-component.css',
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   isScrolled = false;
   isMobileMenuOpen = false;
   cartCount = 3;
+  isDarkMode = false;
 
   // Expose icons to template
   readonly Search = Search;
   readonly ShoppingCart = ShoppingCart;
   readonly User = User;
+  readonly Sun = Sun;
+  readonly Moon = Moon;
 
   constructor(private router: Router) {}
+
+  ngOnInit() {
+    // Load theme preference from localStorage
+    const savedTheme = localStorage.getItem('theme');
+    this.isDarkMode = savedTheme === 'dark';
+    this.applyTheme();
+  }
 
   @HostListener('window:scroll')
   onWindowScroll() {
@@ -33,6 +45,20 @@ export class NavbarComponent {
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+    this.applyTheme();
+  }
+
+  private applyTheme() {
+    if (this.isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
   }
 
   logout() {
