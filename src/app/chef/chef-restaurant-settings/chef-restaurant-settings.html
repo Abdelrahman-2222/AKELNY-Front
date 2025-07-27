@@ -1,0 +1,33 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" *ngIf="isOpen">
+  <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+    <h2 class="text-2xl font-bold mb-6">Restaurant Settings</h2>
+
+    <form [formGroup]="settingsForm" (ngSubmit)="onSave()">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-2">Restaurant Name</label>
+          <input type="text" formControlName="name" class="w-full px-4 py-3 border rounded-xl">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-2">Description</label>
+          <textarea formControlName="description" rows="3" class="w-full px-4 py-3 border rounded-xl"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-2">Location</label>
+          <input type="text" formControlName="location" class="w-full px-4 py-3 border rounded-xl">
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button type="button" (click)="onCancel()" class="flex-1 py-3 border border-gray-300 rounded-xl">
+          Cancel
+        </button>
+        <button type="submit" class="flex-1 py-3 bg-orange-500 text-white rounded-xl">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

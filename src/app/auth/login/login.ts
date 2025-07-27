@@ -13,6 +13,7 @@ import {jwtDecode} from 'jwt-decode';
 export interface LoginDto {
   email: string;
   password: string;
+  rememberMe?: string;
 }
 
 export interface ForgotPasswordDto {
@@ -71,7 +72,8 @@ export class Login implements OnInit {
       this.message = null;
       const loginDto: LoginDto = {
         email: this.loginForm.get('email')?.value,
-        password: this.loginForm.get('password')?.value
+        password: this.loginForm.get('password')?.value,
+        rememberMe: this.loginForm.get('rememberMe')?.value ? "true" : "false"
       };
 
       // const apiUrl = window.location.hostname == 'localhost'

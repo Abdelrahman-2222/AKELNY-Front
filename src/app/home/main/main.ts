@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import {AuthService} from '../../services/auth.service';
+import {AddRestaurant} from '../../services/chef/add-restaurant';
 
 @Component({
   selector: 'app-main',
@@ -10,7 +12,11 @@ import { RouterModule, Router } from '@angular/router';
   styleUrl: './main.css'
 })
 export class Main {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private restaurantService: AddRestaurant
+  ) {}
 
   handleOrderNow() {
     const user = this.getCurrentUser();
@@ -20,30 +26,37 @@ export class Main {
       if (user.role === 'Customer' || user.role === 'customer') {
         this.router.navigate(['/customer/categories']);
       } else {
-        this.router.navigate(['/register']);
+        this.router.navigate(['/unauthorized']);
       }
     } else {
-      // User not authenticated - go to register
-      this.router.navigate(['/register']);
+      this.router.navigate(['/unauthorized']);
     }
   }
 
-  handleBecomeChef() {
-    const user = this.getCurrentUser();
+  handleBecomeChef(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      return;
+    }
 
-    if (user) {
-      // User is authenticated - redirect based on role
-      if (user.role === 'Chef' || user.role === 'chef') {
-        console.log(user.role);
-        this.router.navigate(['/chef/chef-dashboard']); // Go to chef dashboard
-      } else {
-        console.log(user.role);
-        this.router.navigate(['/register']);
-      }
+    const role = this.authService.getUserRole();
+    if (role === 'Chef') {
+      // Check if chef has a restaurant
+      this.restaurantService.checkChefHasRestaurant().subscribe({
+        next: (hasRestaurant) => {
+          if (hasRestaurant) {
+            this.router.navigate(['/chef/chef-dashboard']);
+          } else {
+            this.router.navigate(['/chef/chef-add-restaurant']);
+          }
+        },
+        error: () => {
+          // If check fails, default to add restaurant
+          this.router.navigate(['/chef/chef-add-restaurant']);
+        }
+      });
     } else {
-      // console.log(user.role);
-      // User not authenticated - go to register
-      this.router.navigate(['/register']);
+      this.router.navigate(['/unauthorized']);
     }
   }
 

@@ -2,11 +2,17 @@ import { Routes } from '@angular/router';
 
 export const chefRoutes: Routes = [
   { path: '', redirectTo: 'chef-dashboard', pathMatch: 'full' },
-
   {
     path: 'about',
     loadComponent: () =>
       import('./about/about.component').then((m) => m.AboutComponent),
+  },
+  {
+    path : 'chef-add-restaurant',
+    loadComponent: () =>
+      import('./chef-add-restaurant/chef-add-restaurant').then(
+        (m) => m.ChefAddRestaurant
+      ),
   },
   {
     path: 'chef-dashboard',

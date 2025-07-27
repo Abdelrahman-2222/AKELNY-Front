@@ -134,28 +134,28 @@ export class CategoryManagementPanelComponent implements OnInit {
     }, 3000);
   }
 
-  bulkImportCategories(): void {
-    const defaultCategories = [
-      'Appetizers', 'Main Courses', 'Desserts', 'Breakfast', 'Pizza',
-      'Burgers', 'Sandwiches', 'Salads', 'Pasta', 'Seafood', 'Chicken',
-      'Vegetarian', 'Vegan', 'Italian', 'Chinese', 'Mexican', 'Indian',
-      'Coffee', 'Tea', 'Healthy Options', 'Fast Food', 'Soups', 'Steamed',
-      'Grilled', 'Fried', 'Baked', 'Hot Drinks', 'Cold Drinks', 'Smoothies'
-    ];
-
-    this.isLoading = true;
-
-    this.categoryService.bulkAddCategories(defaultCategories).subscribe({
-      next: (response) => {
-        this.successMessage = response;
-        this.loadCategories(); // Refresh the categories list
-        this.isLoading = false;
-        this.clearMessagesAfterDelay();
-      },
-      error: (error) => {
-        this.errorMessage = error.error || 'Failed to import categories';
-        this.isLoading = false;
-      }
-    });
-  }
+  // bulkImportCategories(): void {
+  //   const defaultCategories = [
+  //     'Appetizers', 'Main Courses', 'Desserts', 'Breakfast', 'Pizza',
+  //     'Burgers', 'Sandwiches', 'Salads', 'Pasta', 'Seafood', 'Chicken',
+  //     'Vegetarian', 'Vegan', 'Italian', 'Chinese', 'Mexican', 'Indian',
+  //     'Coffee', 'Tea', 'Healthy Options', 'Fast Food', 'Soups', 'Steamed',
+  //     'Grilled', 'Fried', 'Baked', 'Hot Drinks', 'Cold Drinks', 'Smoothies'
+  //   ];
+  //
+  //   this.isLoading = true;
+  //
+  //   this.categoryService.bulkAddCategories(defaultCategories).subscribe({
+  //     next: (response) => {
+  //       this.successMessage = response;
+  //       this.loadCategories(); // Refresh the categories list
+  //       this.isLoading = false;
+  //       this.clearMessagesAfterDelay();
+  //     },
+  //     error: (error) => {
+  //       this.errorMessage = error.error || 'Failed to import categories';
+  //       this.isLoading = false;
+  //     }
+  //   });
+  // }
 }

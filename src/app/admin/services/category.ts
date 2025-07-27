@@ -31,8 +31,8 @@ export class CategoryService {
   deleteCategory(id: number): Observable<string> {
     return this.http.delete(`${this.apiUrl}/Delete/${id}`, { responseType: 'text' });
   }
-
-  bulkAddCategories(categoryNames: string[]): Observable<string> {
-    return this.http.post(`${this.apiUrl}/BulkAdd`, categoryNames, { responseType: 'text' });
-  }
+  //
+  // bulkAddCategories(categoryNames: string[]): Observable<string> {
+  //   return this.http.post(`${this.apiUrl}/BulkAdd`, categoryNames, { responseType: 'text' });
+  // }
 }

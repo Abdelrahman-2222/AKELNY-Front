@@ -1,26 +1,101 @@
-<!-- chef-dashboard.component.html -->
 <section class="pt-24 pb-16 bg-cream min-h-screen">
   <div class="container mx-auto px-4">
-    <!-- Dashboard Header -->
-    <app-chef-dashboard-header></app-chef-dashboard-header>
-    <!-- Stats Cards -->
-    <app-chef-dashboard-stats-cards></app-chef-dashboard-stats-cards>
-    <!-- Main Content -->
-    <div class="grid lg:grid-cols-3 gap-8">
-      <!-- Left Column -->
-      <div class="lg:col-span-2 space-y-8">
-        <!-- Current Orders -->
-        <app-chef-dashboard-current-orders></app-chef-dashboard-current-orders>
-        <!-- Menu Management -->
-         <app-chef-dashboard-menu></app-chef-dashboard-menu>
+
+    <div *ngIf="notification" class="fixed top-6 right-6 z-50 px-4 py-2 rounded shadow-lg"
+         [ngClass]="{'bg-green-500 text-white': notification.type === 'success', 'bg-red-500 text-white': notification.type === 'error'}">
+      {{ notification.message }}
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-8">
+      <div class="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+      <p class="mt-2 theme-text-secondary">Checking restaurant status...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage && !isLoading" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+      <p class="text-red-700">{{ errorMessage }}</p>
+      <button
+        (click)="checkRestaurantStatus()"
+        class="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+        Retry
+      </button>
+    </div>
+
+    <!-- No Restaurant State -->
+    <div *ngIf="!hasRestaurant && !isLoading && !errorMessage" class="text-center py-16">
+      <div class="max-w-md mx-auto">
+        <div class="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="text-4xl">🏪</span>
+        </div>
+        <h2 class="text-2xl font-bold theme-text-primary mb-4">No Restaurant Found</h2>
+        <p class="theme-text-secondary mb-6">You need to create a restaurant first to access the dashboard.</p>
+        <button
+          routerLink="/chef/chef-add-restaurant"
+          class="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all">
+          Create Restaurant
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard Content (only show if has restaurant) -->
+    <div *ngIf="hasRestaurant && !isLoading">
+      <!-- Add to chef-dashboard-component.html after test buttons -->
+        <!-- Restaurant Management Section -->
+      <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="font-semibold text-blue-800">{{ restaurant?.name || 'Your Restaurant' }}</h3>
+            <p class="text-blue-600 text-sm">{{ restaurant?.location }}</p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              (click)="openRestaurantSettings()"
+              class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              aria-label="Settings">
+              ⚙️ Settings
+            </button>
+            <button
+              (click)="deleteRestaurant(restaurantId!)"
+              class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              aria-label="Delete">
+              🗑️
+            </button>
+          </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <app-chef-restaurant-settings
+          [isOpen]="isSettingsModalOpen"
+          [restaurant]="restaurant"
+          (save)="onSettingsSave($event)"
+          (cancel)="onSettingsCancel()">
+        </app-chef-restaurant-settings>
       </div>
 
-      <!-- Right Column -->
-      <div class="space-y-8">
-        <!-- Past Orders -->
-        <app-chef-dashboard-past-orders></app-chef-dashboard-past-orders>
-        <!-- Earnings -->
-        <app-chef-dashboard-earnings></app-chef-dashboard-earnings>
+      <!-- Dashboard Header -->
+      <app-chef-dashboard-header></app-chef-dashboard-header>
+
+      <!-- Stats Cards -->
+      <app-chef-dashboard-stats-cards></app-chef-dashboard-stats-cards>
+
+      <!-- Main Content -->
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Left Column -->
+        <div class="lg:col-span-2 space-y-8">
+          <!-- Current Orders -->
+          <app-chef-dashboard-current-orders></app-chef-dashboard-current-orders>
+          <!-- Menu Management -->
+          <app-chef-dashboard-menu></app-chef-dashboard-menu>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-8">
+          <!-- Past Orders -->
+          <app-chef-dashboard-past-orders></app-chef-dashboard-past-orders>
+          <!-- Earnings -->
+          <app-chef-dashboard-earnings></app-chef-dashboard-earnings>
+        </div>
       </div>
     </div>
   </div>
