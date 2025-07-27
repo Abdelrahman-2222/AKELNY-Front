@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ChefCurrentOrder } from '../../models/ChefCurrentOrder.model';
-import { LucideAngularModule } from 'lucide-angular';
+import { LucideAngularModule, Clock, Star } from 'lucide-angular';
 
 @Component({
   selector: 'app-chef-dashboard-order',
@@ -12,4 +12,7 @@ import { LucideAngularModule } from 'lucide-angular';
 export class ChefDashboardOrderComponent {
   @Input()
   order!: ChefCurrentOrder;
+  readonly Clock = Clock;
+  readonly Star = Star;
+
 }

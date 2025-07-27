@@ -21,6 +21,12 @@
   --glass-bg: rgba(255, 255, 255, 0.15);
   --shadow-color: rgba(251, 146, 60, 0.1);
 
+  /* Opening Hours Colors */
+  --closed-day-text: #6b7280;
+  --open-day-text: #059669; /* Better contrast for light theme */
+  --open-day-bg: #ecfdf5;
+  --open-day-border: #a7f3d0;
+
   /* Footer Specific Colors - Much Softer */
   --footer-bg: #f8fafc;
   --footer-secondary: #f1f5f9;
@@ -51,6 +57,12 @@
   --glass-bg: rgba(55, 65, 81, 0.25);
   --shadow-color: rgba(0, 0, 0, 0.3);
 
+  /* Opening Hours Colors for Dark Theme */
+  --closed-day-text: #9ca3af;
+  --open-day-text: #6ee7b7; /* Better contrast for dark theme */
+  --open-day-bg: rgba(6, 78, 59, 0.3);
+  --open-day-border: rgba(6, 78, 59, 0.8);
+
   /* Footer Specific Colors for Dark Theme - Keep as is */
   --footer-bg: #1f2937;
   --footer-secondary: #111827;
@@ -61,6 +73,21 @@
   --footer-card: rgba(255, 255, 255, 0.05);
 }
 
+/* Opening Hours Styling Classes */
+.closed-day-message {
+  color: var(--closed-day-text) !important;
+}
+
+.open-day-message {
+  color: var(--open-day-text) !important;
+}
+
+.open-day-bg {
+  background-color: var(--open-day-bg) !important;
+  border-color: var(--open-day-border) !important;
+}
+
+/* Rest of your existing CSS... */
 /* Footer Theme Classes */
 .footer-bg {
   background-color: var(--footer-bg);

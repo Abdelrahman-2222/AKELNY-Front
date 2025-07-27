@@ -1,33 +1,279 @@
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" *ngIf="isOpen">
-  <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
-    <h2 class="text-2xl font-bold mb-6">Restaurant Settings</h2>
 
-    <form [formGroup]="settingsForm" (ngSubmit)="onSave()">
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-semibold mb-2">Restaurant Name</label>
-          <input type="text" formControlName="name" class="w-full px-4 py-3 border rounded-xl">
+<!-- Modal Backdrop -->
+<div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+  <!-- Modal Container -->
+  <div class="theme-card-bg rounded-2xl shadow-2xl w-full max-w-4xl border theme-border modal-container">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-6 border-b theme-border">
+      <h2 class="text-2xl font-bold theme-text-primary">Edit Restaurant</h2>
+      <button
+        (click)="onCancel()"
+        class="p-2 theme-text-secondary hover:theme-text-primary transition-colors"
+      >
+        <lucide-icon [img]="X" class="w-6 h-6"></lucide-icon>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6 overflow-y-auto max-h-[calc(90vh-8rem)]">
+      <form [formGroup]="settingsForm" (ngSubmit)="onSave()">
+
+        <!-- Restaurant Name -->
+        <div class="mb-6">
+          <label for="name" class="block text-sm font-semibold theme-text-primary mb-2">
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="Store" class="w-4 h-4"></lucide-icon>
+              Restaurant Name *
+            </div>
+          </label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Enter your restaurant name"
+            class="w-full px-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary
+                   focus:border-orange-500 focus:outline-none transition-all duration-200
+                   placeholder:theme-text-muted"
+            [class.border-red-500]="getFieldError('name')"
+          >
+          <div *ngIf="getFieldError('name')" class="mt-2 text-sm text-red-500">
+            {{ getFieldError('name') }}
+          </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-semibold mb-2">Description</label>
-          <textarea formControlName="description" rows="3" class="w-full px-4 py-3 border rounded-xl"></textarea>
+        <!-- Description -->
+        <div class="mb-6">
+          <label for="description" class="block text-sm font-semibold theme-text-primary mb-2">
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="FileText" class="w-4 h-4"></lucide-icon>
+              Description *
+            </div>
+          </label>
+          <textarea
+            id="description"
+            formControlName="description"
+            rows="4"
+            placeholder="Describe your restaurant's cuisine, atmosphere, and specialties..."
+            class="w-full px-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary
+                   focus:border-orange-500 focus:outline-none transition-all duration-200
+                   placeholder:theme-text-muted resize-none"
+            [class.border-red-500]="getFieldError('description')"
+          ></textarea>
+          <div *ngIf="getFieldError('description')" class="mt-2 text-sm text-red-500">
+            {{ getFieldError('description') }}
+          </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-semibold mb-2">Location</label>
-          <input type="text" formControlName="location" class="w-full px-4 py-3 border rounded-xl">
+        <!-- Location -->
+        <div class="mb-6">
+          <label for="location" class="block text-sm font-semibold theme-text-primary mb-2">
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="MapPin" class="w-4 h-4"></lucide-icon>
+              Location *
+            </div>
+          </label>
+          <input
+            id="location"
+            type="text"
+            formControlName="location"
+            placeholder="Enter your restaurant's full address"
+            class="w-full px-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary
+                   focus:border-orange-500 focus:outline-none transition-all duration-200
+                   placeholder:theme-text-muted"
+            [class.border-red-500]="getFieldError('location')"
+          >
+          <div *ngIf="getFieldError('location')" class="mt-2 text-sm text-red-500">
+            {{ getFieldError('location') }}
+          </div>
         </div>
-      </div>
 
-      <div class="flex gap-3 mt-6">
-        <button type="button" (click)="onCancel()" class="flex-1 py-3 border border-gray-300 rounded-xl">
-          Cancel
-        </button>
-        <button type="submit" class="flex-1 py-3 bg-orange-500 text-white rounded-xl">
-          Save Changes
-        </button>
-      </div>
-    </form>
+        <!-- Image URL -->
+        <div class="mb-6">
+          <label for="imageUrl" class="block text-sm font-semibold theme-text-primary mb-2">
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="Image" class="w-4 h-4"></lucide-icon>
+              Restaurant Image URL *
+            </div>
+          </label>
+          <input
+            id="imageUrl"
+            type="url"
+            formControlName="imageUrl"
+            placeholder="https://example.com/restaurant-image.jpg"
+            class="w-full px-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary
+                   focus:border-orange-500 focus:outline-none transition-all duration-200
+                   placeholder:theme-text-muted"
+            [class.border-red-500]="getFieldError('imageUrl')"
+          >
+          <div *ngIf="getFieldError('imageUrl')" class="mt-2 text-sm text-red-500">
+            {{ getFieldError('imageUrl') }}
+          </div>
+          <!-- Image Preview -->
+          <div *ngIf="settingsForm.get('imageUrl')?.value" class="mt-3">
+            <img
+              [src]="settingsForm.get('imageUrl')?.value"
+              alt="Restaurant preview"
+              class="w-32 h-24 object-cover rounded-lg border theme-border"
+              (error)="$event.target.style.display='none'"
+            />
+          </div>
+        </div>
+
+        <!-- Opening Hours -->
+        <div class="mb-6">
+          <label class="block text-sm font-semibold theme-text-primary mb-3">
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="Clock" class="w-4 h-4"></lucide-icon>
+              Opening Hours *
+            </div>
+          </label>
+
+          <!-- Quick Actions -->
+          <div class="mb-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              (click)="setAllDaysOpen()"
+              class="px-3 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors">
+              Open All Days
+            </button>
+            <button
+              type="button"
+              (click)="setAllDaysClosed()"
+              class="px-3 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+              Close All Days
+            </button>
+          </div>
+
+          <!-- Days Schedule -->
+          <div class="space-y-3 max-h-60 overflow-y-auto">
+            <div *ngFor="let day of daysOfWeek" class="border theme-border rounded-xl p-4 theme-bg-secondary">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    [formControl]="getDayIsOpenControl(day.key)"
+                    class="w-4 h-4 text-orange-600 theme-bg-secondary border-gray-300 dark:border-gray-600 rounded focus:ring-orange-500 focus:ring-2">
+                  <label class="font-medium theme-text-primary cursor-pointer select-none"
+                         (click)="toggleDay(day.key)">
+                    {{ day.label }}
+                  </label>
+                </div>
+
+                <button
+                  *ngIf="isDayOpen(day.key)"
+                  type="button"
+                  (click)="copyToAllDays(day.key)"
+                  class="text-xs text-orange-600 hover:text-orange-700 underline">
+                  Copy to all days
+                </button>
+              </div>
+
+              <!-- Time Pickers (shown when day is open) -->
+              <div *ngIf="isDayOpen(day.key)"
+                   class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
+                <div>
+                  <label class="block text-xs font-medium theme-text-secondary mb-1">Open Time</label>
+                  <input
+                    type="time"
+                    [formControl]="getDayOpenTimeControl(day.key)"
+                    class="w-full px-3 py-2 rounded-lg border-2 theme-border theme-bg-primary theme-text-primary
+                   focus:border-orange-500 focus:outline-none transition-all duration-200">
+                  <div class="text-xs theme-text-muted mt-1">
+                    {{ formatTime12Hour(getDayOpenTimeControl(day.key).value) }}
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium theme-text-secondary mb-1">Close Time</label>
+                  <input
+                    type="time"
+                    [formControl]="getDayCloseTimeControl(day.key)"
+                    class="w-full px-3 py-2 rounded-lg border-2 theme-border theme-bg-primary theme-text-primary
+                   focus:border-orange-500 focus:outline-none transition-all duration-200">
+                  <div class="text-xs theme-text-muted mt-1">
+                    {{ formatTime12Hour(getDayCloseTimeControl(day.key).value) }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Closed message -->
+              <div *ngIf="!isDayOpen(day.key)"
+                   class="text-sm theme-text-muted italic">
+                Closed on {{ day.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Restaurant Status -->
+        <div class="mb-8">
+          <label class="block text-sm font-semibold theme-text-primary mb-3">
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="Store" class="w-4 h-4"></lucide-icon>
+              Restaurant Status
+            </div>
+          </label>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                formControlName="isOpen"
+                [value]="true"
+                class="sr-only"
+              >
+              <div class="w-4 h-4 rounded-full border-2 theme-border mr-2 flex items-center justify-center"
+                   [class.bg-green-500]="settingsForm.get('isOpen')?.value === true"
+                   [class.border-green-500]="settingsForm.get('isOpen')?.value === true">
+                <div *ngIf="settingsForm.get('isOpen')?.value === true" class="w-2 h-2 rounded-full bg-white"></div>
+              </div>
+              <span class="theme-text-primary">Open</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                formControlName="isOpen"
+                [value]="false"
+                class="sr-only"
+              >
+              <div class="w-4 h-4 rounded-full border-2 theme-border mr-2 flex items-center justify-center"
+                   [class.bg-red-500]="settingsForm.get('isOpen')?.value === false"
+                   [class.border-red-500]="settingsForm.get('isOpen')?.value === false">
+                <div *ngIf="settingsForm.get('isOpen')?.value === false" class="w-2 h-2 rounded-full bg-white"></div>
+              </div>
+              <span class="theme-text-primary">Closed</span>
+            </label>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex items-center justify-end gap-3 p-6 border-t theme-border">
+      <button
+        type="button"
+        (click)="onCancel()"
+        class="px-6 py-2 theme-text-secondary hover:theme-text-primary
+               border theme-border rounded-lg hover:theme-bg-accent
+               transition-colors duration-200"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        (click)="onSave()"
+        [disabled]="!settingsForm.valid || isSubmitting"
+        class="px-6 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold
+               rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200
+               disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+      >
+        <lucide-icon [img]="Save" class="w-4 h-4"></lucide-icon>
+        <span *ngIf="!isSubmitting">Save Changes</span>
+        <span *ngIf="isSubmitting" class="flex items-center gap-2">
+          <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          Saving...
+        </span>
+      </button>
+    </div>
   </div>
 </div>

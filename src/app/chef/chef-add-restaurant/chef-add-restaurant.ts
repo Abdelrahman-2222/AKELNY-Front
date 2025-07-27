@@ -1,13 +1,13 @@
-// src/app/chef/chef-add-restaurant/chef-add-restaurant.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { LucideAngularModule, MapPin, FileText, Store, ArrowLeft } from 'lucide-angular';
+
+import { LucideAngularModule, MapPin, FileText, Store, ArrowLeft, Clock, Image, Star } from 'lucide-angular';
 
 import { AuthService } from '../../services/auth.service';
-import { RestaurantInputDto } from '../../models/AddRestaurant.model';
+import { RestaurantInputDto, OpeningHours } from '../../models/AddRestaurant.model';
 import { AddRestaurant } from '../../services/chef/add-restaurant';
 
 @Component({
@@ -23,13 +23,26 @@ export class ChefAddRestaurant implements OnInit, OnDestroy {
   errorMessage = '';
   successMessage = '';
 
-  private destroy$ = new Subject<void>();
-
-  // Expose icons to template
+  readonly Clock = Clock;
+  readonly Image = Image;
+  readonly Star = Star;
   readonly MapPin = MapPin;
   readonly FileText = FileText;
   readonly Store = Store;
   readonly ArrowLeft = ArrowLeft;
+
+  // Days of the week
+  daysOfWeek = [
+    { key: 'monday', label: 'Monday', shortLabel: 'Mon' },
+    { key: 'tuesday', label: 'Tuesday', shortLabel: 'Tue' },
+    { key: 'wednesday', label: 'Wednesday', shortLabel: 'Wed' },
+    { key: 'thursday', label: 'Thursday', shortLabel: 'Thu' },
+    { key: 'friday', label: 'Friday', shortLabel: 'Fri' },
+    { key: 'saturday', label: 'Saturday', shortLabel: 'Sat' },
+    { key: 'sunday', label: 'Sunday', shortLabel: 'Sun' }
+  ];
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -50,24 +63,121 @@ export class ChefAddRestaurant implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  private imageUrlValidator(control: any) {
+    const value = control.value;
+    if (!value) return null;
+
+    const standardImagePattern = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i;
+    const imageHostingServices = [
+      /^https:\/\/lh\d+\.googleusercontent\.com/,
+      /^https:\/\/.*\.googleapis\.com/,
+      /^https:\/\/images\.unsplash\.com/,
+      /^https:\/\/.*\.imgur\.com/,
+      /^https:\/\/.*\.cloudinary\.com/,
+      /^https:\/\/.*\.amazonaws\.com/
+    ];
+
+    const isValid = standardImagePattern.test(value) ||
+      imageHostingServices.some(pattern => pattern.test(value));
+
+    return isValid ? null : { invalidImageUrl: true };
+  }
+
   private createForm(): FormGroup {
-    return this.fb.group({
-      name: ['', [
-        Validators.required,
-        Validators.minLength(2),
-        Validators.maxLength(100)
-      ]],
-      description: ['', [
-        Validators.required,
-        Validators.minLength(10),
-        Validators.maxLength(500)
-      ]],
-      location: ['', [
-        Validators.required,
-        Validators.minLength(5),
-        Validators.maxLength(200)
-      ]]
+    const openingHoursGroup = this.fb.group({});
+
+    // Create form controls for each day
+    this.daysOfWeek.forEach(day => {
+      openingHoursGroup.addControl(day.key, this.fb.group({
+        isOpen: [true],
+        openTime: ['09:00'], // 24-hour format for HTML5 time input
+        closeTime: ['22:00']
+      }));
     });
+
+    return this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
+      location: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
+      imageUrl: ['', [Validators.required, this.imageUrlValidator]],
+      openingHours: openingHoursGroup,
+      isOpen: [true]
+    });
+  }
+
+  // Get opening hours form group
+  get openingHoursGroup() {
+    return this.restaurantForm.get('openingHours') as FormGroup;
+  }
+
+  // Get specific day form group
+  getDayGroup(dayKey: string) {
+    return this.openingHoursGroup.get(dayKey) as FormGroup;
+  }
+
+  // Helper methods to get specific form controls with proper typing
+  getDayIsOpenControl(dayKey: string): FormControl {
+    return this.getDayGroup(dayKey).get('isOpen') as FormControl;
+  }
+
+  getDayOpenTimeControl(dayKey: string): FormControl {
+    return this.getDayGroup(dayKey).get('openTime') as FormControl;
+  }
+
+  getDayCloseTimeControl(dayKey: string): FormControl {
+    return this.getDayGroup(dayKey).get('closeTime') as FormControl;
+  }
+
+  // Copy hours to all days
+  copyToAllDays(sourceDay: string): void {
+    const sourceGroup = this.getDayGroup(sourceDay);
+    const sourceValues = sourceGroup.value;
+
+    this.daysOfWeek.forEach(day => {
+      if (day.key !== sourceDay) {
+        const dayGroup = this.getDayGroup(day.key);
+        dayGroup.patchValue({
+          isOpen: sourceValues.isOpen,
+          openTime: sourceValues.openTime,
+          closeTime: sourceValues.closeTime
+        });
+      }
+    });
+  }
+
+  // Set all days closed
+  setAllDaysClosed(): void {
+    this.daysOfWeek.forEach(day => {
+      this.getDayGroup(day.key).patchValue({ isOpen: false });
+    });
+  }
+
+  // Set all days open
+  setAllDaysOpen(): void {
+    this.daysOfWeek.forEach(day => {
+      this.getDayGroup(day.key).patchValue({ isOpen: true });
+    });
+  }
+
+  // Convert 24-hour time to 12-hour format for display
+  formatTime12Hour(time24: string): string {
+    if (!time24) return '';
+    const [hours, minutes] = time24.split(':');
+    const hour24 = parseInt(hours, 10);
+    const hour12 = hour24 % 12 || 12;
+    const ampm = hour24 >= 12 ? 'PM' : 'AM';
+    return `${hour12}:${minutes} ${ampm}`;
+  }
+
+  // Check if a day is open
+  isDayOpen(dayKey: string): boolean {
+    return this.getDayIsOpenControl(dayKey).value === true;
+  }
+
+  // Toggle day open/closed
+  toggleDay(dayKey: string): void {
+    const control = this.getDayIsOpenControl(dayKey);
+    control.setValue(!control.value);
   }
 
   private validateChefAccess(): void {
@@ -109,17 +219,24 @@ export class ChefAddRestaurant implements OnInit, OnDestroy {
     this.isSubmitting = true;
     this.clearMessages();
 
-    const restaurantData: RestaurantInputDto = {
+    // Convert opening hours to string format for backend
+    const openingHoursString = this.convertOpeningHoursToString();
+
+    const restaurantData = {
       name: this.restaurantForm.value.name.trim(),
       description: this.restaurantForm.value.description.trim(),
-      location: this.restaurantForm.value.location.trim()
+      location: this.restaurantForm.value.location.trim(),
+      imageUrl: this.restaurantForm.value.imageUrl.trim(),
+      openingHours: openingHoursString, // Changed to string
+      isOpen: this.restaurantForm.value.isOpen
     };
+    console.log('Sending restaurant data:', restaurantData);
 
     this.restaurantService.createRestaurant(restaurantData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.successMessage = response.message;
+          this.successMessage = 'Restaurant created successfully!';
           setTimeout(() => {
             this.router.navigate(['/chef/chef-dashboard']);
           }, 2000);
@@ -127,9 +244,28 @@ export class ChefAddRestaurant implements OnInit, OnDestroy {
         error: (error) => {
           this.isSubmitting = false;
           this.errorMessage = error.message;
+          console.error('Error creating restaurant:', error);
         }
       });
   }
+
+  private convertOpeningHoursToString(): string {
+    const openingHours: string[] = [];
+
+    this.daysOfWeek.forEach(day => {
+      const dayData = this.getDayGroup(day.key).value;
+      if (dayData.isOpen) {
+        const openTime = this.formatTime12Hour(dayData.openTime);
+        const closeTime = this.formatTime12Hour(dayData.closeTime);
+        openingHours.push(`${day.label}: ${openTime} - ${closeTime}`);
+      } else {
+        openingHours.push(`${day.label}: Closed`);
+      }
+    });
+
+    return openingHours.join(', ');
+  }
+
 
   private clearMessages(): void {
     this.errorMessage = '';
@@ -155,6 +291,7 @@ export class ChefAddRestaurant implements OnInit, OnDestroy {
       if (errors['required']) return `${fieldDisplayName} is required`;
       if (errors['minlength']) return `${fieldDisplayName} must be at least ${errors['minlength'].requiredLength} characters`;
       if (errors['maxlength']) return `${fieldDisplayName} cannot exceed ${errors['maxlength'].requiredLength} characters`;
+      if (errors['invalidImageUrl']) return 'Please enter a valid image URL from a supported service';
     }
     return '';
   }
@@ -163,7 +300,10 @@ export class ChefAddRestaurant implements OnInit, OnDestroy {
     const displayNames: Record<string, string> = {
       name: 'Restaurant name',
       description: 'Description',
-      location: 'Location'
+      location: 'Location',
+      imageUrl: 'Image URL',
+      openingHours: 'Opening Hours',
+      isOpen: 'Restaurant Status'
     };
     return displayNames[fieldName] || fieldName;
   }

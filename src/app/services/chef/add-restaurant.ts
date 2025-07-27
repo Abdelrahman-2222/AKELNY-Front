@@ -1,4 +1,3 @@
-// src/app/services/restaurant.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -15,6 +14,9 @@ export class AddRestaurant {
 
   createRestaurant(restaurantData: RestaurantInputDto): Observable<RestaurantResponseDto> {
     const headers = this.getAuthHeaders();
+    console.log('Making request to:', this.apiUrl);
+    console.log('Request data:', restaurantData);
+
     return this.http.post<RestaurantResponseDto>(this.apiUrl, restaurantData, { headers })
       .pipe(catchError(this.handleError));
   }
@@ -48,6 +50,9 @@ export class AddRestaurant {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+    if (!token) {
+      console.warn('No authentication token found');
+    }
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -55,20 +60,36 @@ export class AddRestaurant {
   }
 
   private handleError(error: any): Observable<never> {
+    console.error('HTTP Error Details:', error);
     let errorMessage = 'An unknown error occurred';
 
     if (error.error instanceof ErrorEvent) {
+      // Client-side error
       errorMessage = error.error.message;
     } else {
+      // Server-side error
       switch (error.status) {
         case 400:
-          errorMessage = error.error?.message || 'Invalid request data';
+          // Handle validation errors from ModelState
+          if (error.error && typeof error.error === 'object') {
+            if (error.error.errors) {
+              // ASP.NET Core validation errors
+              const validationErrors = Object.values(error.error.errors).flat() as string[];
+              errorMessage = validationErrors.join(', ');
+            } else if (error.error.message) {
+              errorMessage = error.error.message;
+            } else if (typeof error.error === 'string') {
+              errorMessage = error.error;
+            }
+          } else {
+            errorMessage = 'Invalid request data';
+          }
           break;
         case 401:
-          errorMessage = 'You are not authorized to perform this action';
+          errorMessage = 'You are not authorized to perform this action. Please login again.';
           break;
         case 403:
-          errorMessage = 'Access forbidden';
+          errorMessage = 'Access forbidden. You do not have permission to perform this action.';
           break;
         case 404:
           errorMessage = 'Restaurant not found';
@@ -80,7 +101,7 @@ export class AddRestaurant {
           errorMessage = 'Server error. Please try again later';
           break;
         default:
-          errorMessage = error.error?.message || `Error Code: ${error.status}`;
+          errorMessage = error.error?.message || `Server error (${error.status}). Please try again.`;
       }
     }
     return throwError(() => new Error(errorMessage));

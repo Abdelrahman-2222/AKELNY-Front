@@ -1,102 +1,168 @@
-<section class="pt-24 pb-16 bg-cream min-h-screen">
+<section class="pt-24 pb-16 theme-bg-primary min-h-screen">
   <div class="container mx-auto px-4">
-
+    <app-chef-dashboard-header></app-chef-dashboard-header>
     <div *ngIf="notification" class="fixed top-6 right-6 z-50 px-4 py-2 rounded shadow-lg"
          [ngClass]="{'bg-green-500 text-white': notification.type === 'success', 'bg-red-500 text-white': notification.type === 'error'}">
       {{ notification.message }}
     </div>
 
     <!-- Loading State -->
-    <div *ngIf="isLoading" class="text-center py-8">
-      <div class="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-      <p class="mt-2 theme-text-secondary">Checking restaurant status...</p>
+    <div *ngIf="isLoading" class="flex justify-center items-center py-8">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+      <span class="ml-2 theme-text-primary">Loading restaurant details...</span>
     </div>
 
-    <!-- Error Message -->
-    <div *ngIf="errorMessage && !isLoading" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-      <p class="text-red-700">{{ errorMessage }}</p>
-      <button
-        (click)="checkRestaurantStatus()"
-        class="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-        Retry
-      </button>
+    <!-- Error State -->
+    <div *ngIf="errorMessage && !isLoading"
+         class="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+      <p class="text-red-700 dark:text-red-400 text-sm">{{ errorMessage }}</p>
     </div>
 
     <!-- No Restaurant State -->
-    <div *ngIf="!hasRestaurant && !isLoading && !errorMessage" class="text-center py-16">
-      <div class="max-w-md mx-auto">
-        <div class="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <span class="text-4xl">🏪</span>
-        </div>
-        <h2 class="text-2xl font-bold theme-text-primary mb-4">No Restaurant Found</h2>
-        <p class="theme-text-secondary mb-6">You need to create a restaurant first to access the dashboard.</p>
-        <button
-          routerLink="/chef/chef-add-restaurant"
-          class="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all">
-          Create Restaurant
-        </button>
+    <div *ngIf="!hasRestaurant && !isLoading && !errorMessage" class="text-center py-8">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full mb-4">
+        <lucide-icon [img]="Store" class="w-8 h-8 text-white"></lucide-icon>
       </div>
+      <h3 class="text-xl font-bold theme-text-primary mb-2">No Restaurant Found</h3>
+      <p class="theme-text-secondary mb-4">You haven't created a restaurant yet. Create one to start serving
+        customers!</p>
+      <a
+        routerLink="/chef/add-restaurant"
+        class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-200"
+      >
+        Create Restaurant
+      </a>
     </div>
 
-    <!-- Dashboard Content (only show if has restaurant) -->
-    <div *ngIf="hasRestaurant && !isLoading">
-      <!-- Add to chef-dashboard-component.html after test buttons -->
-        <!-- Restaurant Management Section -->
-      <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-        <div class="flex justify-between items-center">
-          <div>
-            <h3 class="font-semibold text-blue-800">{{ restaurant?.name || 'Your Restaurant' }}</h3>
-            <p class="text-blue-600 text-sm">{{ restaurant?.location }}</p>
-          </div>
+    <!-- Restaurant Display Section (when hasRestaurant is true) -->
+    <div *ngIf="hasRestaurant && restaurant" class="mb-8">
+      <div class="glass-card rounded-2xl p-6">
+        <!-- Restaurant Header -->
+        <div class="flex justify-between items-start mb-6">
+          <h2 class="text-2xl font-bold theme-text-primary">Your Restaurant</h2>
           <div class="flex gap-2">
             <button
               (click)="openRestaurantSettings()"
-              class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-              aria-label="Settings">
-              ⚙️ Settings
+              class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
+            >
+              Edit Restaurant
             </button>
             <button
-              (click)="deleteRestaurant(restaurantId!)"
-              class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-              aria-label="Delete">
+              (click)="deleteRestaurant(restaurant.id)"
+              class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+            >
               🗑️
             </button>
           </div>
         </div>
 
-        <!-- Settings Modal -->
-        <app-chef-restaurant-settings
-          [isOpen]="isSettingsModalOpen"
-          [restaurant]="restaurant"
-          (save)="onSettingsSave($event)"
-          (cancel)="onSettingsCancel()">
-        </app-chef-restaurant-settings>
-      </div>
+        <!-- Restaurant Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Restaurant Image -->
+          <div class="space-y-4">
+            <div class="aspect-video rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-700">
+              <img
+                [src]="restaurant.imageUrl"
+                [alt]="restaurant.name"
+                class="w-full h-full object-cover"
+              />
+            </div>
 
-      <!-- Dashboard Header -->
-      <app-chef-dashboard-header></app-chef-dashboard-header>
+            <!-- Restaurant Status Badge -->
+            <div class="flex items-center gap-2">
+              <div
+                class="px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
+                [class]="restaurant.isOpen ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'"
+              >
+                <div
+                  class="w-2 h-2 rounded-full"
+                  [class]="restaurant.isOpen ? 'bg-green-500' : 'bg-red-500'"
+                ></div>
+                {{ restaurant.isOpen ? 'Open' : 'Closed' }}
+              </div>
 
-      <!-- Stats Cards -->
-      <app-chef-dashboard-stats-cards></app-chef-dashboard-stats-cards>
+              <!-- Rating Display -->
+              <div
+                class="flex items-center gap-1 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 rounded-full text-sm">
+                <lucide-icon [img]="Star" class="w-4 h-4 fill-current"></lucide-icon>
+                {{ restaurant.rating || 0 }} ({{ restaurant.rating ? 'Rated' : 'No ratings yet' }})
+              </div>
+            </div>
+          </div>
 
-      <!-- Main Content -->
-      <div class="grid lg:grid-cols-3 gap-8">
-        <!-- Left Column -->
-        <div class="lg:col-span-2 space-y-8">
-          <!-- Current Orders -->
-          <app-chef-dashboard-current-orders></app-chef-dashboard-current-orders>
-          <!-- Menu Management -->
-          <app-chef-dashboard-menu></app-chef-dashboard-menu>
+          <!-- Restaurant Details -->
+          <div class="space-y-4">
+            <!-- Restaurant Name -->
+            <div>
+              <h3 class="text-xl font-bold theme-text-primary">{{ restaurant.name }}</h3>
+            </div>
+
+            <!-- Description -->
+            <div>
+              <h4 class="text-sm font-semibold theme-text-secondary mb-2">Description</h4>
+              <p class="theme-text-primary text-sm leading-relaxed">{{ restaurant.description }}</p>
+            </div>
+
+            <!-- Location -->
+            <div>
+              <h4 class="text-sm font-semibold theme-text-secondary mb-2 flex items-center gap-2">
+                <lucide-icon [img]="MapPin" class="w-4 h-4"></lucide-icon>
+                Location
+              </h4>
+              <p class="theme-text-primary text-sm">{{ restaurant.location }}</p>
+            </div>
+
+            <!-- Opening Hours -->
+            <div>
+              <h4 class="text-sm font-semibold theme-text-secondary mb-2 flex items-center gap-2">
+                <lucide-icon [img]="Clock" class="w-4 h-4"></lucide-icon>
+                Opening Hours
+              </h4>
+              <div class="space-y-2">
+                <div
+                  *ngIf="restaurant.openingHours && parseOpeningHours(restaurant.openingHours).length > 0; else noHours"
+                  class="text-sm theme-text-primary">
+                  <!-- Parse and display opening hours -->
+                  <div *ngFor="let dayHours of parseOpeningHours(restaurant.openingHours)"
+                       class="flex justify-between items-center py-2 px-3 rounded-lg border transition-colors"
+                       [class]="dayHours.isOpen ? 'open-day-bg' : 'theme-bg-secondary theme-border'">
+                    <span class="font-medium theme-text-primary">{{ dayHours.day }}</span>
+                    <span [class]="dayHours.isOpen ? 'open-day-message' : 'closed-day-message'">
+          {{ dayHours.hours }}
+        </span>
+                  </div>
+                </div>
+                <ng-template #noHours>
+                  <p class="text-sm theme-text-muted italic">No opening hours set</p>
+                </ng-template>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <!-- Right Column -->
-        <div class="space-y-8">
-          <!-- Past Orders -->
-          <app-chef-dashboard-past-orders></app-chef-dashboard-past-orders>
-          <!-- Earnings -->
-          <app-chef-dashboard-earnings></app-chef-dashboard-earnings>
-        </div>
       </div>
+    </div>
+
+    <!-- Include your other dashboard components -->
+<!--    <app-chef-dashboard-stats-cards></app-chef-dashboard-stats-cards>-->
+<!--    <app-chef-dashboard-current-orders></app-chef-dashboard-current-orders>-->
+<!--    <app-chef-dashboard-menu></app-chef-dashboard-menu>-->
+<!--    <app-chef-dashboard-past-orders></app-chef-dashboard-past-orders>-->
+<!--    <app-chef-dashboard-earnings></app-chef-dashboard-earnings>-->
+
+    <!-- Restaurant Settings Modal -->
+    <app-chef-restaurant-settings
+      *ngIf="isSettingsModalOpen && restaurant"
+      [restaurant]="restaurant"
+      (save)="onSettingsSave($event)"
+      (cancel)="onSettingsCancel()"
+    ></app-chef-restaurant-settings>
+
+    <!-- Notification -->
+    <div *ngIf="notification"
+         class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg"
+         [class]="notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
+      {{ notification.message }}
     </div>
   </div>
 </section>

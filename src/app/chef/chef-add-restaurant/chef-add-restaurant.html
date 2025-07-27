@@ -70,7 +70,7 @@
         </div>
 
         <!-- Location -->
-        <div class="mb-8">
+        <div class="mb-6">
           <label for="location" class="block text-sm font-semibold theme-text-primary mb-2">
             <div class="flex items-center gap-2">
               <lucide-icon [img]="MapPin" class="w-4 h-4"></lucide-icon>
@@ -89,6 +89,155 @@
           >
           <div *ngIf="getFieldError('location')" class="mt-2 text-sm text-red-500">
             {{ getFieldError('location') }}
+          </div>
+        </div>
+
+        <!-- Image URL -->
+        <div class="mb-6">
+          <label for="imageUrl" class="block text-sm font-semibold theme-text-primary mb-2">
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="Image" class="w-4 h-4"></lucide-icon>
+              Restaurant Image URL *
+            </div>
+          </label>
+          <input
+            id="imageUrl"
+            type="url"
+            formControlName="imageUrl"
+            placeholder="https://example.com/restaurant-image.jpg"
+            class="w-full px-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary
+                   focus:border-orange-500 focus:outline-none transition-all duration-200
+                   placeholder-gray-400"
+            [class.border-red-500]="getFieldError('imageUrl')"
+          >
+          <div *ngIf="getFieldError('imageUrl')" class="mt-2 text-sm text-red-500">
+            {{ getFieldError('imageUrl') }}
+          </div>
+        </div>
+
+        <!-- Opening Hours section - replace the existing one -->
+        <div class="mb-6">
+          <label class="block text-sm font-semibold theme-text-primary mb-3">
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="Clock" class="w-4 h-4"></lucide-icon>
+              Opening Hours *
+            </div>
+          </label>
+
+          <!-- Quick Actions -->
+          <div class="mb-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              (click)="setAllDaysOpen()"
+              class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors">
+              Open All Days
+            </button>
+            <button
+              type="button"
+              (click)="setAllDaysClosed()"
+              class="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors">
+              Close All Days
+            </button>
+          </div>
+
+          <!-- Days Schedule -->
+          <div class="space-y-3">
+            <div *ngFor="let day of daysOfWeek" class="border theme-border rounded-xl p-4">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    [formControl]="getDayIsOpenControl(day.key)"
+                    class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2">
+                  <label class="font-medium theme-text-primary cursor-pointer select-none"
+                         (click)="toggleDay(day.key)">
+                    {{ day.label }}
+                  </label>
+                </div>
+
+                <button
+                  *ngIf="isDayOpen(day.key)"
+                  type="button"
+                  (click)="copyToAllDays(day.key)"
+                  class="text-xs text-orange-600 hover:text-orange-700 underline">
+                  Copy to all days
+                </button>
+              </div>
+
+              <!-- Time Pickers (shown when day is open) -->
+              <div *ngIf="isDayOpen(day.key)"
+                   class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
+                <div>
+                  <label class="block text-xs font-medium theme-text-secondary mb-1">Open Time</label>
+                  <input
+                    type="time"
+                    [formControl]="getDayOpenTimeControl(day.key)"
+                    class="w-full px-3 py-2 rounded-lg border-2 theme-border theme-bg-secondary theme-text-primary
+                   focus:border-orange-500 focus:outline-none transition-all duration-200">
+                  <div class="text-xs text-gray-500 mt-1">
+                    {{ formatTime12Hour(getDayOpenTimeControl(day.key).value) }}
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium theme-text-secondary mb-1">Close Time</label>
+                  <input
+                    type="time"
+                    [formControl]="getDayCloseTimeControl(day.key)"
+                    class="w-full px-3 py-2 rounded-lg border-2 theme-border theme-bg-secondary theme-text-primary
+                   focus:border-orange-500 focus:outline-none transition-all duration-200">
+                  <div class="text-xs text-gray-500 mt-1">
+                    {{ formatTime12Hour(getDayCloseTimeControl(day.key).value) }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Closed message -->
+              <div *ngIf="!isDayOpen(day.key)"
+                   class="text-sm text-gray-500 italic">
+                Closed on {{ day.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Restaurant Status -->
+        <div class="mb-8">
+          <label class="block text-sm font-semibold theme-text-primary mb-3">
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="Store" class="w-4 h-4"></lucide-icon>
+              Restaurant Status
+            </div>
+          </label>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                formControlName="isOpen"
+                [value]="true"
+                class="sr-only"
+              >
+              <div class="w-4 h-4 rounded-full border-2 theme-border mr-2 flex items-center justify-center"
+                   [class.bg-green-500]="restaurantForm.get('isOpen')?.value === true"
+                   [class.border-green-500]="restaurantForm.get('isOpen')?.value === true">
+                <div *ngIf="restaurantForm.get('isOpen')?.value === true" class="w-2 h-2 rounded-full bg-white"></div>
+              </div>
+              <span class="theme-text-primary">Open</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                formControlName="isOpen"
+                [value]="false"
+                class="sr-only"
+              >
+              <div class="w-4 h-4 rounded-full border-2 theme-border mr-2 flex items-center justify-center"
+                   [class.bg-red-500]="restaurantForm.get('isOpen')?.value === false"
+                   [class.border-red-500]="restaurantForm.get('isOpen')?.value === false">
+                <div *ngIf="restaurantForm.get('isOpen')?.value === false" class="w-2 h-2 rounded-full bg-white"></div>
+              </div>
+              <span class="theme-text-primary">Closed</span>
+            </label>
           </div>
         </div>
 

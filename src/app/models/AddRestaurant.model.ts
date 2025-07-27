@@ -1,34 +1,47 @@
+
+export interface OpeningHours {
+  [key: string]: {
+    isOpen: boolean;
+    openTime: string;
+    closeTime: string;
+  };
+}
+
+// Updated to match your backend DTO
+export interface RestaurantInputDto {
+  name: string;
+  description: string;
+  location: string;
+  imageUrl: string;
+  openingHours: string;
+  isOpen: boolean;
+}
+
 export interface Restaurant {
   id: number;
   name: string;
   description: string;
   location: string;
   rating?: number;
-  ChefId: string;
-  ImageUrl: string;
-  OpeningHours: string;
-  IsOpen: boolean;
+  chefId: string;
+  imageUrl: string;
+  openingHours: string;
+  isOpen: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export interface RestaurantInputDto {
+// Updated to match your backend response
+export interface RestaurantResponseDto {
+  id: number;
   name: string;
   description: string;
   location: string;
-}
-
-export interface RestaurantResponseDto {
-  message: string;
-  restaurantId: number;
-  Name : string;
-  Description : string;
-  Location : string;
-  ImageUrl : string;
-  Rating : string;
-  ChefId :number;
-  OpeningHours :number;
-  IsOpen :boolean;
+  imageUrl: string;
+  rating?: number;
+  chefId: string;
+  openingHours: string;
+  isOpen: boolean;
 }
 
 export interface ApiResponse<T> {
