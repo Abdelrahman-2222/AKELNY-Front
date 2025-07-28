@@ -31,7 +31,7 @@ export class CategoryManagementPanelComponent implements OnInit {
     this.isLoading = true;
     this.categoryService.getCategories().subscribe({
       next: (categories) => {
-        this.categories = categories;
+        this.categories = categories.sort((a, b) => a.name.localeCompare(b.name));
         this.isLoading = false;
       },
       error: (error) => {
@@ -136,19 +136,38 @@ export class CategoryManagementPanelComponent implements OnInit {
 
   // bulkImportCategories(): void {
   //   const defaultCategories = [
-  //     'Appetizers', 'Main Courses', 'Desserts', 'Breakfast', 'Pizza',
-  //     'Burgers', 'Sandwiches', 'Salads', 'Pasta', 'Seafood', 'Chicken',
-  //     'Vegetarian', 'Vegan', 'Italian', 'Chinese', 'Mexican', 'Indian',
-  //     'Coffee', 'Tea', 'Healthy Options', 'Fast Food', 'Soups', 'Steamed',
-  //     'Grilled', 'Fried', 'Baked', 'Hot Drinks', 'Cold Drinks', 'Smoothies'
+  //     'American', 'Arabic', 'Arabic Sweets', 'Asian', 'Bakery',
+  //     'Bbq', 'Beverages', 'Biryani', 'Breakfast', 'Bubble Tea', 'Burgers',
+  //     'Cafe', 'Cakes', 'Calzone', 'Candy', 'Chicken', 'Chinese', 'Chocolate',
+  //     'Coffee', 'Crepes', 'Curry', 'Desserts', 'Donuts', 'Egyptian',
+  //     'Falafel', 'Fast Food', 'Fish & Chips', 'Fish & Seafood', 'Foul', 'Fried Chicken',
+  //     'Grills', 'Sandwiches', 'Seafood', 'Nuts', 'Pasta', 'Street Food',
+  //     'Ice Cream', 'Healthy', 'Snacks', 'Wraps', 'Indian', 'Italian', 'Lebanese',
+  //     'Syrian', 'Pies', 'Waffles', 'Turkish', 'Mediterranean', 'Koshary', 'Kebab',
+  //     'Juices', 'Smoothies', 'Salads', 'Sushi', 'Japanese', 'Thai', 'Vietnamese',
+  //     'Mexican', 'French', 'Continental', 'International', 'Vegetarian', 'Vegan',
+  //     'Gluten Free', 'Keto', 'Low Carb', 'Organic', 'Fresh Fruits',
+  //     'Dried Fruits', 'Honey', 'Jams', 'Pickles', 'Tea', 'Hot Chocolate', 'Wings',
+  //     'Milkshakes', 'Energy Drinks', 'Soft Drinks', 'Pastries', 'Cookies',
+  //     'Shawarma', 'Tacos', 'Steaks', 'Roast', 'Noodles', 'Seyami', 'Soup',
+  //     'Dumplings', 'Dim Sum', 'Spring Rolls', 'Tempura', 'Yemeni',
+  //     'Teriyaki', 'Green Curry', 'Red Curry', 'Pancakes',
+  //     'Biryani & Rice', 'Tandoori', 'South Indian',
+  //     'Hummus', 'Tabbouleh', 'Fattoush', 'Manakish', 'Baklava', 'Mandi',
+  //     'Kunafa', 'Qatayef', 'Basbousa', 'Gelato', 'Jordanian',
   //   ];
+  //
+  //   // ✅ Correct sorting: removes duplicates and sorts alphabetically (case-insensitive)
+  //   const sortedCategories = Array.from(new Set(defaultCategories))
+  //     .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
   //
   //   this.isLoading = true;
   //
-  //   this.categoryService.bulkAddCategories(defaultCategories).subscribe({
+  //   // Add the sorted categories
+  //   this.categoryService.bulkAddCategories(sortedCategories).subscribe({
   //     next: (response) => {
   //       this.successMessage = response;
-  //       this.loadCategories(); // Refresh the categories list
+  //       this.loadCategories();
   //       this.isLoading = false;
   //       this.clearMessagesAfterDelay();
   //     },
@@ -158,4 +177,5 @@ export class CategoryManagementPanelComponent implements OnInit {
   //     }
   //   });
   // }
+
 }

@@ -13,11 +13,11 @@ import { LucideAngularModule, Clock, Star, MapPin,  Store} from 'lucide-angular'
 
 // Component imports
 import { ChefDashboardHeaderComponent } from '../../chef-dashboard-header/chef-dashboard-header.component';
-import { ChefDashboardEarningsComponent } from '../../chef-dashboard-earnings/chef-dashboard-earnings.component';
-import { ChefDashboardPastOrdersComponent } from '../../chef-dashboard-past-orders/chef-dashboard-past-orders.component';
-import { ChefDashboardStatsCardsComponent } from '../../chef-dashboard-stats-cards/chef-dashboard-stats-cards.component';
-import { ChefDashboardCurrentOrdersComponent } from '../../chef-dashboard-current-orders/chef-dashboard-current-orders.component';
-import { ChefDashboardMenuComponent } from '../../chef-dashboard-menu/chef-dashboard-menu.component';
+// import { ChefDashboardEarningsComponent } from '../../chef-dashboard-earnings/chef-dashboard-earnings.component';
+// import { ChefDashboardPastOrdersComponent } from '../../chef-dashboard-past-orders/chef-dashboard-past-orders.component';
+// import { ChefDashboardStatsCardsComponent } from '../../chef-dashboard-stats-cards/chef-dashboard-stats-cards.component';
+// import { ChefDashboardCurrentOrdersComponent } from '../../chef-dashboard-current-orders/chef-dashboard-current-orders.component';
+// import { ChefDashboardMenuComponent } from '../../chef-dashboard-menu/chef-dashboard-menu.component';
 import { ChefRestaurantSettingsComponent } from '../../chef-restaurant-settings/chef-restaurant-settings';
 
 @Component({
@@ -27,11 +27,11 @@ import { ChefRestaurantSettingsComponent } from '../../chef-restaurant-settings/
     CommonModule,
     RouterModule,
     ChefDashboardHeaderComponent,
-    ChefDashboardEarningsComponent,
-    ChefDashboardPastOrdersComponent,
-    ChefDashboardStatsCardsComponent,
-    ChefDashboardCurrentOrdersComponent,
-    ChefDashboardMenuComponent,
+    // ChefDashboardEarningsComponent,
+    // ChefDashboardPastOrdersComponent,
+    // ChefDashboardStatsCardsComponent,
+    // ChefDashboardCurrentOrdersComponent,
+    // ChefDashboardMenuComponent,
     ChefRestaurantSettingsComponent,
     LucideAngularModule
   ],
@@ -224,6 +224,24 @@ export class ChefDashboardComponent implements OnInit, OnDestroy {
   private closeSettingsModal(): void {
     this.isSettingsModalOpen = false;
     document.body.classList.remove('overflow-hidden');
+  }
+
+  AddItems()
+  {
+    // Logic to add items to the restaurant menu
+    console.log('Add items clicked');
+    // You can implement the logic to open a modal or navigate to an add items page
+  }
+  ViewItems()
+  {
+    // Logic to view items in the restaurant menu
+    console.log('View items clicked');
+    // You can implement the logic to navigate to a view items page or open a modal
+  }
+  ViewOrders() {
+    // Logic to view orders for the restaurant
+    console.log('View orders clicked');
+    // You can implement the logic to navigate to a view orders page or open a modal
   }
 }
 

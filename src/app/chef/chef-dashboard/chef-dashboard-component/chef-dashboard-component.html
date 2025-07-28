@@ -43,6 +43,18 @@
           <h2 class="text-2xl font-bold theme-text-primary">Your Restaurant</h2>
           <div class="flex gap-2">
             <button
+              (click)="AddItems()"
+              class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
+            >
+              Add Items
+            </button>
+            <button
+              (click)="ViewItems()"
+              class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
+            >
+              View All Items
+            </button>
+            <button
               (click)="openRestaurantSettings()"
               class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
             >
@@ -94,8 +106,14 @@
           <!-- Restaurant Details -->
           <div class="space-y-4">
             <!-- Restaurant Name -->
-            <div>
+            <div class="flex justify-between items-center gap-4">
               <h3 class="text-xl font-bold theme-text-primary">{{ restaurant.name }}</h3>
+              <button
+                (click)="ViewOrders()"
+                class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
+              >
+                View Orders
+              </button>
             </div>
 
             <!-- Description -->
