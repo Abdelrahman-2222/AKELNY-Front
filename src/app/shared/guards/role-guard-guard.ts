@@ -9,14 +9,6 @@ export const roleGuardGuard: CanActivateFn = (route, state) => {
   const requiredRole = route.data?.['role'];
   const userRole = authService.getUserRole();
 
-  // console.log('=== ROLE GUARD DEBUG ===');
-  // console.log('URL:', state.url);
-  // console.log('Required role:', requiredRole);
-  // console.log('User role from AuthService:', userRole);
-  // console.log('Token exists:', !!localStorage.getItem('token'));
-  // console.log('User object:', localStorage.getItem('user'));
-  // console.log('========================');
-
   // Case-insensitive comparison
   if (userRole && requiredRole &&
     userRole.toLowerCase() === requiredRole.toLowerCase()) {

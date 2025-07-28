@@ -52,7 +52,9 @@
         <lucide-icon [img]="Search" size="20"></lucide-icon>
       </button>
 
+      <!-- Show cart only if authenticated -->
       <a
+        *ngIf="isAuthenticated"
         routerLink="/cart"
         class="relative p-2 theme-text-primary hover:text-orange-500 transition-colors"
       >
@@ -65,12 +67,26 @@
         </span>
       </a>
 
-      <button class="p-2 theme-text-primary hover:text-orange-500 transition-colors">
+      <!-- Show user icon only if authenticated -->
+      <button
+        *ngIf="isAuthenticated"
+        class="p-2 theme-text-primary hover:text-orange-500 transition-colors"
+      >
         <lucide-icon [img]="User" size="20"></lucide-icon>
       </button>
 
-      <!-- Logout Button -->
+      <!-- Login Button (shown when not authenticated) -->
       <button
+        *ngIf="!isAuthenticated"
+        (click)="login()"
+        class="px-6 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full hover:from-orange-600 hover:to-amber-600 transition-all duration-300 transform hover:scale-105 shadow-lg font-medium"
+      >
+        Login
+      </button>
+
+      <!-- Logout Button (shown when authenticated) -->
+      <button
+        *ngIf="isAuthenticated"
         (click)="logout()"
         class="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg font-medium"
       >
@@ -105,8 +121,20 @@
       >Chefs</a>
       <a href="#" class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium">Categories</a>
       <a href="#" class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium">About</a>
+
       <div class="pt-3 border-t theme-border">
+        <!-- Mobile Login Button (shown when not authenticated) -->
         <button
+          *ngIf="!isAuthenticated"
+          (click)="login()"
+          class="block w-full py-3 text-center bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full hover:from-orange-600 hover:to-amber-600 transition-all duration-300 font-medium"
+        >
+          Login
+        </button>
+
+        <!-- Mobile Logout Button (shown when authenticated) -->
+        <button
+          *ngIf="isAuthenticated"
           (click)="logout()"
           class="block w-full py-3 text-center bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-300 font-medium"
         >

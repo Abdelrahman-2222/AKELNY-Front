@@ -9,6 +9,7 @@ import {
   Sun,
   Moon,
 } from 'lucide-angular';
+import { AuthService } from '../../../../services/auth.service'; // Adjust path as needed
 
 @Component({
   selector: 'app-navbar',
@@ -21,6 +22,7 @@ export class NavbarComponent implements OnInit {
   isMobileMenuOpen = false;
   cartCount = 3;
   isDarkMode = false;
+  isAuthenticated = false; // Add this property
 
   // Expose icons to template
   readonly Search = Search;
@@ -29,13 +31,23 @@ export class NavbarComponent implements OnInit {
   readonly Sun = Sun;
   readonly Moon = Moon;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService // Inject AuthService
+  ) {}
 
   ngOnInit() {
     // Load theme preference from localStorage
     const savedTheme = localStorage.getItem('theme');
     this.isDarkMode = savedTheme === 'dark';
     this.applyTheme();
+
+    // Check authentication status
+    this.checkAuthStatus();
+  }
+
+  private checkAuthStatus() {
+    this.isAuthenticated = this.authService.isAuthenticated();
   }
 
   @HostListener('window:scroll')
@@ -61,6 +73,10 @@ export class NavbarComponent implements OnInit {
     }
   }
 
+  login() {
+    this.router.navigate(['/login']);
+  }
+
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('authToken');
@@ -68,6 +84,7 @@ export class NavbarComponent implements OnInit {
     localStorage.removeItem('user');
     localStorage.removeItem('userData');
     this.isMobileMenuOpen = false;
+    this.isAuthenticated = false; // Update status
     this.router.navigate(['/login']);
   }
 }
