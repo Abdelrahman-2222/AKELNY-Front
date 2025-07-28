@@ -1,0 +1,289 @@
+<!-- profile.html -->
+<div class="min-h-screen pt-20 pb-32">
+  <!--  <div class="container mx-auto px-4 py-8">-->
+  <div class="profile-container container mx-auto px-4 py-8">
+    <div class="profile-header">
+      <h1 class="profile-title">
+        <lucide-angular [img]="UserIcon" class="profile-icon"></lucide-angular>
+        Profile Settings
+      </h1>
+      <p class="profile-subtitle">Manage your account information and preferences</p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading profile...</p>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Profile Form -->
+    <form *ngIf="!isLoading" [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+
+      <!-- Profile Image Section -->
+      <div class="form-section">
+        <h2 class="section-title">Profile Picture</h2>
+        <div class="image-upload-container">
+          <div class="image-preview">
+            <img *ngIf="imagePreview" [src]="imagePreview" alt="Profile" class="profile-image">
+            <div *ngIf="!imagePreview" class="placeholder-image">
+              <lucide-angular [img]="UserIcon" class="placeholder-icon"></lucide-angular>
+            </div>
+          </div>
+          <div class="image-upload-controls">
+            <label for="imageUpload" class="upload-button">
+              <lucide-angular [img]="Camera" class="upload-icon"></lucide-angular>
+              Choose Photo
+            </label>
+            <input
+              id="imageUpload"
+              type="file"
+              accept="image/*"
+              (change)="onImageSelected($event)"
+              class="file-input">
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Information -->
+      <div class="form-section">
+        <h2 class="section-title">Personal Information</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="firstName" class="form-label">
+              <lucide-angular [img]="UserIcon" class="label-icon"></lucide-angular>
+              First Name
+            </label>
+            <input
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              class="form-input"
+              placeholder="Enter your first name">
+            <div *ngIf="getFieldError('firstName')" class="error-message">
+              {{ getFieldError('firstName') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName" class="form-label">
+              <lucide-angular [img]="UserIcon" class="label-icon"></lucide-angular>
+              Last Name
+            </label>
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              class="form-input"
+              placeholder="Enter your last name">
+            <div *ngIf="getFieldError('lastName')" class="error-message">
+              {{ getFieldError('lastName') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">
+              <lucide-angular [img]="Mail" class="label-icon"></lucide-angular>
+              Email Address
+            </label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-input"
+              placeholder="Enter your email">
+            <div *ngIf="getFieldError('email')" class="error-message">
+              {{ getFieldError('email') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phoneNumber" class="form-label">
+              <lucide-angular [img]="Phone" class="label-icon"></lucide-angular>
+              Phone Number
+            </label>
+            <input
+              id="phoneNumber"
+              type="tel"
+              formControlName="phoneNumber"
+              class="form-input"
+              placeholder="Enter your phone number">
+            <div *ngIf="getFieldError('phoneNumber')" class="error-message">
+              {{ getFieldError('phoneNumber') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Addresses Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <lucide-angular [img]="MapPin" class="section-icon"></lucide-angular>
+            Addresses
+          </h2>
+          <button type="button" (click)="addAddress()" class="add-button">
+            <lucide-angular [img]="Plus" class="button-icon"></lucide-angular>
+            Add Address
+          </button>
+        </div>
+
+        <div formArrayName="addresses" class="addresses-container">
+          <div *ngFor="let address of addresses.controls; let i = index"
+               [formGroupName]="i"
+               class="address-card">
+
+            <div class="address-header">
+              <h3 class="address-title">Address {{ i + 1 }}</h3>
+              <button
+                *ngIf="addresses.length > 1"
+                type="button"
+                (click)="removeAddress(i)"
+                class="remove-button">
+                <lucide-angular [img]="Trash2" class="button-icon"></lucide-angular>
+              </button>
+            </div>
+
+            <div class="address-grid">
+              <div class="form-group">
+                <label [for]="'description-' + i" class="form-label">Description</label>
+                <input
+                  [id]="'description-' + i"
+                  type="text"
+                  formControlName="description"
+                  class="form-input"
+                  placeholder="e.g., Home, Work, etc.">
+                <div *ngIf="getAddressFieldError(i, 'description')" class="error-message">
+                  {{ getAddressFieldError(i, 'description') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label [for]="'street-' + i" class="form-label">Street Address</label>
+                <input
+                  [id]="'street-' + i"
+                  type="text"
+                  formControlName="street"
+                  class="form-input"
+                  placeholder="Enter street address">
+                <div *ngIf="getAddressFieldError(i, 'street')" class="error-message">
+                  {{ getAddressFieldError(i, 'street') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label [for]="'city-' + i" class="form-label">City</label>
+                <input
+                  [id]="'city-' + i"
+                  type="text"
+                  formControlName="city"
+                  class="form-input"
+                  placeholder="Enter city">
+                <div *ngIf="getAddressFieldError(i, 'city')" class="error-message">
+                  {{ getAddressFieldError(i, 'city') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label [for]="'country-' + i" class="form-label">Country</label>
+                <input
+                  [id]="'country-' + i"
+                  type="text"
+                  formControlName="country"
+                  class="form-input"
+                  placeholder="Enter country">
+                <div *ngIf="getAddressFieldError(i, 'country')" class="error-message">
+                  {{ getAddressFieldError(i, 'country') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label [for]="'zone-' + i" class="form-label">Zone/State</label>
+                <input
+                  [id]="'zone-' + i"
+                  type="text"
+                  formControlName="zone"
+                  class="form-input"
+                  placeholder="Enter zone/state">
+                <div *ngIf="getAddressFieldError(i, 'zone')" class="error-message">
+                  {{ getAddressFieldError(i, 'zone') }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Password Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <lucide-angular [img]="Lock" class="section-icon"></lucide-angular>
+            Password
+          </h2>
+          <button type="button" (click)="togglePasswordSection()" class="toggle-button">
+            {{ showPasswordSection ? 'Cancel' : 'Change Password' }}
+          </button>
+        </div>
+
+        <div *ngIf="showPasswordSection" formGroupName="passwordSection" class="password-section">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="oldPassword" class="form-label">Current Password</label>
+              <input
+                id="oldPassword"
+                type="password"
+                formControlName="oldPassword"
+                class="form-input"
+                placeholder="Enter current password">
+            </div>
+
+            <div class="form-group">
+              <label for="newPassword" class="form-label">New Password</label>
+              <input
+                id="newPassword"
+                type="password"
+                formControlName="newPassword"
+                class="form-input"
+                placeholder="Enter new password">
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword" class="form-label">Confirm New Password</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                formControlName="confirmPassword"
+                class="form-input"
+                placeholder="Confirm new password">
+            </div>
+          </div>
+
+          <div *ngIf="getPasswordError()" class="error-message">
+            {{ getPasswordError() }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          [disabled]="profileForm.invalid || isLoading"
+          class="submit-button">
+          <span *ngIf="isLoading" class="button-spinner"></span>
+          {{ isLoading ? 'Updating...' : 'Update Profile' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

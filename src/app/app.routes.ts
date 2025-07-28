@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { roleGuardGuard } from './shared/guards/role-guard-guard';
 import { authGuard } from './shared/guards/auth-guard';
+import {Profile} from './auth/profile/profile';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/main', pathMatch: 'full' },
@@ -50,6 +51,10 @@ export const routes: Routes = [
         canActivate: [roleGuardGuard],
         data: { role: 'Customer' },
         loadChildren: () => import('./customer-routes').then(m => m.customerRoutes)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./auth/profile/profile').then(m => m.Profile)
       },
       {
         path: 'auth',

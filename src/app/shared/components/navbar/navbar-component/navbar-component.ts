@@ -42,7 +42,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   readonly Moon = Moon;
 
   constructor(
-    private router: Router,
+    public router: Router,
     private authService: AuthService,
     private searchService: SearchService
   ) {
@@ -136,4 +136,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isAuthenticated = false; // Update status
     this.router.navigate(['/login']);
   }
+
+  protected readonly navigator = navigator;
 }
