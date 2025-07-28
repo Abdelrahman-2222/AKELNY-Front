@@ -48,9 +48,32 @@
         ></lucide-icon>
       </button>
 
-      <button class="p-2 theme-text-primary hover:text-orange-500 transition-colors">
-        <lucide-icon [img]="Search" size="20"></lucide-icon>
-      </button>
+<!--      <button class="p-2 theme-text-primary hover:text-orange-500 transition-colors">-->
+<!--        <lucide-icon [img]="Search" size="20"></lucide-icon>-->
+<!--      </button>-->
+      <!-- navbar.component.html -->
+<!--      <div *ngIf="searchConfig.isVisible" class="search-container">-->
+<!--        <input-->
+<!--          [(ngModel)]="searchQuery"-->
+<!--          [placeholder]="searchConfig.placeholder"-->
+<!--          (keyup.enter)="onSearch()"-->
+<!--          class="search-input">-->
+<!--        <button (click)="onSearch()" class="p-2 theme-text-primary hover:text-orange-500 transition-colors">-->
+<!--          <lucide-icon [img]="Search" size="20"></lucide-icon>-->
+<!--        </button>-->
+<!--      </div>-->
+      <!-- Replace the search section in your navbar with this -->
+      <div *ngIf="searchConfig.isVisible && !isMainPage" class="search-container">
+        <input
+          [(ngModel)]="searchQuery"
+          [placeholder]="searchConfig.placeholder"
+          (keyup.enter)="onSearch()"
+          (input)="onSearchInput()"
+          class="search-input">
+        <button (click)="onSearch()" class="p-2 theme-text-primary hover:text-orange-500 transition-colors">
+          <lucide-icon [img]="Search" size="20"></lucide-icon>
+        </button>
+      </div>
 
       <!-- Show cart only if authenticated -->
       <a

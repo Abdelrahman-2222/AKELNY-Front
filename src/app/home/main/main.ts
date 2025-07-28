@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {AddRestaurant} from '../../services/chef/add-restaurant';
+// import {SearchService} from '../../services/search.service';
 
 @Component({
   selector: 'app-main',
@@ -11,12 +12,45 @@ import {AddRestaurant} from '../../services/chef/add-restaurant';
   templateUrl: './main.html',
   styleUrl: './main.css'
 })
-export class Main {
+export class Main{
+  searchResults: any[] = [];
   constructor(
     private router: Router,
     private authService: AuthService,
-    private restaurantService: AddRestaurant
+    private restaurantService: AddRestaurant,
+    // private searchService: SearchService
   ) {}
+
+  // ngOnInit() {
+  //   this.searchService.setSearchConfig({
+  //     placeholder: 'Search dishes, chefs, categories...',
+  //     searchFunction: (query: string) => this.searchComponents(query),
+  //     isVisible: true
+  //   });
+  // }
+
+  // ngOnDestroy() {
+  //   this.searchService.clearSearch();
+  // }
+
+  // private searchComponents(query: string) {
+  //   console.log('Searching for:', query);
+  //
+  //   // Example search logic - replace with your actual search API call
+  //   const mockResults = [
+  //     { type: 'dish', name: 'Pizza Margherita', chef: 'Mario' },
+  //     { type: 'chef', name: 'Chef Sarah', specialty: 'Italian' },
+  //     { type: 'category', name: 'Italian Food' }
+  //   ].filter(item =>
+  //     item.name.toLowerCase().includes(query.toLowerCase())
+  //   );
+  //
+  //   // You can emit results to navbar or navigate to search results page
+  //   this.router.navigate(['/search'], {
+  //     queryParams: { q: query },
+  //     state: { results: mockResults }
+  //   });
+  // }
 
   handleOrderNow() {
     const user = this.getCurrentUser();

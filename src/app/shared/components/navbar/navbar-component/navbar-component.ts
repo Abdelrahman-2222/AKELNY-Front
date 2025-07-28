@@ -1,4 +1,7 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import {FormsModule} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import {
@@ -9,20 +12,27 @@ import {
   Sun,
   Moon,
 } from 'lucide-angular';
-import { AuthService } from '../../../../services/auth.service'; // Adjust path as needed
+import { AuthService } from '../../../../services/auth.service';
+import {SearchConfig, SearchService} from '../../../../services/search.service'; // Adjust path as needed
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, RouterModule, LucideAngularModule, FormsModule],
   templateUrl: './navbar-component.html',
   styleUrl: './navbar-component.css',
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
+  isMainPage = false;
   isScrolled = false;
   isMobileMenuOpen = false;
   cartCount = 3;
   isDarkMode = false;
   isAuthenticated = false; // Add this property
+  searchConfig: SearchConfig = { placeholder: '', searchFunction: () => {}, isVisible: false, showResultsDropdown: false };
+  searchQuery = '';
+  searchResults: any[] = [];
+  showSearchResults = false;
+  private destroy$ = new Subject<void>();
 
   // Expose icons to template
   readonly Search = Search;
@@ -33,8 +43,13 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService // Inject AuthService
-  ) {}
+    private authService: AuthService,
+    private searchService: SearchService
+  ) {
+    this.router.events.subscribe((event) => {
+      this.isMainPage = this.router.url === '/main';
+    })
+  }
 
   ngOnInit() {
     // Load theme preference from localStorage
@@ -44,8 +59,42 @@ export class NavbarComponent implements OnInit {
 
     // Check authentication status
     this.checkAuthStatus();
+
+    this.searchService.searchConfig$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(config => {
+        this.searchConfig = config;
+      });
   }
 
+  onSearch() {
+    if (this.searchQuery.trim() && this.searchConfig.searchFunction) {
+      this.searchConfig.searchFunction(this.searchQuery.trim());
+      this.showSearchResults = false; // Hide dropdown after search
+    }
+  }
+
+  // onSearchInput() {
+  //   // Real-time search as user types
+  //   if (this.searchQuery.trim().length > 2 && this.searchConfig.searchFunction) {
+  //     this.searchConfig.searchFunction(this.searchQuery.trim());
+  //     this.showSearchResults = true;
+  //   } else {
+  //     this.showSearchResults = false;
+  //   }
+  // }
+  // navbar-component.ts
+  onSearchInput() {
+    if (this.searchConfig.searchFunction) {
+      this.searchConfig.searchFunction(this.searchQuery.trim());
+    }
+    this.showSearchResults = this.searchConfig.showResultsDropdown && this.searchQuery.trim().length > 0;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
   private checkAuthStatus() {
     this.isAuthenticated = this.authService.isAuthenticated();
   }
