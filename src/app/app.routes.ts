@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { roleGuardGuard } from './shared/guards/role-guard-guard';
 import { authGuard } from './shared/guards/auth-guard';
+import { RestaurantComponent } from './pages/home/restaurant/restaurant.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/main', pathMatch: 'full' },
@@ -61,6 +62,10 @@ export const routes: Routes = [
   {
     path: 'unauthorized',
     loadComponent: () => import('./shared/components/unauthorized/unauthorized').then((m) => m.Unauthorized),
+  },
+  {
+    path:'restaurant',
+    component:RestaurantComponent
   },
   { path: '**', redirectTo: '/main' },
 ];

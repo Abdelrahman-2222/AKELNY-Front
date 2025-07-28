@@ -1,0 +1,53 @@
+<div class="bg-white min-h-screen">
+  <!-- Header Banner -->
+  <div class="relative h-48 bg-orange-400">
+    <div class="container mx-auto px-4 h-full flex items-center">
+      <div class="flex items-center gap-4">
+        <img [src]="chefInfo.image" alt="Chef" class="w-32 h-32 rounded-full object-cover border-2 border-white">
+        <div class="text-white">
+          <h1 class="text-2xl font-bold">{{chefInfo.name}}</h1>
+          <p>{{chefInfo.role}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Categories -->
+  <div class="container mx-auto px-4 py-8">
+    <div *ngFor="let category of categories" class="mb-12">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold">{{category}}</h2>
+        <button class="text-sm text-gray-500">Sort</button>
+      </div>
+
+      <!-- Menu Items Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let item of menuItems" class="bg-white rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+          <div class="relative">
+            <img [src]="item.image" [alt]="item.name" class="w-full h-48 object-cover">
+            <span class="absolute top-3 right-3 bg-orange-400 text-white text-sm px-3 py-1 rounded-full">
+              Swipe
+            </span>
+          </div>
+
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="font-semibold">{{item.name}}</h3>
+              <p class="text-orange-600">${{item.price}}</p>
+            </div>
+            <p class="text-sm text-gray-500 mb-4">{{item.description}}</p>
+
+            <div class="flex items-center">
+              <button class="px-4 py-2 bg-orange-200 text-orange-600 rounded-lg hover:bg-orange-300 transition-colors">
+                Add to Cart
+              </button>
+              <button class="px-4 py-2 ms-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
