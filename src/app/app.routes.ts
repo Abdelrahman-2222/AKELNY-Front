@@ -63,9 +63,5 @@ export const routes: Routes = [
     path: 'unauthorized',
     loadComponent: () => import('./shared/components/unauthorized/unauthorized').then((m) => m.Unauthorized),
   },
-  {
-    path:'restaurant',
-    component:RestaurantComponent
-  },
   { path: '**', redirectTo: '/main' },
 ];

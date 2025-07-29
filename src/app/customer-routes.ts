@@ -92,5 +92,11 @@ export const customerRoutes: Routes = [
     loadComponent: () =>
       import('./pages/menu-item/menu-item-component/menu-item-component')
         .then((m) => m.MenuItemComponent)
+  },
+  {
+    path: 'restaurant',
+    loadComponent: () =>
+      import('./pages/home/restaurant/restaurant.component')
+        .then((m) => m.RestaurantComponent)
   }
 ]
