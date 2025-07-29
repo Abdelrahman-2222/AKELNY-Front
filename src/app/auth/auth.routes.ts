@@ -27,5 +27,5 @@ export const authRoutes: Routes = [
   {
     path: 'external-login',
     loadComponent: () => import('./external-login/external-login').then((m) => m.ExternalLogin),
-  },
+  }
 ];
