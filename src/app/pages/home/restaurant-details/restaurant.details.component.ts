@@ -14,11 +14,11 @@ interface MenuItem {
 }
 
 @Component({
-  selector: 'app-restaurant',
-  templateUrl: './restaurant.component.html',
+  selector: 'app-restaurant-details',
+  templateUrl: './restaurant.details.component.html',
   imports: [CommonModule, CategoriesComponent],
 })
-export class RestaurantComponent {
+export class RestaurantDetailsComponent {
   chefInfo = {
     name: 'Home Chef',
     role: 'Home Chef',
@@ -36,7 +36,7 @@ export class RestaurantComponent {
       image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
       category: "pizza"
     },
-     {
+    {
       id: 1,
       name: "Somthing",
       description: "Delicious food",
@@ -44,7 +44,7 @@ export class RestaurantComponent {
       image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
       category: "pizza"
     },
-     {
+    {
       id: 1,
       name: "Somthing",
       description: "Delicious food",

@@ -1,8 +1,9 @@
-import { FoodCategoryService } from './../../../services/food-category.service';
-import { NgFor } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { FoodCategoryCardComponent } from '../food-category-card/food-category-card.component';
+import { NgFor } from '@angular/common';
+import { GetService } from '../../../services/requests/get-service';
+
 
 interface Chef {
   id: number;
@@ -15,17 +16,35 @@ interface Chef {
   image: string;
   foodImage: string;
 }
+
 @Component({
-  selector: 'app-categories',
-  standalone: true,
-  imports: [LucideAngularModule, FoodCategoryCardComponent],
-  templateUrl: './categories.component.html',
-  styleUrl: './categories.component.css',
+  selector: 'app-restaurant-component',
+  imports: [LucideAngularModule, FoodCategoryCardComponent, NgFor],
+  templateUrl: './restaurant-component.html',
 })
-export class CategoriesComponent {
-  /**
-   *
-   */
+export class RestaurantComponent implements OnInit {
+  getService = inject(GetService);
+  restaurants: any[] = [];
+
+  ngOnInit(): void {
+    try {
+      var restaurants = this.getService.get({
+        url: 'https://localhost:7045/api/restaurants',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+      ).subscribe((data) => {
+        console.log(data)
+      })
+
+    }catch (error) {
+      console.error('Error fetching restaurants:', error);
+    }
+  }
+
+
   chefs: Chef[] = [
     // Add sample chef data here
     {
@@ -95,5 +114,4 @@ export class CategoriesComponent {
       foodImage: 'https://wallpapercat.com/w/full/3/a/e/2143097-1920x1080-desktop-1080p-healthy-food-background-photo.jpg'
     }
   ];
-  constructor(public categoryService: FoodCategoryService) { }
 }

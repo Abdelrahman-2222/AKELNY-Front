@@ -1,8 +1,8 @@
-import {Routes} from '@angular/router';
+import { Routes } from '@angular/router';
 
 export const customerRoutes: Routes = [
 
-  {path: '', redirectTo: 'categories', pathMatch: 'full'},
+  { path: '', redirectTo: 'categories', pathMatch: 'full' },
   {
     path: 'cart-component',
     loadComponent: () =>
@@ -96,7 +96,16 @@ export const customerRoutes: Routes = [
   {
     path: 'restaurant',
     loadComponent: () =>
-      import('./pages/home/restaurant/restaurant.component')
+      import('./pages/home/restaurant/restaurant-component')
         .then((m) => m.RestaurantComponent)
+  },
+  {
+    path: 'restaurant-details',
+    loadComponent: () =>
+      import('./pages/home/restaurant-details/restaurant.details.component')
+        .then((m) => m.RestaurantDetailsComponent)
   }
 ]
+
+
+

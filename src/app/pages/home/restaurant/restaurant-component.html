@@ -1,0 +1,50 @@
+<section class="bg-white py-8">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-bold">Restaurant (Chef)</h2>
+      <div class="flex gap-4">
+        <button class="px-4 py-2 border rounded-full hover:bg-gray-50 transition-colors">
+          Filter
+        </button>
+        <button class="px-4 py-2 border rounded-full hover:bg-gray-50 transition-colors">
+          Sort
+        </button>
+      </div>
+    </div>
+
+    <h3 class="text-xl font-semibold mb-6">Home Chefs</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div *ngFor="let chef of chefs"
+        class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-4">
+        <div class="w-full relative ">
+          <img [src]="chef.foodImage" alt="Chef's food" class="w-full h-48 object-cover rounded-lg">
+          <img [src]="chef.image" [alt]="chef.name" class="w-32 h-32 rounded-full object-cover absolute top-1/2 left-3 -translate-y-1/2">
+        </div>
+        <div class="flex items-start gap-4 mt-5">
+          <!-- chef Information -->
+          <div>
+            <h4 class="font-semibold">{{chef.name}}</h4>
+            <p class="text-gray-500 text-sm">{{chef.location}} / {{chef.speciality}}</p>
+            <div class="flex items-center gap-2 mt-2">
+              <div class="flex items-center">
+                <span class="text-sm font-medium">{{chef.rating}}</span>
+                <span class="text-yellow-400">★</span>
+              </div>
+              <span class="text-sm text-gray-500">{{chef.reviews}} Reviews</span>
+              <span class="text-sm text-gray-500">{{chef.deliveryTime}} Delivery Time</span>
+            </div>
+          </div>
+          <!-- chef Information -->
+        </div>
+
+
+
+        <button class="w-full mt-4 py-2 bg-orange-600 text-white rounded-lg
+                       hover:bg-orange-700 transition-colors duration-300">
+          View Menu
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
