@@ -229,7 +229,7 @@ export class Register implements OnInit {
                 email: decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
                 role: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
               };
-              localStorage.setItem('user', JSON.stringify(user));
+              // localStorage.setItem('user', JSON.stringify(user));
               localStorage.setItem('token', response.token); // Also save as 'token'
 
               console.log('Saved user during registration:', user);

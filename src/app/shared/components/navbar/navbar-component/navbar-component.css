@@ -42,3 +42,8 @@
 [data-theme="dark"] .search-input {
   color: white;
 }
+
+img.rounded-full {
+  border-radius: 50%;
+}
+

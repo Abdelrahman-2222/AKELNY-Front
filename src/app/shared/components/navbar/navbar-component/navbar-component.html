@@ -91,11 +91,26 @@
       </a>
 
       <!-- Show user icon only if authenticated -->
+<!--      <button-->
+<!--        *ngIf="isAuthenticated"-->
+<!--        class="p-2 theme-text-primary hover:text-orange-500 transition-colors"-->
+<!--        (click)="router.navigate(['/profile'])"      >-->
+<!--        <lucide-icon [img]="User" size="20"></lucide-icon>-->
+<!--      </button>-->
       <button
         *ngIf="isAuthenticated"
-        class="p-2 theme-text-primary hover:text-orange-500 transition-colors"
-        (click)="router.navigate(['/profile'])"      >
-        <lucide-icon [img]="User" size="20"></lucide-icon>
+        class="p-1"
+        (click)="router.navigate(['/profile'])"
+      >
+        <img
+          *ngIf="userImageUrl; else defaultIcon"
+          [src]="userImageUrl"
+          alt="Profile"
+          class="w-8 h-8 rounded-full object-cover border-2 border-orange-400"
+        />
+        <ng-template #defaultIcon>
+          <lucide-icon [img]="User" size="20" class="text-orange-400 hover:text-orange-500 transition-colors"></lucide-icon>
+        </ng-template>
       </button>
 
       <!-- Login Button (shown when not authenticated) -->

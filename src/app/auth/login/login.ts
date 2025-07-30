@@ -7,6 +7,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { GoogleAuthService } from '../../services/google-auth.service';
 import {jwtDecode} from 'jwt-decode';
+import { UserService } from '../../services/user.service';
 
 
 
@@ -42,7 +43,8 @@ export class Login implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private http: HttpClient,
-    private googleAuthService: GoogleAuthService
+    private googleAuthService: GoogleAuthService,
+    private userService: UserService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -66,60 +68,155 @@ export class Login implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
+  // onSubmit(): void {
+  //   if (!this.loginForm.valid) {
+  //     this.markFormGroupTouched();
+  //     return;
+  //   }
+  //
+  //   this.isLoading = true;
+  //   this.message = null;
+  //
+  //   const loginDto: LoginDto = {
+  //     email: this.loginForm.get('email')?.value,
+  //     password: this.loginForm.get('password')?.value,
+  //     rememberMe: this.loginForm.get('rememberMe')?.value ? 'true' : 'false'
+  //   };
+  //
+  //   const apiUrl = `${environment.apiUrl}/Auth/login`;
+  //
+  //   this.http.post(apiUrl, loginDto).subscribe({
+  //     next: (response: any) => {
+  //       this.isLoading = false;
+  //
+  //       if (response.token) {
+  //         localStorage.setItem('token', response.token);
+  //         try {
+  //           const decodedToken: any = jwtDecode(response.token);
+  //           const user = {
+  //             id: decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+  //             email: decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
+  //             role: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+  //           };
+  //
+  //
+  //
+  //           setTimeout(() => {
+  //             this.userService.fetchAndSetCurrentUser().subscribe({
+  //               complete: () => {
+  //                 this.message = 'Login successful! Redirecting...';
+  //                 this.isSuccess = true;
+  //                 setTimeout(() => {
+  //                   this.router.navigateByUrl('/main');
+  //                 }, 1000);
+  //               },
+  //               error: (fetchError) => {
+  //                 console.error('Failed to fetch user after login', fetchError);
+  //                 this.message = 'Login succeeded, but failed to load profile.';
+  //                 this.isSuccess = true;
+  //               }
+  //             });
+  //           }, 0);
+  //         } catch (error) {
+  //           console.error('Error decoding token:', error);
+  //           this.message = 'Invalid token received from server.';
+  //           this.isSuccess = false;
+  //         }
+  //       } else {
+  //         this.message = 'Login failed. Token not received.';
+  //         this.isSuccess = false;
+  //       }
+  //     },
+  //     error: (err) => {
+  //       this.isLoading = false;
+  //       this.isSuccess = false;
+  //       if (err.status === 401) {
+  //         this.message = 'Invalid email or password';
+  //       } else {
+  //         this.message = 'Login failed. Please try again.';
+  //       }
+  //     }
+  //   });
+  // }
+
   onSubmit(): void {
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      this.message = null;
-      const loginDto: LoginDto = {
-        email: this.loginForm.get('email')?.value,
-        password: this.loginForm.get('password')?.value,
-        rememberMe: this.loginForm.get('rememberMe')?.value ? "true" : "false"
-      };
-
-      // const apiUrl = window.location.hostname == 'localhost'
-      //   ? 'https://localhost:7045/api/Auth/login'
-      //   : 'http://akelni.tryasp.net/api/Auth/login';
-      const apiUrl = `${environment.apiUrl}/Auth/login`;
-
-
-      this.http.post(apiUrl, loginDto).subscribe({
-        next: (response: any) => {
-          this.isLoading = false;
-          if (response.token) {
-            // localStorage.setItem('authToken', response.token);
-            try {
-              const decodedToken: any = jwtDecode(response.token);
-              const user = {
-                id: decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
-                email: decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
-                role: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
-              };
-              localStorage.setItem('user', JSON.stringify(user));
-              localStorage.setItem('token', response.token); // Also save as 'token'
-            } catch (error) {
-              console.error('Error decoding token:', error);
-            }
-            this.message = "Login successful! Redirecting...";
-            this.isSuccess = true;
-            setTimeout(() => {
-              this.router.navigateByUrl('/main');
-            }, 1000);
-          }
-        },
-        error: err => {
-          this.isLoading = false;
-          this.isSuccess = false;
-          if (err.status === 401) {
-            this.message = 'Invalid email or password';
-          } else {
-            this.message = 'Login failed. Please try again.';
-          }
-        }
-      });
-    } else {
+    if (!this.loginForm.valid) {
       this.markFormGroupTouched();
+      return;
     }
+
+    this.isLoading = true;
+    this.message = null;
+
+    const loginDto: LoginDto = {
+      email: this.loginForm.get('email')?.value,
+      password: this.loginForm.get('password')?.value,
+      rememberMe: this.loginForm.get('rememberMe')?.value ? 'true' : 'false'
+    };
+
+    const apiUrl = `${environment.apiUrl}/Auth/login`;
+
+    this.http.post(apiUrl, loginDto).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+
+        if (!response.token) {
+          this.message = 'Login failed. Token not received.';
+          this.isSuccess = false;
+          return;
+        }
+
+        // Save token to localStorage
+        localStorage.setItem('token', response.token);
+
+        // Optional: decode it if you want to inspect claims (not required)
+        try {
+          const decodedToken: any = jwtDecode(response.token);
+          console.log('✅ Decoded JWT:', decodedToken);
+        } catch (e) {
+          console.warn('⚠️ Failed to decode token');
+        }
+
+        // ⏳ Delay to ensure localStorage is updated before using it
+        setTimeout(() => {
+          const storedToken = localStorage.getItem('token');
+          if (!storedToken) {
+            this.message = 'Login failed. Token not available.';
+            this.isSuccess = false;
+            return;
+          }
+
+          this.userService.fetchAndSetCurrentUser().subscribe({
+            next: (user) => {
+              console.log('✅ Fetched user:', user);
+              this.message = 'Login successful! Redirecting...';
+              this.isSuccess = true;
+
+              setTimeout(() => {
+                this.router.navigateByUrl('/main');
+              }, 1000);
+            },
+            error: (fetchError) => {
+              console.error('❌ Failed to fetch user after login', fetchError);
+              this.message = 'Login succeeded, but failed to load profile.';
+              this.isSuccess = true;
+            }
+          });
+        }, 100);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.isSuccess = false;
+        if (err.status === 401) {
+          this.message = 'Invalid email or password';
+        } else {
+          this.message = 'Login failed. Please try again.';
+        }
+      }
+    });
   }
+
+
 
   onSocialLogin(provider: string): void {
     this.isLoading = true;

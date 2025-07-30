@@ -9,6 +9,7 @@ export interface Address {
 export interface ProfileDto {
   email: string;
   imageUrl?: string;
+  imageData?: string; // Add this for base64 image data
   phoneNumber: string;
   firstName: string;
   lastName: string;

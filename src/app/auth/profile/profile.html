@@ -274,15 +274,26 @@
         </div>
       </div>
 
+<!--      &lt;!&ndash; Form Actions &ndash;&gt;-->
+<!--      <div class="form-actions">-->
+<!--        <button-->
+<!--          type="submit"-->
+<!--          [disabled]="profileForm.invalid || isLoading"-->
+<!--          class="submit-button">-->
+<!--          <span *ngIf="isLoading" class="button-spinner"></span>-->
+<!--          {{ isLoading ? 'Updating...' : 'Update Profile' }}-->
+<!--        </button>-->
+<!--      </div>-->
       <!-- Form Actions -->
       <div class="form-actions">
         <button
           type="submit"
-          [disabled]="profileForm.invalid || isLoading"
+          [disabled]="!isFormValid || isLoading"
           class="submit-button">
           <span *ngIf="isLoading" class="button-spinner"></span>
           {{ isLoading ? 'Updating...' : 'Update Profile' }}
         </button>
+
       </div>
     </form>
   </div>
