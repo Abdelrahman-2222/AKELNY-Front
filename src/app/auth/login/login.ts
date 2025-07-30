@@ -170,12 +170,12 @@ export class Login implements OnInit {
         localStorage.setItem('token', response.token);
 
         // Optional: decode it if you want to inspect claims (not required)
-        try {
-          const decodedToken: any = jwtDecode(response.token);
-          console.log('✅ Decoded JWT:', decodedToken);
-        } catch (e) {
-          console.warn('⚠️ Failed to decode token');
-        }
+        // try {
+        //   const decodedToken: any = jwtDecode(response.token);
+        //   console.log('✅ Decoded JWT:', decodedToken);
+        // } catch (e) {
+        //   console.warn('⚠️ Failed to decode token');
+        // }
 
         // ⏳ Delay to ensure localStorage is updated before using it
         setTimeout(() => {
@@ -188,7 +188,7 @@ export class Login implements OnInit {
 
           this.userService.fetchAndSetCurrentUser().subscribe({
             next: (user) => {
-              console.log('✅ Fetched user:', user);
+              // console.log('✅ Fetched user:', user);
               this.message = 'Login successful! Redirecting...';
               this.isSuccess = true;
 
@@ -197,7 +197,7 @@ export class Login implements OnInit {
               }, 1000);
             },
             error: (fetchError) => {
-              console.error('❌ Failed to fetch user after login', fetchError);
+              // console.error('❌ Failed to fetch user after login', fetchError);
               this.message = 'Login succeeded, but failed to load profile.';
               this.isSuccess = true;
             }
