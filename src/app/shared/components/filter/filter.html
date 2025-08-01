@@ -1,0 +1,84 @@
+<!-- Side Filter -->
+<div class="w-80 bg-white border-r border-gray-200 h-screen overflow-y-auto">
+  <!-- Filter Header -->
+  <div class="p-6 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-semibold text-gray-900">Filters</h2>
+      <button class="text-sm text-orange-600 hover:text-orange-700 font-medium transition-colors">
+        Clear All
+      </button>
+    </div>
+  </div>
+
+  <!-- Categories Filter -->
+  <div class="p-6 border-b border-gray-200">
+    <h3 class="text-lg font-medium text-gray-900 mb-4">Categories</h3>
+    <div class="space-y-3">
+      <!-- categories items -->
+      @for (category of categories; track category) {
+      <div class="flex items-center">
+        <input [name]="category.name" type="checkbox" (change)="onCategoryChange($event.target)" value="{{category.name}}"
+          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2">
+        <label for="category-mexican" class="ml-3 flex-1 text-sm text-gray-700 cursor-pointer">
+          {{category.name}}
+          <span class="text-gray-400 ml-1">(8)</span>
+        </label>
+      </div>
+      }
+
+
+    </div>
+  </div>
+
+  <!-- Sort Options -->
+  <div class="p-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-4">Sort By</h3>
+
+    <!-- Sort Field Selection -->
+    <div class="space-y-3 mb-6">
+      <div class="flex items-center">
+        <input id="sort-rating" type="radio" name="sortBy" value="rating" checked
+          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500 focus:ring-2">
+        <label for="sort-rating" class="ml-3 text-sm text-gray-700 cursor-pointer">
+          Rating
+        </label>
+      </div>
+      <div class="flex items-center">
+        <input id="sort-name" type="radio" name="sortBy" value="name"
+          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500 focus:ring-2">
+        <label for="sort-name" class="ml-3 text-sm text-gray-700 cursor-pointer">
+          Restaurant Name
+        </label>
+      </div>
+
+      <!-- categories items -->
+    </div>
+
+    <!-- Sort Order Selection -->
+    <div class="space-y-3">
+      <h4 class="text-sm font-medium text-gray-900">Order</h4>
+      <div class="flex items-center">
+        <input id="sort-desc" type="radio" name="sortOrder" value="desc" checked
+          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500 focus:ring-2">
+        <label for="sort-desc" class="ml-3 text-sm text-gray-700 cursor-pointer">
+          Highest to Lowest
+        </label>
+      </div>
+      <div class="flex items-center">
+        <input id="sort-asc" type="radio" name="sortOrder" value="asc"
+          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500 focus:ring-2">
+        <label for="sort-asc" class="ml-3 text-sm text-gray-700 cursor-pointer">
+          Lowest to Highest
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Apply Button -->
+  <div class="p-6 border-t border-gray-200">
+    <button
+      class="w-full bg-orange-600 text-white py-3 px-4 rounded-lg hover:bg-orange-700 transition-colors duration-200 font-medium">
+      Apply Filters
+    </button>
+  </div>
+</div>

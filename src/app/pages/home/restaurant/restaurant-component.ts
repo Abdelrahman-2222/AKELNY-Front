@@ -3,6 +3,8 @@ import { LucideAngularModule } from 'lucide-angular';
 import { FoodCategoryCardComponent } from '../food-category-card/food-category-card.component';
 import { NgFor } from '@angular/common';
 import { GetService } from '../../../services/requests/get-service';
+import { CustomerRestaurant } from '../../../models/CustomerRestaurant.model'; // Assuming you have a Restaurant model defined
+import { Filter } from '../../../shared/components/filter/filter';
 
 
 interface Chef {
@@ -19,32 +21,43 @@ interface Chef {
 
 @Component({
   selector: 'app-restaurant-component',
-  imports: [LucideAngularModule, FoodCategoryCardComponent, NgFor],
+  imports: [LucideAngularModule, FoodCategoryCardComponent, Filter, NgFor],
   templateUrl: './restaurant-component.html',
 })
 export class RestaurantComponent implements OnInit {
   getService = inject(GetService);
-  restaurants: any[] = [];
+  restaurants: CustomerRestaurant[] = [];
 
   ngOnInit(): void {
-    try {
-      var restaurants = this.getService.get({
-        url: 'https://localhost:7045/api/restaurants',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        }
-      }
-      ).subscribe((data) => {
-        console.log(data)
-      })
+    //restaurants
+    this.getRestaurants();
+    //restaurants
 
-    }catch (error) {
-      console.error('Error fetching restaurants:', error);
+  }
+  getRestaurants(): void {
+    this.getService.get<CustomerRestaurant[]>({
+      url: 'https://localhost:7045/api/restaurants',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
     }
+    ).subscribe({
+      next: (data: any) => {
+        this.restaurants = data.categories;
+        console.log(this.restaurants);
+      }
+      , error: (err) => {
+        console.error('Error fetching restaurants:', err);
+      }
+      , complete: () => {
+        console.log('Restaurant data fetch complete');
+      }
+    })
   }
 
 
+  //temp
   chefs: Chef[] = [
     // Add sample chef data here
     {
@@ -114,4 +127,5 @@ export class RestaurantComponent implements OnInit {
       foodImage: 'https://wallpapercat.com/w/full/3/a/e/2143097-1920x1080-desktop-1080p-healthy-food-background-photo.jpg'
     }
   ];
+  //temp
 }

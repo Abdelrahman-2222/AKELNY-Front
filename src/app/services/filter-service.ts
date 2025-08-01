@@ -4,27 +4,24 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class FilterService {
-  private filters: { [key: string]: any } = {"auth": "true" , "role": "Customer"};
-
+  //GET /api/foods?filters=name==Pizza,price>=30&sorts=-rating&page=1&pageSize=10
+  private filters:any[] = ["true" , "Customer"];
+  private filterQuery:string = '?filters=name'
   constructor() {}
 
-  setFilter(key: string, value: any): void {
-    this.filters[key] = value;
+  setFilter(value: any): void {
+    this.filters.push(value);
   }
 
-  getFilter(key: string): any {
-    return this.filters[key];
-  }
+  // getFilter(id: number): any {
+  //   return this.filters[id];
+  // }
 
-  clearFilter(key: string): void {
-    delete this.filters[key];
+  clearFilter(id: number): void { //error
+    this.filters.splice(id, 1);
   }
 
   clearAllFilters(): void {
-    this.filters = {};
-  }
-
-  getAllFilters(): { [key: string]: any } {
-    return this.filters;
+    this.filters = [];
   }
 }
