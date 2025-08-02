@@ -1,7 +1,7 @@
 // Clean chef-dashboard-component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 import { ChefDashboardService } from '../../chef-dashboard.service';
@@ -55,7 +55,8 @@ export class ChefDashboardComponent implements OnInit, OnDestroy {
   constructor(
     public chefDashboardService: ChefDashboardService,
     private restaurantService: AddRestaurant,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
   }
 
@@ -228,14 +229,14 @@ export class ChefDashboardComponent implements OnInit, OnDestroy {
 
   AddItems()
   {
-    // Logic to add items to the restaurant menu
-    console.log('Add items clicked');
-    // You can implement the logic to open a modal or navigate to an add items page
+    // navigate to chef-dashboard-item.component.html
+    this.router.navigate(['/chef/chef-dashboard-item']);
   }
-  ViewItems()
+  ViewMenu()
   {
     // Logic to view items in the restaurant menu
-    console.log('View items clicked');
+    this.router.navigate(['/chef/chef-dashboard-menu']);
+
     // You can implement the logic to navigate to a view items page or open a modal
   }
   ViewOrders() {

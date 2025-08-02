@@ -1,0 +1,779 @@
+/* chef-dashboard-item.component.css */
+
+/* Custom animations and enhancements */
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Size Type Selection Cards */
+.size-type-card {
+  transition: all 0.3s ease;
+}
+
+.size-type-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.size-type-card.selected {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(251, 146, 60, 0.2);
+}
+
+.size-type-card label {
+  transition: all 0.3s ease;
+}
+
+.size-type-card.selected label {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.1), rgba(245, 101, 101, 0.05));
+}
+
+/* Size Price Items */
+.size-price-item {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.size-price-item:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(251, 146, 60, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.size-price-item:hover:before {
+  left: 100%;
+}
+
+.size-price-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Pricing Preview */
+.pricing-preview {
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  border-left: 4px solid var(--primary-orange);
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-preview:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(251, 146, 60, 0.1));
+  transform: skewX(-15deg);
+}
+
+/* Enhanced input focus effects */
+input:focus, textarea:focus, select:focus {
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.1);
+  transform: translateY(-1px);
+}
+
+/* File upload area enhancements */
+.file-upload-area {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.file-upload-area:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.1), transparent);
+  transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.file-upload-area:hover:before {
+  width: 300px;
+  height: 300px;
+}
+
+.file-upload-area:hover {
+  transform: scale(1.02);
+  border-color: var(--primary-orange);
+}
+
+/* Custom scrollbar for textarea */
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: var(--primary-orange);
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-amber);
+}
+
+/* Button hover effects */
+button {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+button:hover:not(:disabled):before {
+  width: 300px;
+  height: 300px;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Form validation styling */
+.form-error {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Success state for form elements */
+.form-success {
+  border-color: var(--accent-green) !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Loading spinner for submit button */
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ffffff33;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Image preview enhancements */
+.image-preview {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.image-preview::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.1) 50%, transparent 51%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.image-preview:hover::before {
+  transform: translateX(100%);
+}
+
+/* Add-on and combo cards */
+.addon-card, .combo-card {
+  transition: all 0.3s ease;
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+}
+
+.addon-card:hover, .combo-card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(34, 197, 94, 0.02));
+}
+
+.combo-card:hover {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.05), rgba(147, 51, 234, 0.02));
+}
+
+/* Weighted item info box */
+.bg-blue-50 {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-blue-50:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
+}
+
+/* Category preview styling */
+.category-preview {
+  border-left: 4px solid var(--primary-orange);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.category-preview:hover {
+  border-left-width: 6px;
+  padding-left: 14px;
+}
+
+.category-preview:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary-orange), var(--primary-amber));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.category-preview:hover:before {
+  opacity: 1;
+}
+
+/* Custom select styling */
+select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  appearance: none;
+}
+
+/* Dark theme select arrow */
+[data-theme="dark"] select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23d1d5db' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Success and error message styles */
+.success-message {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  animation: slideDown 0.5s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.success-message:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+.error-message {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  animation: slideDown 0.5s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.error-message:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Card stacking effect */
+.card-stack {
+  position: relative;
+  z-index: 1;
+}
+
+.card-stack::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: -8px;
+  bottom: -8px;
+  background: var(--glass-bg);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.card-stack::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: -16px;
+  bottom: -16px;
+  background: var(--glass-bg);
+  border-radius: inherit;
+  z-index: -2;
+  opacity: 0.25;
+}
+
+/* Floating labels effect */
+.floating-label {
+  position: relative;
+}
+
+.floating-label input,
+.floating-label textarea,
+.floating-label select {
+  padding-top: 24px;
+}
+
+.floating-label label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-label input:focus + label,
+.floating-label input:not(:placeholder-shown) + label,
+.floating-label textarea:focus + label,
+.floating-label textarea:not(:placeholder-shown) + label,
+.floating-label select:focus + label,
+.floating-label select:not([value=""]) + label {
+  top: 8px;
+  font-size: 12px;
+  color: var(--primary-orange);
+}
+
+/* Size type radio button styling */
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+  background-color: white;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="radio"]:checked {
+  border-color: var(--primary-orange);
+  background-color: var(--primary-orange);
+}
+
+input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: white;
+  transform: translate(-50%, -50%);
+}
+
+input[type="radio"]:hover {
+  border-color: var(--primary-orange);
+  transform: scale(1.1);
+}
+
+/* Enhanced number input styling */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Price range display */
+.price-range-display {
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border: 2px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+
+.price-range-display:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-orange), var(--primary-amber));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.price-range-display:hover:before {
+  transform: scaleX(1);
+}
+
+/* Weight input with unit display */
+.weight-input-container {
+  position: relative;
+}
+
+.weight-input-container::after {
+  content: 'kg';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .glass-card, .appetizing-card {
+    margin-left: -16px;
+    margin-right: -16px;
+    border-radius: 0;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .button-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .button-group button {
+    width: 100%;
+  }
+
+  .size-type-card {
+    transform: none !important;
+  }
+
+  .size-type-card:hover {
+    transform: none !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .glass-card, .appetizing-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  button {
+    display: none;
+  }
+
+  .size-type-card {
+    transform: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  .theme-border {
+    border-width: 2px;
+  }
+
+  button {
+    border: 2px solid currentColor;
+  }
+
+  .size-type-card label {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .size-type-card {
+    transform: none !important;
+  }
+
+  button:hover {
+    transform: none !important;
+  }
+}
+
+/* Focus visible for better accessibility */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--primary-orange);
+  outline-offset: 2px;
+}
+
+/* Size option pills */
+.size-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  transition: all 0.3s ease;
+}
+
+.size-pill.active {
+  background: linear-gradient(135deg, var(--primary-orange), var(--primary-amber));
+  color: white;
+  border-color: var(--primary-orange);
+  transform: scale(1.05);
+}
+
+/* Custom tooltip styles */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  text-align: center;
+  border-radius: 8px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--border-color) transparent transparent transparent;
+}
+
+/* Pulsing effect for required fields */
+.required-field {
+  position: relative;
+}
+
+.required-field::after {
+  content: '*';
+  color: #ef4444;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Interactive pricing calculator display */
+.pricing-calculator {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-calculator::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(245, 158, 11, 0.1), transparent);
+  animation: rotate 4s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pricing-calculator > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Form section transitions */
+.form-section {
+  transition: all 0.3s ease;
+  transform-origin: top;
+}
+
+.form-section.collapsed {
+  transform: scaleY(0);
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.form-section.expanded {
+  transform: scaleY(1);
+  opacity: 1;
+  height: auto;
+}
+
+/* Enhanced submit button */
+.submit-button {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.submit-button:hover::before {
+  left: 100%;
+}
+
+.submit-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.submit-button:disabled::before {
+  display: none;
+}

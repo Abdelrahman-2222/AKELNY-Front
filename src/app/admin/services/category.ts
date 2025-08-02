@@ -16,10 +16,17 @@ export class CategoryService {
     return this.http.post(`${this.apiUrl}/Add`, dto, { responseType: 'text' });
   }
 
+  // Sort categories by name alphabetically
+  // getCategories(): Observable<Category[]> {
+  //   return this.http.get<CategoryResponse>(`${this.apiUrl}/GetAll`)
+  //     .pipe(
+  //       map(response => response.categories)
+  //     );
+  // }
   getCategories(): Observable<Category[]> {
     return this.http.get<CategoryResponse>(`${this.apiUrl}/GetAll`)
       .pipe(
-        map(response => response.categories)
+        map(response => response.categories.sort((a, b) => a.name.localeCompare(b.name)))
       );
   }
 

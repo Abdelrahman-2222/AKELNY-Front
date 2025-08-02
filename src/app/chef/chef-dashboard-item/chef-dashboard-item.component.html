@@ -1,6 +1,557 @@
-<div
-  class="flex justify-between items-center p-3 bg-primary-orange/5 rounded-lg"
->
-  <span>Mods Walp</span>
-  <span class="font-bold">$13.90</span>
+<!-- chef-dashboard-item.component.html -->
+<div class="min-h-screen theme-bg-primary pt-20 pb-32 px-4 sm:px-6 lg:px-8">
+  <!-- Fixed spacing for navbar and footer -->
+
+  <!-- Header Section -->
+  <div class="max-w-4xl mx-auto mb-8">
+    <div class="glass-card rounded-2xl p-6 sm:p-8">
+      <div class="flex items-center space-x-4 mb-4">
+        <div class="p-3 food-gradient rounded-xl">
+          <lucide-icon [img]="ChefHat" class="w-8 h-8 text-white"></lucide-icon>
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold theme-text-primary">Add New Item</h1>
+          <p class="theme-text-muted">Create delicious menu items with flexible pricing options</p>
+        </div>
+      </div>
+
+      <!-- Progress indicator or breadcrumb -->
+      <div class="flex items-center space-x-2 text-sm theme-text-muted">
+        <span>Dashboard</span>
+        <span>→</span>
+        <span>Menu Management</span>
+        <span>→</span>
+        <span class="theme-text-primary font-medium">Add Item</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Validation Errors -->
+  <div *ngIf="validationErrors.length > 0" class="max-w-4xl mx-auto mb-6">
+    <div class="error-message">
+      <h4 class="font-semibold mb-2">Please fix the following errors:</h4>
+      <ul class="list-disc list-inside space-y-1">
+        <li *ngFor="let error of validationErrors">{{ error }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main Form -->
+  <div class="max-w-4xl mx-auto">
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="space-y-8">
+
+      <!-- Basic Information Card -->
+      <div class="appetizing-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center space-x-3 mb-6">
+          <lucide-icon [img]="Package" class="w-6 h-6 text-orange-500"></lucide-icon>
+          <h2 class="text-2xl font-semibold theme-text-primary">Basic Information</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Left Column -->
+          <div class="space-y-6">
+            <!-- Item Name -->
+            <div>
+              <label class="block text-sm font-medium theme-text-primary mb-2">Item Name *</label>
+              <input
+                type="text"
+                formControlName="name"
+                placeholder="e.g., Grilled Salmon with Herbs"
+                class="w-full px-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors"
+              >
+              <div *ngIf="itemForm.get('name')?.invalid && itemForm.get('name')?.touched"
+                   class="mt-2 text-sm text-red-500">
+                Item name is required (minimum 2 characters)
+              </div>
+            </div>
+
+            <!-- Add this to your form -->
+            <div class="form-group mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Restaurant</label>
+              <div *ngIf="isLoadingRestaurant" class="text-sm text-gray-500">Loading restaurant...</div>
+              <div *ngIf="!isLoadingRestaurant && restaurant" class="p-2 border rounded bg-gray-50">
+                {{ restaurant.name }}
+              </div>
+              <div *ngIf="!isLoadingRestaurant && !restaurant" class="text-red-500 text-sm">
+                You need to create a restaurant first.
+              </div>
+            </div>
+
+            <!-- Category -->
+            <div>
+              <label class="block text-sm font-medium theme-text-primary mb-2">Category *</label>
+              <select
+                formControlName="categoryId"
+                class="w-full px-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary focus:border-orange-500 focus:outline-none transition-colors"
+              >
+                <option value="">Select a category</option>
+                <option *ngFor="let category of categories" [value]="category.id">
+                  {{ category.name }}
+                </option>
+              </select>
+              <div *ngIf="itemForm.get('categoryId')?.invalid && itemForm.get('categoryId')?.touched"
+                   class="mt-2 text-sm text-red-500">
+                Please select a category
+              </div>
+
+              <!-- Category preview -->
+              <div *ngIf="itemForm.get('categoryId')?.value"
+                   class="mt-2 p-3 rounded-lg theme-bg-accent border theme-border">
+                <div class="text-sm">
+                  <strong class="theme-text-primary">{{ getCategoryName(itemForm.get('categoryId')?.value) }}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column - Image Upload -->
+          <div>
+            <label class="block text-sm font-medium theme-text-primary mb-2">Item Image</label>
+            <div class="relative">
+              <div *ngIf="!imagePreview"
+                   class="w-full h-64 border-2 border-dashed theme-border rounded-xl flex flex-col items-center justify-center theme-bg-secondary hover:theme-bg-accent transition-colors cursor-pointer file-upload-area"
+                   (click)="fileInput.click()">
+                <lucide-icon [img]="Upload" class="w-12 h-12 theme-text-muted mb-4"></lucide-icon>
+                <p class="text-lg font-medium theme-text-primary mb-2">Upload Item Photo</p>
+                <p class="text-sm theme-text-muted text-center px-4">
+                  Click to upload or drag and drop<br>
+                  PNG, JPG, WEBP up to 5MB
+                </p>
+              </div>
+
+              <div *ngIf="imagePreview" class="relative image-preview">
+                <img [src]="imagePreview" alt="Preview" class="w-full h-64 object-cover rounded-xl">
+                <button
+                  type="button"
+                  (click)="imagePreview = null; selectedImage = null"
+                  class="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                >
+                  <lucide-icon [img]="X" class="w-4 h-4"></lucide-icon>
+                </button>
+                <button
+                  type="button"
+                  (click)="fileInput.click()"
+                  class="absolute bottom-2 right-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium"
+                >
+                  Change Image
+                </button>
+              </div>
+
+              <input
+                #fileInput
+                type="file"
+                accept="image/*"
+                (change)="onImageSelected($event)"
+                class="hidden"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mt-6">
+          <label class="block text-sm font-medium theme-text-primary mb-2">Description | Ingredients *</label>
+          <textarea
+            formControlName="description"
+            rows="4"
+            placeholder="Describe your delicious item... What makes it special? What ingredients does it contain?"
+            class="w-full px-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors resize-none"
+          ></textarea>
+          <div *ngIf="itemForm.get('description')?.invalid && itemForm.get('description')?.touched"
+               class="mt-2 text-sm text-red-500">
+            Description is required (minimum 10 characters)
+          </div>
+        </div>
+      </div>
+
+      <!-- Pricing & Size Configuration Card -->
+      <div class="appetizing-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center space-x-3 mb-6">
+          <lucide-icon [img]="DollarSign" class="w-6 h-6 text-green-500"></lucide-icon>
+          <h2 class="text-2xl font-semibold theme-text-primary">Pricing & Size Configuration</h2>
+        </div>
+
+        <!-- Size Type Selection -->
+        <div class="mb-8">
+          <label class="block text-sm font-medium theme-text-primary mb-4">How is this item sold? *</label>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div *ngFor="let option of sizeTypeOptions"
+                 class="relative cursor-pointer size-type-card"
+                 [class.selected]="selectedSizeType === option.value">
+              <input
+                type="radio"
+                [value]="option.value"
+                formControlName="sizeType"
+                class="sr-only"
+                [id]="'sizeType-' + option.value"
+              >
+              <label
+                [for]="'sizeType-' + option.value"
+                class="block p-4 rounded-xl border-2 theme-border hover:border-orange-300 transition-all cursor-pointer"
+                [class.border-orange-500]="selectedSizeType === option.value"
+                [class.theme-bg-accent]="selectedSizeType === option.value">
+
+                <div class="flex items-center space-x-3 mb-2">
+                  <div class="p-2 rounded-lg"
+                       [class.bg-orange-100]="selectedSizeType === option.value"
+                       [class.theme-bg-secondary]="selectedSizeType !== option.value">
+                    <lucide-icon [img]="Scale" *ngIf="option.icon === 'Scale'" class="w-5 h-5 text-orange-500"></lucide-icon>
+                    <lucide-icon [img]="Ruler" *ngIf="option.icon === 'Ruler'" class="w-5 h-5 text-orange-500"></lucide-icon>
+                    <lucide-icon [img]="Package" *ngIf="option.icon === 'Package'" class="w-5 h-5 text-orange-500"></lucide-icon>
+                  </div>
+                  <h3 class="font-semibold theme-text-primary">{{ option.label }}</h3>
+                </div>
+                <p class="text-sm theme-text-muted">{{ option.description }}</p>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fixed Price Configuration -->
+        <div *ngIf="selectedSizeType === ItemSizeType.Fixed" class="space-y-4 slide-up">
+          <div class="p-6 rounded-xl theme-bg-accent border theme-border">
+            <h3 class="text-lg font-semibold theme-text-primary mb-4">Fixed Price Item</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium theme-text-primary mb-2">Item Price *</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <lucide-icon [img]="DollarSign" class="w-5 h-5 theme-text-muted"></lucide-icon>
+                  </div>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    formControlName="price"
+                    placeholder="0.00"
+                    class="w-full pl-10 pr-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors"
+                  >
+                </div>
+              </div>
+              <div class="flex items-end">
+                <div class="pricing-preview p-3 rounded-lg theme-bg-secondary border theme-border">
+                  <span class="text-sm theme-text-muted">Preview: </span>
+                  <span class="font-semibold theme-text-primary">{{ getPricingDisplay() }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sized Price Configuration -->
+        <div *ngIf="selectedSizeType === ItemSizeType.Sized" class="space-y-4 slide-up">
+          <div class="p-6 rounded-xl theme-bg-accent border theme-border">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold theme-text-primary">Size-Based Pricing</h3>
+              <button
+                type="button"
+                (click)="addSizePrice()"
+                class="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium flex items-center space-x-1"
+              >
+                <lucide-icon [img]="Plus" class="w-4 h-4"></lucide-icon>
+                <span>Add Size</span>
+              </button>
+            </div>
+
+            <div *ngIf="sizePricing.length === 0" class="text-center py-6">
+              <lucide-icon [img]="Ruler" class="w-12 h-12 theme-text-muted mx-auto mb-3"></lucide-icon>
+              <p class="theme-text-muted">No sizes configured. Add different sizes with their respective prices.</p>
+            </div>
+
+            <div *ngIf="sizePricing.length > 0" class="space-y-3" formArrayName="sizePricing">
+              <div *ngFor="let sizePrice of sizePricing.controls; let i = index"
+                   [formGroupName]="i"
+                   class="p-4 rounded-lg theme-bg-secondary border theme-border size-price-item">
+                <div class="flex items-center space-x-4">
+                  <div class="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label class="block text-xs font-medium theme-text-primary mb-1">Size</label>
+                      <select
+                        formControlName="size"
+                        class="w-full px-3 py-2 rounded-lg border theme-border theme-bg-primary theme-text-primary focus:border-orange-500 focus:outline-none transition-colors text-sm"
+                      >
+                        <option *ngFor="let sizeOpt of sizeOptions" [value]="sizeOpt.value">
+                          {{ sizeOpt.label }} ({{ sizeOpt.shortLabel }})
+                        </option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium theme-text-primary mb-1">Price *</label>
+                      <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                          <lucide-icon [img]="DollarSign" class="w-4 h-4 theme-text-muted"></lucide-icon>
+                        </div>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          formControlName="price"
+                          placeholder="0.00"
+                          class="w-full pl-7 pr-3 py-2 rounded-lg border theme-border theme-bg-primary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors text-sm"
+                        >
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium theme-text-primary mb-1">Custom Label</label>
+                      <input
+                        type="text"
+                        formControlName="label"
+                        placeholder="e.g., Personal, Family"
+                        class="w-full px-3 py-2 rounded-lg border theme-border theme-bg-primary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors text-sm"
+                      >
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="removeSizePrice(i)"
+                    class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <lucide-icon [img]="X" class="w-4 h-4"></lucide-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="sizePricing.length > 0" class="mt-4 p-3 rounded-lg theme-bg-secondary border theme-border">
+              <span class="text-sm theme-text-muted">Price Range: </span>
+              <span class="font-semibold theme-text-primary">{{ getPricingDisplay() }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weighted Price Configuration -->
+        <div *ngIf="selectedSizeType === ItemSizeType.Weighted" class="space-y-4 slide-up">
+          <div class="p-6 rounded-xl theme-bg-accent border theme-border">
+            <h3 class="text-lg font-semibold theme-text-primary mb-4">Weight-Based Pricing</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium theme-text-primary mb-2">Price per Kilogram *</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <lucide-icon [img]="DollarSign" class="w-5 h-5 theme-text-muted"></lucide-icon>
+                  </div>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    formControlName="price"
+                    placeholder="0.00"
+                    class="w-full pl-10 pr-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors"
+                  >
+                </div>
+                <p class="text-xs theme-text-muted mt-1">Base price charged per kilogram</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium theme-text-primary mb-2">Default Weight (kg) *</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <lucide-icon [img]="Scale" class="w-5 h-5 theme-text-muted"></lucide-icon>
+                  </div>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0.1"
+                    formControlName="weight"
+                    placeholder="1.0"
+                    class="w-full pl-10 pr-4 py-3 rounded-xl border-2 theme-border theme-bg-secondary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors"
+                  >
+                </div>
+                <p class="text-xs theme-text-muted mt-1">Standard serving weight</p>
+              </div>
+              <div class="flex items-end">
+                <div class="pricing-preview p-3 rounded-lg theme-bg-secondary border theme-border w-full">
+                  <span class="text-sm theme-text-muted block">Calculated Price:</span>
+                  <span class="font-semibold theme-text-primary">{{ getPricingDisplay() }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 p-4 rounded-lg bg-blue-50 border border-blue-200">
+              <div class="flex items-start space-x-2">
+                <lucide-icon [img]="Scale" class="w-5 h-5 text-blue-500 mt-0.5"></lucide-icon>
+                <div>
+                  <h4 class="font-semibold text-blue-800 mb-1">Weight-Based Pricing Info</h4>
+                  <p class="text-sm text-blue-600">
+                    Perfect for grilled meats, kebabs, and items sold by weight.
+                    Customers can specify their desired quantity at checkout.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add-Ons Section -->
+      <div class="appetizing-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+            <lucide-icon [img]="Plus" class="w-6 h-6 text-green-500"></lucide-icon>
+            <h2 class="text-2xl font-semibold theme-text-primary">Add-Ons</h2>
+            <span class="text-sm theme-text-muted">(Optional)</span>
+          </div>
+          <button
+            type="button"
+            (click)="addAddOn()"
+            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium flex items-center space-x-2"
+          >
+            <lucide-icon [img]="Plus" class="w-4 h-4"></lucide-icon>
+            <span>Add Add-On</span>
+          </button>
+        </div>
+
+        <div *ngIf="addOns.length === 0" class="text-center py-8">
+          <lucide-icon [img]="Sparkles" class="w-16 h-16 theme-text-muted mx-auto mb-4"></lucide-icon>
+          <p class="theme-text-muted">No add-ons yet. Add optional extras like cheese, bacon, or extra sauce!</p>
+        </div>
+
+        <div *ngIf="addOns.length > 0" class="space-y-4" formArrayName="addOns">
+          <div *ngFor="let addOn of addOns.controls; let i = index"
+               [formGroupName]="i"
+               class="p-4 rounded-xl theme-bg-accent border theme-border addon-card">
+            <div class="flex items-start space-x-4">
+              <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium theme-text-primary mb-2">Add-On Name</label>
+                  <input
+                    type="text"
+                    formControlName="name"
+                    placeholder="e.g., Extra Cheese"
+                    class="w-full px-3 py-2 rounded-lg border theme-border theme-bg-secondary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors"
+                  >
+                </div>
+                <div>
+                  <label class="block text-sm font-medium theme-text-primary mb-2">Additional Price</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <lucide-icon [img]="DollarSign" class="w-4 h-4 theme-text-muted"></lucide-icon>
+                    </div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      formControlName="additionalPrice"
+                      placeholder="0.00"
+                      class="w-full pl-8 pr-3 py-2 rounded-lg border theme-border theme-bg-secondary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors"
+                    >
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                (click)="removeAddOn(i)"
+                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                <lucide-icon [img]="X" class="w-5 h-5"></lucide-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Combos Section -->
+      <div class="appetizing-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+            <lucide-icon [img]="Package" class="w-6 h-6 text-purple-500"></lucide-icon>
+            <h2 class="text-2xl font-semibold theme-text-primary">Combo Deals</h2>
+            <span class="text-sm theme-text-muted">(Optional)</span>
+          </div>
+          <button
+            type="button"
+            (click)="addCombo()"
+            class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium flex items-center space-x-2"
+          >
+            <lucide-icon [img]="Plus" class="w-4 h-4"></lucide-icon>
+            <span>Add Combo</span>
+          </button>
+        </div>
+
+        <div *ngIf="combos.length === 0" class="text-center py-8">
+          <lucide-icon [img]="Package" class="w-16 h-16 theme-text-muted mx-auto mb-4"></lucide-icon>
+          <p class="theme-text-muted">No combos yet. Create value deals like "Burger + Fries + Drink"!</p>
+        </div>
+
+        <div *ngIf="combos.length > 0" class="space-y-4" formArrayName="combos">
+          <div *ngFor="let combo of combos.controls; let i = index"
+               [formGroupName]="i"
+               class="p-4 rounded-xl theme-bg-accent border theme-border combo-card">
+            <div class="flex items-start space-x-4">
+              <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium theme-text-primary mb-2">Combo Name</label>
+                  <input
+                    type="text"
+                    formControlName="name"
+                    placeholder="e.g., Deluxe Meal Deal"
+                    class="w-full px-3 py-2 rounded-lg border theme-border theme-bg-secondary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors"
+                  >
+                </div>
+                <div>
+                  <label class="block text-sm font-medium theme-text-primary mb-2">Combo Price</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <lucide-icon [img]="DollarSign" class="w-4 h-4 theme-text-muted"></lucide-icon>
+                    </div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      formControlName="comboPrice"
+                      placeholder="0.00"
+                      class="w-full pl-8 pr-3 py-2 rounded-lg border theme-border theme-bg-secondary theme-text-primary placeholder-gray-400 focus:border-orange-500 focus:outline-none transition-colors"
+                    >
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                (click)="removeCombo(i)"
+                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                <lucide-icon [img]="X" class="w-5 h-5"></lucide-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Section -->
+      <div class="appetizing-card rounded-2xl p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+          <div>
+            <h3 class="text-lg font-semibold theme-text-primary">Ready to add this item?</h3>
+            <p class="theme-text-muted">Make sure all information is correct before submitting.</p>
+            <div *ngIf="selectedSizeType !== ItemSizeType.Fixed" class="mt-2">
+              <span class="text-sm font-medium theme-text-primary">Current Pricing: </span>
+              <span class="text-sm theme-text-muted">{{ getPricingDisplay() }}</span>
+            </div>
+          </div>
+
+          <div class="flex space-x-4">
+            <button
+              type="button"
+              (click)="resetForm()"
+              class="px-6 py-3 border-2 theme-border theme-text-primary rounded-xl hover:theme-bg-accent transition-colors font-medium"
+            >
+              Reset Form
+            </button>
+            <button
+              type="submit"
+              [disabled]="!itemForm.valid || isSubmitting"
+              class="px-8 py-3 food-gradient text-white rounded-xl hover:shadow-lg transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            >
+              <div *ngIf="isSubmitting" class="loading-spinner"></div>
+              <span *ngIf="!isSubmitting">Add Item to Menu</span>
+              <span *ngIf="isSubmitting">Adding Item...</span>
+              <lucide-icon [img]="ChefHat" class="w-5 h-5 ml-2" *ngIf="!isSubmitting"></lucide-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Success/Error Messages would go here -->
+  <!-- You can add toast notifications or modal dialogs for feedback -->
 </div>

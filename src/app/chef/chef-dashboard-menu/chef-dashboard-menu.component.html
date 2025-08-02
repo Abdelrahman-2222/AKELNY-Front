@@ -1,25 +1,341 @@
-<div class="bg-white rounded-2xl shadow-sm p-6 mt-4">
-  <h2 class="text-xl font-bold text-dark-text mb-6">Menu Management</h2>
+<!-- chef-dashboard-menu.component.html -->
+<div class="min-h-screen theme-bg-primary pb-20">
+  <!-- Spacer for navbar -->
+  <div class="h-20"></div>
 
-  <div class="flex flex-col sm:flex-row gap-4">
-    <button
-      class="bg-primary-orange hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full"
-    >
-      Add New Item
-    </button>
-    <button
-      class="border border-primary-green text-primary-green font-bold py-3 px-6 rounded-full"
-    >
-      Manage Categories
-    </button>
-  </div>
+  <!-- Header Section with Glass Effect -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+    <div class="glass-card rounded-3xl p-8 border theme-border backdrop-blur-xl">
+      <!-- Header Content -->
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
+        <!-- Title Section -->
+        <div class="flex items-center gap-4">
+          <div class="p-4 food-gradient rounded-2xl text-white shadow-lg">
+            <lucide-angular [img]="ChefHat" class="w-8 h-8"></lucide-angular>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold theme-text-primary mb-1">Restaurant Menu</h1>
+            <p class="theme-text-secondary" *ngIf="!isLoading">
+              {{getCategoryCount()}} categories • {{getItemCount()}} items
+            </p>
+          </div>
+        </div>
 
-  <div class="mt-6">
-    <h3 class="font-medium text-dark-text mb-4">Popular Dishes</h3>
-    <div class="space-y-3">
-      @for (i of [1,2,3]; track $index) {
-      <app-chef-dashboard-item></app-chef-dashboard-item>
-      }
+        <!-- Action Button -->
+        <button
+          (click)="addNewItem()"
+          class="flex items-center gap-3 food-gradient text-white px-8 py-4 rounded-2xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 font-semibold">
+          <lucide-angular [img]="Plus" class="w-5 h-5"></lucide-angular>
+          Add New Item
+        </button>
+      </div>
+
+      <!-- Statistics Cards (only when not loading) -->
+      <div *ngIf="!isLoading && !errorMessage" class="grid grid-cols-1 md:grid-cols-3 gap-4 stats-grid">
+        <div class="appetizing-card rounded-2xl p-6 text-center stats-card">
+          <div class="flex items-center justify-center gap-3 mb-2">
+            <lucide-angular [img]="Package" class="w-6 h-6 text-orange-500"></lucide-angular>
+            <span class="text-2xl font-bold theme-text-primary">{{totalItems}}</span>
+          </div>
+          <p class="theme-text-secondary font-medium">Total Items</p>
+        </div>
+
+        <div class="appetizing-card rounded-2xl p-6 text-center stats-card">
+          <div class="flex items-center justify-center gap-3 mb-2">
+            <lucide-angular [img]="TrendingUp" class="w-6 h-6 text-green-500"></lucide-angular>
+            <span class="text-2xl font-bold theme-text-primary">{{totalCategories}}</span>
+          </div>
+          <p class="theme-text-secondary font-medium">Categories</p>
+        </div>
+
+        <div class="appetizing-card rounded-2xl p-6 text-center stats-card">
+          <div class="flex items-center justify-center gap-3 mb-2">
+            <lucide-angular [img]="DollarSign" class="w-6 h-6 text-emerald-500"></lucide-angular>
+            <span class="text-2xl font-bold theme-text-primary">${{averagePrice.toFixed(2)}}</span>
+          </div>
+          <p class="theme-text-secondary font-medium">Avg Price</p>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Search and Filter Section -->
+  <div *ngIf="!isLoading && !errorMessage && menuCategories.length > 0" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+    <div class="glass-card rounded-2xl p-6 border theme-border">
+      <div class="flex flex-col lg:flex-row gap-4 items-center justify-between filter-section">
+        <!-- Search Bar -->
+        <div class="relative flex-1 max-w-md">
+          <lucide-angular [img]="Search" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 theme-text-muted"></lucide-angular>
+          <input
+            [(ngModel)]="searchQuery"
+            type="text"
+            placeholder="Search menu items..."
+            class="w-full pl-12 pr-4 py-3 rounded-xl border theme-border theme-bg-secondary theme-text-primary focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200">
+        </div>
+
+        <!-- Category Filter -->
+        <div class="flex items-center gap-4">
+          <select
+            [(ngModel)]="selectedCategory"
+            class="px-4 py-3 rounded-xl border theme-border theme-bg-secondary theme-text-primary focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+            <option [value]="null">All Categories</option>
+            <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
+          </select>
+
+          <!-- View Toggle -->
+          <div class="flex rounded-xl border theme-border overflow-hidden">
+            <button
+              (click)="viewMode = 'grid'"
+              [class]="viewMode === 'grid' ? 'food-gradient text-white' : 'theme-bg-secondary theme-text-secondary'"
+              class="p-3 transition-all duration-200">
+              <lucide-angular [img]="Grid" class="w-5 h-5"></lucide-angular>
+            </button>
+            <button
+              (click)="viewMode = 'list'"
+              [class]="viewMode === 'list' ? 'food-gradient text-white' : 'theme-bg-secondary theme-text-secondary'"
+              class="p-3 transition-all duration-200">
+              <lucide-angular [img]="List" class="w-5 h-5"></lucide-angular>
+            </button>
+          </div>
+
+          <!-- Clear Filters -->
+          <button
+            *ngIf="searchQuery || selectedCategory"
+            (click)="clearFilters()"
+            class="px-4 py-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition-colors font-medium">
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col items-center justify-center py-20">
+      <div class="relative mb-8">
+        <div class="animate-spin rounded-full h-16 w-16 border-4 border-orange-200"></div>
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-orange-500 absolute top-0 left-0"></div>
+      </div>
+      <p class="theme-text-secondary font-medium">Loading your delicious menu...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="glass-card rounded-2xl p-10 text-center border border-red-200 bg-red-50/80">
+      <div class="p-4 bg-red-100 rounded-full inline-block mb-4">
+        <lucide-angular [img]="Package" class="w-8 h-8 text-red-500"></lucide-angular>
+      </div>
+      <h3 class="text-xl font-bold text-red-700 mb-2">Oops! Something went wrong</h3>
+      <p class="text-red-600 font-medium mb-6">{{errorMessage}}</p>
+      <button
+        (click)="loadRestaurantMenu()"
+        class="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-lg font-semibold">
+        Try Again
+      </button>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !errorMessage && menuCategories.length === 0" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="glass-card rounded-3xl p-16 text-center border theme-border empty-state">
+      <div class="p-6 bg-gradient-to-br from-orange-100 to-amber-100 rounded-full inline-block mb-6 badge-float">
+        <lucide-angular [img]="Package" class="w-12 h-12 text-orange-500"></lucide-angular>
+      </div>
+      <h3 class="text-2xl font-bold theme-text-primary mb-3">Your menu awaits</h3>
+      <p class="theme-text-secondary mb-8 text-lg max-w-md mx-auto">Start building your culinary masterpiece by adding your first delicious item</p>
+      <button
+        (click)="addNewItem()"
+        class="food-gradient text-white px-8 py-4 rounded-2xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 font-semibold text-lg micro-bounce">
+        <lucide-angular [img]="Plus" class="w-6 h-6 inline mr-3"></lucide-angular>
+        Create First Item
+      </button>
+    </div>
+  </div>
+
+  <!-- No Search Results -->
+  <div *ngIf="!isLoading && !errorMessage && menuCategories.length > 0 && filteredCategories.length === 0" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="glass-card rounded-2xl p-12 text-center border theme-border">
+      <div class="p-4 bg-gray-100 rounded-full inline-block mb-4">
+        <lucide-angular [img]="Search" class="w-8 h-8 text-gray-500"></lucide-angular>
+      </div>
+      <h3 class="text-xl font-semibold theme-text-primary mb-2">No items found</h3>
+      <p class="theme-text-secondary mb-6">Try adjusting your search or filter criteria</p>
+      <button
+        (click)="clearFilters()"
+        class="bg-gray-500 text-white px-6 py-3 rounded-xl hover:bg-gray-600 transition-colors font-medium">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Menu Categories -->
+  <div *ngIf="!isLoading && !errorMessage && filteredCategories.length > 0" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+    <div *ngFor="let menuCategory of filteredCategories; trackBy: trackByCategory"
+         class="glass-card rounded-3xl border theme-border overflow-hidden shadow-2xl menu-category">
+
+      <!-- Category Header -->
+      <div class="food-gradient px-8 py-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12"></div>
+        <div class="relative z-10 flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-white mb-1">{{menuCategory.category.name}}</h2>
+            <p class="text-orange-100 font-medium">{{menuCategory.items.length}} delicious items</p>
+          </div>
+          <div class="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+            <lucide-angular [img]="Star" class="w-6 h-6 text-white"></lucide-angular>
+          </div>
+        </div>
+      </div>
+
+      <!-- Items Grid/List -->
+      <div class="p-8">
+        <!-- Grid View -->
+        <div *ngIf="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 menu-item-grid">
+          <div *ngFor="let item of menuCategory.items; trackBy: trackByItem"
+               class="group appetizing-card rounded-2xl p-6 border theme-border hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 menu-item">
+
+            <!-- Item Image -->
+            <div class="relative mb-6 overflow-hidden rounded-xl">
+              <img
+                [src]="item.imageUrl || '/assets/images/placeholder-food.jpg'"
+                [alt]="item.name"
+                class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+
+              <!-- Overlay on hover -->
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                <div class="text-white">
+                  <p class="text-sm font-medium">{{getSizeTypeLabel(item.sizeType)}} Price</p>
+                </div>
+              </div>
+
+              <!-- Size Type Badge -->
+              <div class="absolute top-3 left-3">
+                <span [class]="'text-xs font-semibold px-3 py-1 rounded-full border ' + getSizeTypeColor(item.sizeType)">
+                  {{getSizeTypeLabel(item.sizeType)}}
+                </span>
+              </div>
+
+              <!-- Add-ons Badge -->
+              <div *ngIf="item.addOns && item.addOns.length > 0" class="absolute top-3 right-3">
+                <span class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-200">
+                  +{{item.addOns.length}}
+                </span>
+              </div>
+            </div>
+
+            <!-- Item Info -->
+            <div class="space-y-4">
+              <div>
+                <h3 class="font-bold theme-text-primary text-xl mb-2 group-hover:text-orange-600 transition-colors">
+                  {{item.name}}
+                </h3>
+                <p class="theme-text-secondary text-sm line-clamp-2 leading-relaxed">
+                  {{item.description}}
+                </p>
+              </div>
+
+              <!-- Price -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <lucide-angular [img]="DollarSign" class="w-5 h-5 text-emerald-500"></lucide-angular>
+                  <span class="font-bold text-emerald-600 text-lg">{{formatPrice(item)}}</span>
+                </div>
+
+                <!-- Rating placeholder -->
+                <div class="flex items-center gap-1">
+                  <lucide-angular [img]="Star" class="w-4 h-4 text-yellow-400 fill-current"></lucide-angular>
+                  <span class="text-sm theme-text-secondary">4.8</span>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex gap-2 pt-2">
+                <button
+                  (click)="viewItemDetails(item)"
+                  class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md">
+                  <lucide-angular [img]="Eye" class="w-4 h-4"></lucide-angular>
+                  View
+                </button>
+
+                <button
+                  (click)="editItem(item)"
+                  class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md">
+                  <lucide-angular [img]="Edit" class="w-4 h-4"></lucide-angular>
+                  Edit
+                </button>
+
+                <button
+                  (click)="deleteItem(item)"
+                  class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md">
+                  <lucide-angular [img]="Trash2" class="w-4 h-4"></lucide-angular>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- List View -->
+        <div *ngIf="viewMode === 'list'" class="space-y-4">
+          <div *ngFor="let item of menuCategory.items; trackBy: trackByItem"
+               class="appetizing-card rounded-2xl p-6 border theme-border hover:shadow-xl transition-all duration-200 flex items-center gap-6 menu-item">
+
+            <!-- Item Image -->
+            <img
+              [src]="item.imageUrl || '/assets/images/placeholder-food.jpg'"
+              [alt]="item.name"
+              class="w-24 h-24 object-cover rounded-xl flex-shrink-0">
+
+            <!-- Item Info -->
+            <div class="flex-1">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-bold theme-text-primary text-lg">{{item.name}}</h3>
+                <span [class]="'text-xs font-semibold px-3 py-1 rounded-full border ' + getSizeTypeColor(item.sizeType)">
+                  {{getSizeTypeLabel(item.sizeType)}}
+                </span>
+              </div>
+              <p class="theme-text-secondary text-sm mb-3 line-clamp-1">{{item.description}}</p>
+
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                  <div class="flex items-center gap-1">
+                    <lucide-angular [img]="DollarSign" class="w-4 h-4 text-emerald-500"></lucide-angular>
+                    <span class="font-bold text-emerald-600">{{formatPrice(item)}}</span>
+                  </div>
+                  <div *ngIf="item.addOns && item.addOns.length > 0" class="flex items-center gap-1">
+                    <lucide-angular [img]="Plus" class="w-4 h-4 text-orange-500"></lucide-angular>
+                    <span class="text-sm theme-text-secondary">{{item.addOns.length}} add-ons</span>
+                  </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-2">
+                  <button
+                    (click)="viewItemDetails(item)"
+                    class="p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors">
+                    <lucide-angular [img]="Eye" class="w-4 h-4"></lucide-angular>
+                  </button>
+                  <button
+                    (click)="editItem(item)"
+                    class="p-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors">
+                    <lucide-angular [img]="Edit" class="w-4 h-4"></lucide-angular>
+                  </button>
+                  <button
+                    (click)="deleteItem(item)"
+                    class="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors">
+                    <lucide-angular [img]="Trash2" class="w-4 h-4"></lucide-angular>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spacer for footer -->
+  <div class="h-20"></div>
 </div>
