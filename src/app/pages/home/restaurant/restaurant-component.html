@@ -43,7 +43,9 @@
       <!-- cards -->
 
       <!-- sideFilterBar -->
-      <app-filter-restaurant-view></app-filter-restaurant-view>
+      <app-filter-restaurant-view
+      (sortChanged)="onSortChanged($event)">
+    </app-filter-restaurant-view>
       <!-- <app-filter-item-view></app-filter-item-view> -->
       <!-- sideFilterBar -->
          <app-pagination class="col-span-1 xl:col-span-3 col-start-1 xl:col-start-2 xl:col-end-4" [page]="page"
@@ -51,6 +53,8 @@
           [totalPages]="totalPages"
           (pageChange)="onPageChange($event)">
         </app-pagination>
+
+
 
     </div>
 

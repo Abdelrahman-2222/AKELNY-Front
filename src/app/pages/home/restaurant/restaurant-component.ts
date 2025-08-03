@@ -29,9 +29,19 @@ interface Chef {
 export class RestaurantComponent implements OnInit {
   getService = inject(GetService);
   restaurants: CustomerRestaurant[] = [];
+
+
+  //pagination
   page = 1;
   pageSize = 3;
   totalPages = 0;
+
+  //sorting
+  sortBy: string = '';
+  sortOrder: string = ''; // 'asc' for ascending, 'desc' for descending
+  url = 'https://localhost:7045/api/restaurants?' +
+      (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
+      `page=${this.page}&pageSize=${this.pageSize}`
 
   ngOnInit(): void {
     //restaurants
@@ -39,7 +49,9 @@ export class RestaurantComponent implements OnInit {
   }
  loadRestaurants(): void {
     this.getService.get<CustomerRestaurant[]>({
-      url: 'https://localhost:7045/api/restaurants?'+`page=${this.page}&pageSize=${this.pageSize}`,
+      url:'https://localhost:7045/api/restaurants?' +
+      (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
+      `page=${this.page}&pageSize=${this.pageSize}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -65,75 +77,14 @@ onPageChange(event: { page: number; pageSize: number }): void {
   this.pageSize = event.pageSize;
   this.loadRestaurants();
 }
-  //temp
-  chefs: Chef[] = [
-    // Add sample chef data here
-    {
-      id: 1,
-      name: 'Chef John',
-      location: 'New York',
-      speciality: 'Italian Cuisine',
-      rating: 4.5,
-      reviews: 120,
-      deliveryTime: '30 mins',
-      image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
-      foodImage: 'https://wallpapercat.com/w/full/3/a/e/2143097-1920x1080-desktop-1080p-healthy-food-background-photo.jpg'
-    },
-    {
-      id: 2,
-      name: 'Chef Maria',
-      location: 'Los Angeles',
-      speciality: 'Mexican Cuisine',
-      rating: 4.7,
-      reviews: 200,
-      deliveryTime: '25 mins',
-      image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
-      foodImage: 'https://wallpapercat.com/w/full/3/a/e/2143097-1920x1080-desktop-1080p-healthy-food-background-photo.jpg'
-    },
-    {
-      id: 2,
-      name: 'Chef Maria',
-      location: 'Los Angeles',
-      speciality: 'Mexican Cuisine',
-      rating: 4.7,
-      reviews: 200,
-      deliveryTime: '25 mins',
-      image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
-      foodImage: 'https://wallpapercat.com/w/full/3/a/e/2143097-1920x1080-desktop-1080p-healthy-food-background-photo.jpg'
-    },
-    {
-      id: 2,
-      name: 'Chef Maria',
-      location: 'Los Angeles',
-      speciality: 'Mexican Cuisine',
-      rating: 4.7,
-      reviews: 200,
-      deliveryTime: '25 mins',
-      image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
-      foodImage: 'https://wallpapercat.com/w/full/3/a/e/2143097-1920x1080-desktop-1080p-healthy-food-background-photo.jpg'
-    },
-    {
-      id: 2,
-      name: 'Chef Maria',
-      location: 'Los Angeles',
-      speciality: 'Mexican Cuisine',
-      rating: 4.7,
-      reviews: 200,
-      deliveryTime: '25 mins',
-      image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
-      foodImage: 'https://wallpapercat.com/w/full/3/a/e/2143097-1920x1080-desktop-1080p-healthy-food-background-photo.jpg'
-    },
-    {
-      id: 2,
-      name: 'Chef Maria',
-      location: 'Los Angeles',
-      speciality: 'Mexican Cuisine',
-      rating: 4.7,
-      reviews: 200,
-      deliveryTime: '25 mins',
-      image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
-      foodImage: 'https://wallpapercat.com/w/full/3/a/e/2143097-1920x1080-desktop-1080p-healthy-food-background-photo.jpg'
-    }
-  ];
-  //temp
+onSortChanged(event: { sortBy: string; sortOrder: string }): void {
+  this.sortBy = event.sortBy;
+  this.sortOrder = event.sortOrder;
+  // Here you can implement the logic to sort the restaurants based on the selected criteria
+  // For example, you might want to call a service to fetch sorted data from the backend
+  console.log(this.url);
+  // You can also update the restaurant list based on the sorting criteria
+  this.loadRestaurants();
+}
+
 }
