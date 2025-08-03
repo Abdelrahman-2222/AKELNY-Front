@@ -1,14 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CustomerCategories } from '../../../models/CustomerCategories.model';
-import { GetService } from '../../../services/requests/get-service';
+import { Component, inject } from '@angular/core';
+import { GetService } from '../../../../services/requests/get-service';
+import { CustomerCategories } from '../../../../models/CustomerCategories.model';
 
 @Component({
-  selector: 'app-filter',
+  selector: 'app-filter-item-view',
   imports: [],
-  templateUrl: './filter.html',
+  templateUrl: './filter-item-view.html',
+  styleUrl: './filter-item-view.css'
 })
-export class Filter implements OnInit {
-  getService = inject(GetService);
+export class FilterItemView {
+getService = inject(GetService);
   categories: CustomerCategories[] = []
 
   ngOnInit(): void {
@@ -46,5 +47,3 @@ export class Filter implements OnInit {
 
   }
 }
-
-

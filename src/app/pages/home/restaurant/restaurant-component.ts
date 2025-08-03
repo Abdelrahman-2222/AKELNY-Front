@@ -4,7 +4,9 @@ import { FoodCategoryCardComponent } from '../food-category-card/food-category-c
 import { NgFor } from '@angular/common';
 import { GetService } from '../../../services/requests/get-service';
 import { CustomerRestaurant } from '../../../models/CustomerRestaurant.model'; // Assuming you have a Restaurant model defined
-import { Filter } from '../../../shared/components/filter/filter';
+import { FilterItemView } from '../../../shared/components/filters/filter-item-view/filter-item-view';
+import { FilterRestaurantView } from '../../../shared/components/filters/filter-restaurant-view/filter-restaurant-view';
+import { Pagination } from '../../../shared/components/pagination/pagination';
 
 
 interface Chef {
@@ -21,22 +23,23 @@ interface Chef {
 
 @Component({
   selector: 'app-restaurant-component',
-  imports: [LucideAngularModule, FoodCategoryCardComponent, Filter, NgFor],
+  imports: [LucideAngularModule, FoodCategoryCardComponent, FilterRestaurantView,FilterItemView, Pagination,NgFor],
   templateUrl: './restaurant-component.html',
 })
 export class RestaurantComponent implements OnInit {
   getService = inject(GetService);
   restaurants: CustomerRestaurant[] = [];
+  page = 1;
+  pageSize = 3;
+  totalPages = 0;
 
   ngOnInit(): void {
     //restaurants
-    this.getRestaurants();
-    //restaurants
-
+    this.loadRestaurants();
   }
-  getRestaurants(): void {
+ loadRestaurants(): void {
     this.getService.get<CustomerRestaurant[]>({
-      url: 'https://localhost:7045/api/restaurants',
+      url: 'https://localhost:7045/api/restaurants?'+`page=${this.page}&pageSize=${this.pageSize}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -45,6 +48,7 @@ export class RestaurantComponent implements OnInit {
     ).subscribe({
       next: (data: any) => {
         this.restaurants = data.categories;
+        this.totalPages = data.totalCount;
         console.log(this.restaurants);
       }
       , error: (err) => {
@@ -56,7 +60,11 @@ export class RestaurantComponent implements OnInit {
     })
   }
 
-
+onPageChange(event: { page: number; pageSize: number }): void {
+  this.page = event.page;
+  this.pageSize = event.pageSize;
+  this.loadRestaurants();
+}
   //temp
   chefs: Chef[] = [
     // Add sample chef data here
