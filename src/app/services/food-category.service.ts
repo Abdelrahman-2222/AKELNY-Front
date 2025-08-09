@@ -10,4 +10,5 @@ export class FoodCategoryService {
     { name: 'Indian', icon: 'curry', chefs: 15 },
     { name: 'Desserts', icon: 'cupcake', chefs: 10 },
   ];
+  
 }

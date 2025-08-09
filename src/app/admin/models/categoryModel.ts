@@ -12,3 +12,4 @@ export interface CategoryResponse {
   categories: Category[];
   totalCount: number;
 }
+

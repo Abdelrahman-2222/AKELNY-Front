@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import {AuthService} from '../../services/auth.service';
-import {AddRestaurant} from '../../services/chef/add-restaurant';
+import { AuthService } from '../../services/auth.service';
+import { AddRestaurant } from '../../services/chef/add-restaurant';
 // import {SearchService} from '../../services/search.service';
 
 @Component({
@@ -12,14 +12,14 @@ import {AddRestaurant} from '../../services/chef/add-restaurant';
   templateUrl: './main.html',
   styleUrl: './main.css'
 })
-export class Main{
+export class Main {
   searchResults: any[] = [];
   constructor(
     private router: Router,
     private authService: AuthService,
     private restaurantService: AddRestaurant,
     // private searchService: SearchService
-  ) {}
+  ) { }
 
   // ngOnInit() {
   //   this.searchService.setSearchConfig({
@@ -58,7 +58,7 @@ export class Main{
     if (user) {
       // User is authenticated - redirect based on role
       if (user.role === 'Customer' || user.role === 'customer') {
-        this.router.navigate(['/customer/categories']);
+        this.router.navigate(['/customer/restaurant']);
       } else {
         this.router.navigate(['/unauthorized']);
       }
