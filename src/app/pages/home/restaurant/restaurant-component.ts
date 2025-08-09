@@ -7,6 +7,7 @@ import { CustomerRestaurant } from '../../../models/CustomerRestaurant.model'; /
 import { FilterItemView } from '../../../shared/components/filters/filter-item-view/filter-item-view';
 import { FilterRestaurantView } from '../../../shared/components/filters/filter-restaurant-view/filter-restaurant-view';
 import { Pagination } from '../../../shared/components/pagination/pagination';
+import { Router } from '@angular/router';
 
 
 interface Chef {
@@ -23,11 +24,13 @@ interface Chef {
 
 @Component({
   selector: 'app-restaurant-component',
-  imports: [LucideAngularModule, FoodCategoryCardComponent, FilterRestaurantView,FilterItemView, Pagination,NgFor],
+  imports: [LucideAngularModule, FoodCategoryCardComponent, FilterRestaurantView, FilterItemView, Pagination, NgFor],
   templateUrl: './restaurant-component.html',
 })
 export class RestaurantComponent implements OnInit {
   getService = inject(GetService);
+  router = inject(Router);
+
   restaurants: CustomerRestaurant[] = [];
 
 
@@ -40,18 +43,18 @@ export class RestaurantComponent implements OnInit {
   sortBy: string = '';
   sortOrder: string = ''; // 'asc' for ascending, 'desc' for descending
   url = 'https://localhost:7045/api/restaurants?' +
-      (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
-      `page=${this.page}&pageSize=${this.pageSize}`
+    (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
+    `page=${this.page}&pageSize=${this.pageSize}`
 
   ngOnInit(): void {
     //restaurants
     this.loadRestaurants();
   }
- loadRestaurants(): void {
+  loadRestaurants(): void {
     this.getService.get<CustomerRestaurant[]>({
-      url:'https://localhost:7045/api/restaurants?' +
-      (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
-      `page=${this.page}&pageSize=${this.pageSize}`,
+      url: 'https://localhost:7045/api/restaurants?' +
+        (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
+        `page=${this.page}&pageSize=${this.pageSize}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -71,20 +74,22 @@ export class RestaurantComponent implements OnInit {
       }
     })
   }
-
-onPageChange(event: { page: number; pageSize: number }): void {
-  this.page = event.page;
-  this.pageSize = event.pageSize;
-  this.loadRestaurants();
+  onPageChange(event: { page: number; pageSize: number }): void {
+    this.page = event.page;
+    this.pageSize = event.pageSize;
+    this.loadRestaurants();
+  }
+  onSortChanged(event: { sortBy: string; sortOrder: string }): void {
+    this.sortBy = event.sortBy;
+    this.sortOrder = event.sortOrder;
+    // Here you can implement the logic to sort the restaurants based on the selected criteria
+    // For example, you might want to call a service to fetch sorted data from the backend
+    console.log(this.url);
+    // You can also update the restaurant list based on the sorting criteria
+    this.loadRestaurants();
+  }
+showRestaurantDetails(restaurantId: number): void {
+  console.log(`restaurantId : ${restaurantId}`);
+  this.router.navigate(['/customer/restaurant-details', restaurantId]);
 }
-onSortChanged(event: { sortBy: string; sortOrder: string }): void {
-  this.sortBy = event.sortBy;
-  this.sortOrder = event.sortOrder;
-  // Here you can implement the logic to sort the restaurants based on the selected criteria
-  // For example, you might want to call a service to fetch sorted data from the backend
-  console.log(this.url);
-  // You can also update the restaurant list based on the sorting criteria
-  this.loadRestaurants();
-}
-
 }

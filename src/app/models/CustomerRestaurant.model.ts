@@ -1,5 +1,6 @@
 
 export interface CustomerRestaurant {
+  id: number,
   chefId: string
   description: string
   imageUrl: string

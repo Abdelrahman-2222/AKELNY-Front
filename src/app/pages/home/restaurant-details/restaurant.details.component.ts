@@ -1,8 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar-component/navbar-component';
 import { Footer } from '../../../shared/components/footer/footer';
 import { CategoriesComponent } from '../categories/categories.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GetService } from '../../../services/requests/get-service';
+import { RestaurantDetails } from '../../../models/RestaurantDetails.model';
+import { Pagination } from '../../../shared/components/pagination/pagination';
 
 interface MenuItem {
   id: number;
@@ -16,44 +20,66 @@ interface MenuItem {
 @Component({
   selector: 'app-restaurant-details',
   templateUrl: './restaurant.details.component.html',
-  imports: [CommonModule, CategoriesComponent],
+  imports: [CommonModule, CategoriesComponent, Pagination],
 })
-export class RestaurantDetailsComponent {
-  chefInfo = {
-    name: 'Home Chef',
-    role: 'Home Chef',
-    image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
-    bannerImage: 'assets/images/banner-food.jpg'
-  };
+export class RestaurantDetailsComponent implements OnInit {
+  router = inject(Router);
+  getService = inject(GetService);
+  route = inject(ActivatedRoute);
+  restId: number = 0
+  restDetails: RestaurantDetails | null = null;
 
-  menuItems: MenuItem[] = [
-    // Add your menu items here
-    {
-      id: 1,
-      name: "Somthing",
-      description: "Delicious food",
-      price: 5.99,
-      image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
-      category: "pizza"
-    },
-    {
-      id: 1,
-      name: "Somthing",
-      description: "Delicious food",
-      price: 5.99,
-      image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
-      category: "pizza"
-    },
-    {
-      id: 1,
-      name: "Somthing",
-      description: "Delicious food",
-      price: 5.99,
-      image: 'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww',
-      category: "pizza"
-    },
+  //pagination
+  page = 1;
+  pageSize = 4;
+  totalPages = 0;
 
-  ];
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const restaurantId = params.get('id');
+      if (restaurantId) {
+        this.restId = +restaurantId; // Convert to number
+        console.log(`Restaurant ID: ${restaurantId}`);
+        // You can now use the restaurantId to fetch details or perform other actions
+      } else {
+        console.error('No restaurant ID found in the route parameters.');
+      }
+    })
 
-  categories = ['Categrily', 'Metegrily'];
+    //load restaurant details
+    this.loadRestaurantDetails();
+  }
+
+  loadRestaurantDetails() {
+    this.getService.get<RestaurantDetails>({
+      url: `https://localhost:7045/api/Restaurants/customer-restaurant/${this.restId}?page=${this.page}&pageSize=${this.pageSize}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    }
+    ).subscribe({
+      next: (data: any) => {
+        this.restDetails = data;
+        this.totalPages = data.totalPages;
+        console.log(this.restDetails);
+      }
+      , error: (err) => {
+        console.error('Error fetching restDetails:', err);
+      }
+      , complete: () => {
+        console.log('Restaurant data fetch complete');
+      }
+    })
+  }
+
+  onPageChange(event: { page: number; pageSize: number }): void {
+    this.page = event.page;
+    this.pageSize = event.pageSize;
+    this.loadRestaurantDetails();
+  }
+  showItemDetails(itemId: number): void {
+    console.log(`itemId : ${itemId}`);
+    this.router.navigate(['/customer/item-details', itemId]);
+  }
 }

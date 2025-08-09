@@ -100,10 +100,16 @@ export const customerRoutes: Routes = [
         .then((m) => m.RestaurantComponent)
   },
   {
-    path: 'restaurant-details',
+    path: 'restaurant-details/:id',
     loadComponent: () =>
       import('./pages/home/restaurant-details/restaurant.details.component')
         .then((m) => m.RestaurantDetailsComponent)
+  },
+  {
+    path: 'item-details/:id',
+    loadComponent: () =>
+      import('./pages/home/item-details/item-details')
+        .then((m) => m.ItemDetails)
   }
 ]
 
