@@ -1,117 +1,132 @@
 import { Routes } from '@angular/router';
 
 export const customerRoutes: Routes = [
-
   { path: '', redirectTo: 'categories', pathMatch: 'full' },
   {
-    path: 'cart-component',
+    // path: 'cart-component',
+    path: 'cart',
     loadComponent: () =>
-      import('./pages/cart/cart-component/cart-component')
-        .then((m) => m.CartComponent)
+      import('./pages/cart/cart-component/cart-component').then(
+        (m) => m.CartComponent
+      ),
   },
   {
     path: 'order-body',
     loadComponent: () =>
-      import('./pages/cart/order-body/order-body.component')
-        .then((m) => m.OrderBodyComponent)
+      import('./pages/cart/order-body/order-body.component').then(
+        (m) => m.OrderBodyComponent
+      ),
   },
   {
     path: 'order-promocode',
     loadComponent: () =>
-      import('./pages/cart/order-promocode/order-promocode.component')
-        .then((m) => m.OrderPromocodeComponent)
+      import('./pages/cart/order-promocode/order-promocode.component').then(
+        (m) => m.OrderPromocodeComponent
+      ),
   },
   {
     path: 'order-summary',
     loadComponent: () =>
-      import('./pages/cart/order-summary/order-summary.component')
-        .then((m) => m.OrderSummaryComponent)
+      import('./pages/cart/order-summary/order-summary.component').then(
+        (m) => m.OrderSummaryComponent
+      ),
   },
   {
     path: 'shopping-cart-item',
     loadComponent: () =>
-      import('./pages/cart/shopping-cart-item/shopping-cart-item.component')
-        .then((m) => m.ShoppingCartItemComponent)
+      import(
+        './pages/cart/shopping-cart-item/shopping-cart-item.component'
+      ).then((m) => m.ShoppingCartItemComponent),
   },
   {
     path: 'checkout',
     loadComponent: () =>
-      import('./pages/checkout/checkout-component/checkout-component')
-        .then((m) => m.CheckoutComponent)
+      import('./pages/checkout/checkout-component/checkout-component').then(
+        (m) => m.CheckoutComponent
+      ),
   },
   {
     path: 'categories',
     loadComponent: () =>
-      import('./pages/home/categories/categories.component')
-        .then((m) => m.CategoriesComponent)
+      import('./pages/home/categories/categories.component').then(
+        (m) => m.CategoriesComponent
+      ),
   },
   {
     path: 'featured-chef-card',
     loadComponent: () =>
-      import('./pages/home/featured-chef-card/featured-chef-card.component')
-        .then((m) => m.FeaturedChefCardComponent)
+      import(
+        './pages/home/featured-chef-card/featured-chef-card.component'
+      ).then((m) => m.FeaturedChefCardComponent),
   },
   {
     path: 'featured-chefs',
     loadComponent: () =>
-      import('./pages/home/featured-chefs/featured-chefs.component')
-        .then((m) => m.FeaturedChefsComponent)
+      import('./pages/home/featured-chefs/featured-chefs.component').then(
+        (m) => m.FeaturedChefsComponent
+      ),
   },
   {
     path: 'food-category-card',
     loadComponent: () =>
-      import('./pages/home/food-category-card/food-category-card.component')
-        .then((m) => m.FoodCategoryCardComponent)
+      import(
+        './pages/home/food-category-card/food-category-card.component'
+      ).then((m) => m.FoodCategoryCardComponent),
   },
   {
     path: 'hero-section',
     loadComponent: () =>
-      import('./pages/home/hero-section/hero-section.component')
-        .then((m) => m.HeroSectionComponent)
+      import('./pages/home/hero-section/hero-section.component').then(
+        (m) => m.HeroSectionComponent
+      ),
   },
   {
     path: 'home-component',
     loadComponent: () =>
-      import('./pages/home/home-component/home-component')
-        .then((m) => m.HomeComponent)
+      import('./pages/home/home-component/home-component').then(
+        (m) => m.HomeComponent
+      ),
   },
   {
     path: 'trending-dish-card',
     loadComponent: () =>
-      import('./pages/home/trending-dish-card/trending-dish-card.component')
-        .then((m) => m.TrendingDishCardComponent)
+      import(
+        './pages/home/trending-dish-card/trending-dish-card.component'
+      ).then((m) => m.TrendingDishCardComponent),
   },
   {
     path: 'trending-dishes',
     loadComponent: () =>
-      import('./pages/home/trending-dishes/trending-dishes.component')
-        .then((m) => m.TrendingDishesComponent)
+      import('./pages/home/trending-dishes/trending-dishes.component').then(
+        (m) => m.TrendingDishesComponent
+      ),
   },
   {
     path: 'menu-item',
     loadComponent: () =>
-      import('./pages/menu-item/menu-item-component/menu-item-component')
-        .then((m) => m.MenuItemComponent)
+      import('./pages/menu-item/menu-item-component/menu-item-component').then(
+        (m) => m.MenuItemComponent
+      ),
   },
   {
     path: 'restaurant',
     loadComponent: () =>
-      import('./pages/home/restaurant/restaurant-component')
-        .then((m) => m.RestaurantComponent)
+      import('./pages/home/restaurant/restaurant-component').then(
+        (m) => m.RestaurantComponent
+      ),
   },
   {
     path: 'restaurant-details/:id',
     loadComponent: () =>
-      import('./pages/home/restaurant-details/restaurant.details.component')
-        .then((m) => m.RestaurantDetailsComponent)
+      import(
+        './pages/home/restaurant-details/restaurant.details.component'
+      ).then((m) => m.RestaurantDetailsComponent),
   },
   {
     path: 'item-details/:id',
     loadComponent: () =>
-      import('./pages/home/item-details/item-details')
-        .then((m) => m.ItemDetails)
-  }
-]
-
-
-
+      import('./pages/home/item-details/item-details').then(
+        (m) => m.ItemDetails
+      ),
+  },
+];

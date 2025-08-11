@@ -9,7 +9,10 @@
 >
   <div class="container mx-auto px-4 flex justify-between items-center">
     <!-- Logo -->
-    <a routerLink="/main" class="text-3xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+    <a
+      routerLink="/main"
+      class="text-3xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent"
+    >
       🍽️ Akalni
     </a>
 
@@ -18,19 +21,23 @@
       <a
         routerLink="/"
         class="theme-text-primary hover:text-orange-500 transition-colors font-medium"
-      >Home</a>
+        >Home</a
+      >
       <a
         routerLink="/chefs"
         class="theme-text-primary hover:text-orange-500 transition-colors font-medium"
-      >Chefs</a>
+        >Chefs</a
+      >
       <a
         href="#"
         class="theme-text-primary hover:text-orange-500 transition-colors font-medium"
-      >Categories</a>
+        >Categories</a
+      >
       <a
         href="#"
         class="theme-text-primary hover:text-orange-500 transition-colors font-medium"
-      >About</a>
+        >About</a
+      >
     </div>
 
     <!-- Right Section -->
@@ -48,29 +55,36 @@
         ></lucide-icon>
       </button>
 
-<!--      <button class="p-2 theme-text-primary hover:text-orange-500 transition-colors">-->
-<!--        <lucide-icon [img]="Search" size="20"></lucide-icon>-->
-<!--      </button>-->
+      <!--      <button class="p-2 theme-text-primary hover:text-orange-500 transition-colors">-->
+      <!--        <lucide-icon [img]="Search" size="20"></lucide-icon>-->
+      <!--      </button>-->
       <!-- navbar.component.html -->
-<!--      <div *ngIf="searchConfig.isVisible" class="search-container">-->
-<!--        <input-->
-<!--          [(ngModel)]="searchQuery"-->
-<!--          [placeholder]="searchConfig.placeholder"-->
-<!--          (keyup.enter)="onSearch()"-->
-<!--          class="search-input">-->
-<!--        <button (click)="onSearch()" class="p-2 theme-text-primary hover:text-orange-500 transition-colors">-->
-<!--          <lucide-icon [img]="Search" size="20"></lucide-icon>-->
-<!--        </button>-->
-<!--      </div>-->
+      <!--      <div *ngIf="searchConfig.isVisible" class="search-container">-->
+      <!--        <input-->
+      <!--          [(ngModel)]="searchQuery"-->
+      <!--          [placeholder]="searchConfig.placeholder"-->
+      <!--          (keyup.enter)="onSearch()"-->
+      <!--          class="search-input">-->
+      <!--        <button (click)="onSearch()" class="p-2 theme-text-primary hover:text-orange-500 transition-colors">-->
+      <!--          <lucide-icon [img]="Search" size="20"></lucide-icon>-->
+      <!--        </button>-->
+      <!--      </div>-->
       <!-- Replace the search section in your navbar with this -->
-      <div *ngIf="searchConfig.isVisible && !isMainPage" class="search-container">
+      <div
+        *ngIf="searchConfig.isVisible && !isMainPage"
+        class="search-container"
+      >
         <input
           [(ngModel)]="searchQuery"
           [placeholder]="searchConfig.placeholder"
           (keyup.enter)="onSearch()"
           (input)="onSearchInput()"
-          class="search-input">
-        <button (click)="onSearch()" class="p-2 theme-text-primary hover:text-orange-500 transition-colors">
+          class="search-input"
+        />
+        <button
+          (click)="onSearch()"
+          class="p-2 theme-text-primary hover:text-orange-500 transition-colors"
+        >
           <lucide-icon [img]="Search" size="20"></lucide-icon>
         </button>
       </div>
@@ -83,20 +97,20 @@
       >
         <lucide-icon [img]="ShoppingCart" size="20"></lucide-icon>
         <span
-          *ngIf="cartCount > 0"
+          *ngIf="cartService.cartItems.length"
           class="absolute -top-1 -right-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold animate-pulse"
         >
-          {{ cartCount }}
+          {{ cartService.cartItems.length }}
         </span>
       </a>
 
       <!-- Show user icon only if authenticated -->
-<!--      <button-->
-<!--        *ngIf="isAuthenticated"-->
-<!--        class="p-2 theme-text-primary hover:text-orange-500 transition-colors"-->
-<!--        (click)="router.navigate(['/profile'])"      >-->
-<!--        <lucide-icon [img]="User" size="20"></lucide-icon>-->
-<!--      </button>-->
+      <!--      <button-->
+      <!--        *ngIf="isAuthenticated"-->
+      <!--        class="p-2 theme-text-primary hover:text-orange-500 transition-colors"-->
+      <!--        (click)="router.navigate(['/profile'])"      >-->
+      <!--        <lucide-icon [img]="User" size="20"></lucide-icon>-->
+      <!--      </button>-->
       <button
         *ngIf="isAuthenticated"
         class="p-1"
@@ -109,7 +123,11 @@
           class="w-8 h-8 rounded-full object-cover border-2 border-orange-400"
         />
         <ng-template #defaultIcon>
-          <lucide-icon [img]="User" size="20" class="text-orange-400 hover:text-orange-500 transition-colors"></lucide-icon>
+          <lucide-icon
+            [img]="User"
+            size="20"
+            class="text-orange-400 hover:text-orange-500 transition-colors"
+          ></lucide-icon>
         </ng-template>
       </button>
 
@@ -152,13 +170,26 @@
     class="md:hidden theme-card-bg theme-shadow absolute top-full left-0 right-0 backdrop-blur-md"
   >
     <div class="container mx-auto px-4 py-4 flex flex-col space-y-3">
-      <a routerLink="/" class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium">Home</a>
+      <a
+        routerLink="/"
+        class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium"
+        >Home</a
+      >
       <a
         routerLink="/chefs"
         class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium"
-      >Chefs</a>
-      <a href="#" class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium">Categories</a>
-      <a href="#" class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium">About</a>
+        >Chefs</a
+      >
+      <a
+        href="#"
+        class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium"
+        >Categories</a
+      >
+      <a
+        href="#"
+        class="py-3 theme-text-primary hover:text-orange-500 transition-colors font-medium"
+        >About</a
+      >
 
       <div class="pt-3 border-t theme-border">
         <!-- Mobile Login Button (shown when not authenticated) -->

@@ -8,8 +8,9 @@ export class CartService {
     { name: 'Wiape Braw', price: 100, quantity: 1 },
     { name: 'Goot Cooked', price: 120, quantity: 2 },
     { name: 'Cam Olife', price: 80, quantity: 1 },
+    { name: 'some 445678', price: 120, quantity: 10 },
   ];
-  
+
   summary = {
     subtotal: 420,
     deliveryFee: 50,
