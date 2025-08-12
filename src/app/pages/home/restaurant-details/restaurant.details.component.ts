@@ -26,7 +26,7 @@ export class RestaurantDetailsComponent implements OnInit {
   router = inject(Router);
   getService = inject(GetService);
   route = inject(ActivatedRoute);
-  restId: number = 0
+  restId: number = 0;
   restDetails: RestaurantDetails | null = null;
 
   //pagination
@@ -35,7 +35,7 @@ export class RestaurantDetailsComponent implements OnInit {
   totalPages = 0;
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const restaurantId = params.get('id');
       if (restaurantId) {
         this.restId = +restaurantId; // Convert to number
@@ -44,33 +44,34 @@ export class RestaurantDetailsComponent implements OnInit {
       } else {
         console.error('No restaurant ID found in the route parameters.');
       }
-    })
+    });
 
     //load restaurant details
     this.loadRestaurantDetails();
   }
 
   loadRestaurantDetails() {
-    this.getService.get<RestaurantDetails>({
-      url: `https://localhost:7045/api/Restaurants/customer-restaurant/${this.restId}?page=${this.page}&pageSize=${this.pageSize}`,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
-      }
-    }
-    ).subscribe({
-      next: (data: any) => {
-        this.restDetails = data;
-        this.totalPages = data.totalPages;
-        console.log(this.restDetails);
-      }
-      , error: (err) => {
-        console.error('Error fetching restDetails:', err);
-      }
-      , complete: () => {
-        console.log('Restaurant data fetch complete');
-      }
-    })
+    this.getService
+      .get<RestaurantDetails>({
+        url: `https://localhost:7045/api/Restaurants/customer-restaurant/${this.restId}?page=${this.page}&pageSize=${this.pageSize}`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.restDetails = data;
+          this.totalPages = data.totalPages;
+          console.log(this.restDetails);
+        },
+        error: (err) => {
+          console.error('Error fetching restDetails:', err);
+        },
+        complete: () => {
+          console.log('Restaurant data fetch complete');
+        },
+      });
   }
 
   onPageChange(event: { page: number; pageSize: number }): void {
