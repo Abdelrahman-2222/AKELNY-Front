@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +12,16 @@ export class CartService {
   ];
 
   summary = {
-    subtotal: 420,
-    deliveryFee: 50,
+    subtotal: this.cartItems.reduce(
+      (acc, cur) => acc + cur.price * cur.quantity,
+      0
+    ),
+    deliveryFee: 0,
     tax: 42,
-    total: 512,
+    total: this.cartItems.reduce(
+      (acc, cur) => acc + cur.price * cur.quantity,
+      0
+    ),
   };
 
   updateQuantity(item: any, change: number) {
@@ -36,6 +42,11 @@ export class CartService {
     );
     //this.summary.tax = this.summary.subtotal * 0.1;
     this.summary.total = this.summary.subtotal; //+ this.summary.deliveryFee  + this.summary.tax;
+  }
+
+  calcTotal(): number {
+    //this.calculateSummary();
+    return this.summary.subtotal + this.summary.deliveryFee;
   }
 
   //ensure that all orders from the same restaurant
