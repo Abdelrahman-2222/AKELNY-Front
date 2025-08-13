@@ -34,8 +34,13 @@ export class CartService {
       (sum, item) => sum + item.price * item.quantity,
       0
     );
-    this.summary.tax = this.summary.subtotal * 0.1;
-    this.summary.total =
-      this.summary.subtotal + this.summary.deliveryFee + this.summary.tax;
+    //this.summary.tax = this.summary.subtotal * 0.1;
+    this.summary.total = this.summary.subtotal; //+ this.summary.deliveryFee  + this.summary.tax;
+  }
+
+  //ensure that all orders from the same restaurant
+  //prevent duplication
+  public addToCart() {
+    this.cartItems.push();
   }
 }

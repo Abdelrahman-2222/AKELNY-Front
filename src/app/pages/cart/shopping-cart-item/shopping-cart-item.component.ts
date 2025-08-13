@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
-import { LucideAngularModule } from 'lucide-angular';
+import { LucideAngularModule, X } from 'lucide-angular';
 import { CartService } from '../cart.service';
 
 @Component({
@@ -10,6 +10,8 @@ import { CartService } from '../cart.service';
   styleUrl: './shopping-cart-item.component.css',
 })
 export class ShoppingCartItemComponent {
+  // X Icon
+  readonly X = X;
   public cartService: CartService = inject(CartService);
   @Input() item: any;
   @Input()
