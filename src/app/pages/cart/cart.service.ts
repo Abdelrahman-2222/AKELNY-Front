@@ -1,15 +1,15 @@
-import { computed, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { computed, inject, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
-  public cartItems = [
-    { name: 'Wiape Braw', price: 100, quantity: 1 },
-    { name: 'Goot Cooked', price: 120, quantity: 2 },
-    { name: 'Cam Olife', price: 80, quantity: 1 },
-    { name: 'some 445678', price: 120, quantity: 10 },
-  ];
+  httpClient: HttpClient = inject(HttpClient);
+
+  public restaurantId = -1;
+
+  public cartItems: CartItemType[] = [];
 
   summary = {
     subtotal: this.cartItems.reduce(
@@ -49,9 +49,54 @@ export class CartService {
     return this.summary.subtotal + this.summary.deliveryFee;
   }
 
-  //ensure that all orders from the same restaurant
-  //prevent duplication
-  public addToCart() {
-    this.cartItems.push();
+  public addToCart(restId: number, item: ItemType): void {
+    //ensure that all orders from the same restaurant
+    if (this.restaurantId === -1) this.restaurantId = restId;
+    else if (this.restaurantId !== restId) {
+      alert(
+        "You can't order items for more than a restaurant in the same order!"
+      );
+      return;
+    }
+    //prevent item duplication
+    const isFound: boolean = this.cartItems
+      .map((el) => el.id)
+      .includes(item.id);
+    console.log(isFound);
+    if (isFound) {
+      console.log('The item already exists!!!');
+      return;
+    }
+    this.cartItems.push({
+      ...item,
+      price: +item.price,
+      quantity: 1,
+      restId: restId,
+    });
+
+    this.calculateSummary();
+    console.log(this.cartItems);
   }
+
+  public checkout() {}
 }
+
+type ItemType = {
+  id: number;
+  name: string;
+  price: string;
+  image: string;
+  categoryName: string;
+};
+
+export type CartItemType = {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  categoryName: string;
+  restId: number;
+};
+
+//when you do checkout ensure that the cart items will emptied

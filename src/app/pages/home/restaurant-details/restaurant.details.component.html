@@ -90,6 +90,7 @@
               Item Details
             </button>
             <button
+              (click)="cartService.addToCart(restId, item)"
               class="px-4 py-2 ms-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors"
             >
               Add to Cart

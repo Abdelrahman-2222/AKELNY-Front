@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GetService } from '../../../services/requests/get-service';
 import { RestaurantDetails } from '../../../models/RestaurantDetails.model';
 import { Pagination } from '../../../shared/components/pagination/pagination';
+import { CartService } from '../../cart/cart.service';
 
 interface MenuItem {
   id: number;
@@ -24,6 +25,7 @@ interface MenuItem {
 })
 export class RestaurantDetailsComponent implements OnInit {
   router = inject(Router);
+  cartService = inject(CartService);
   getService = inject(GetService);
   route = inject(ActivatedRoute);
   restId: number = 0;
