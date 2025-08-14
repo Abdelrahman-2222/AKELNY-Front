@@ -1,17 +1,19 @@
-<div class="flex items-center py-4 border-b border-gray-100 last:border-0">
-  <div class="bg-gray-200 border-2 border-dashed rounded-xl w-24 h-24"></div>
+<div class="mb-2 flex items-center py-4 border-b border-gray-100 last:border-0">
+  <div class="bg-gray-200 border-2 border-dashed rounded-xl w-24 h-24">
+    <img class="w-full h-full" [src]="item.image" id="itemImg" alt="" />
+  </div>
 
   <div class="ml-4 flex-1">
     <div class="flex justify-between items-start">
       <div>
-        <h3 class="font-bold text-dark-text">{{ item.name }}</h3>
-        <p class="text-gray-text">Hums</p>
+        <h3 class="text-lg font-bold text-dark-text">{{ item.name }}</h3>
+        <!-- <p class="text-gray-text">Hums</p> -->
       </div>
       <button
         (click)="cartService.removeItem(i)"
         class="text-gray-400 hover:text-red-500"
       >
-        <lucide-icon name="x" size="20"></lucide-icon>
+        <lucide-icon [name]="X" size="20"></lucide-icon>
       </button>
     </div>
 

@@ -4,59 +4,71 @@
     <h3 class="text-xl font-semibold mb-6">Home Chefs</h3>
     <div class="grid grid-cols-1 xl:grid-cols-4 gap-4">
       <!-- cards -->
-      <div class="col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div
+        class="col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+      >
         <!-- Restaurants Card -->
-        <div *ngFor="let restaurant of restaurants"
-          class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-4">
-          <div class="w-full relative ">
-            <img [src]="restaurant.imageUrl" alt="restaurant's food" class="w-full h-48 object-cover rounded-lg">
+        <div
+          *ngFor="let restaurant of restaurants"
+          [attr.data-rest-id]="restaurant.id"
+          class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-4"
+        >
+          <div class="w-full relative">
+            <img
+              [src]="restaurant.imageUrl"
+              alt="restaurant's food"
+              class="w-full h-48 object-cover rounded-lg"
+            />
             <!-- <img src="https://cdn-icons-png.flaticon.com/512/4825/4825015.png" [alt]="restaurant.name"
               class="w-20 h-20 rounded-full object-cover absolute top-1/4 left-3 -translate-y-1/2"> -->
           </div>
           <div class="flex items-start gap-4 mt-5">
             <!-- restaurant Information -->
             <div>
-              <h4 class="font-semibold">{{restaurant.name}}</h4>
-              <p class="text-gray-500 text-sm">{{restaurant.location}} / location</p>
+              <h4 class="font-semibold">{{ restaurant.name }}</h4>
+              <p class="text-gray-500 text-sm">
+                {{ restaurant.location }} / location
+              </p>
               <div class="flex items-center gap-2 mt-2">
                 <div class="flex items-center">
-                  <span class="text-sm font-medium">{{restaurant.rating}}</span>
+                  <span class="text-sm font-medium">{{
+                    restaurant.rating
+                  }}</span>
                   <span class="text-yellow-400">★</span>
                 </div>
-                <span class="text-sm text-gray-500">{{restaurant.description}} description</span>
+                <span class="text-sm text-gray-500"
+                  >{{ restaurant.description }} description</span
+                >
                 <!-- <span class="text-sm text-gray-500">{{restaurant.openingHours}} Opening Time</span> -->
               </div>
             </div>
             <!-- restaurant Information -->
           </div>
 
-
-
-          <button (click)="showRestaurantDetails(restaurant.id)" class="w-full mt-4 py-2 bg-orange-600 text-white rounded-lg
-                       hover:bg-orange-700 transition-colors duration-300">
+          <button
+            (click)="showRestaurantDetails(restaurant.id)"
+            class="w-full mt-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-300"
+          >
             View Menu
           </button>
         </div>
         <!-- Restaurants Card -->
-
       </div>
       <!-- cards -->
 
       <!-- sideFilterBar -->
-      <app-filter-restaurant-view
-      (sortChanged)="onSortChanged($event)">
-    </app-filter-restaurant-view>
+      <app-filter-restaurant-view (sortChanged)="onSortChanged($event)">
+      </app-filter-restaurant-view>
       <!-- <app-filter-item-view></app-filter-item-view> -->
       <!-- sideFilterBar -->
-         <app-pagination class="col-span-1 xl:col-span-3 col-start-1 xl:col-start-2 xl:col-end-4" [page]="page"
-          [pageSize]="pageSize"
-          [totalPages]="totalPages"
-          (pageChange)="onPageChange($event)">
-        </app-pagination>
-
-
-
+      <app-pagination
+        class="col-span-1 xl:col-span-3 col-start-1 xl:col-start-2 xl:col-end-4"
+        [page]="page"
+        [pageSize]="pageSize"
+        [totalPages]="totalPages"
+        (pageChange)="onPageChange($event)"
+      >
+      </app-pagination>
     </div>
-
   </div>
 </section>
