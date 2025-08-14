@@ -1,3 +1,4 @@
+import { ErrorComponent } from './pages/cart/error/error.component';
 import { Routes } from '@angular/router';
 
 export const customerRoutes: Routes = [
@@ -92,6 +93,13 @@ export const customerRoutes: Routes = [
     loadComponent: () =>
       import('./pages/cart/success/success.component').then(
         (m) => m.SuccessComponent
+      ),
+  },
+  {
+    path: 'error',
+    loadComponent: () =>
+      import('./pages/cart/error/error.component').then(
+        (m) => m.ErrorComponent
       ),
   },
   {
