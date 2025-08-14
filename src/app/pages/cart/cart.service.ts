@@ -131,7 +131,7 @@ export class CartService {
   }
 }
 
-type ItemType = {
+export type ItemType = {
   id: number;
   name: string;
   price: string;

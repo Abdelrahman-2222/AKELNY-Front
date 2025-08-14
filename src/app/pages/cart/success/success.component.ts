@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 
 import { NavbarComponent } from '../../../shared/components/navbar/navbar-component/navbar-component';
@@ -25,9 +25,14 @@ import { CategoriesComponent } from '../../home/categories/categories.component'
   styleUrl: './success.component.css',
 })
 export class SuccessComponent implements OnInit {
+  private router: Router = inject(Router);
   ngOnInit(): void {
-    alert(
-      'Your Order is placed Successfully, Thank you for choosing Akalni :)'
-    );
+    // alert(
+    //   'Your Order is placed Successfully, Thank you for choosing Akalni :)'
+    // );
+
+    setTimeout(() => {
+      this.router.navigate(['/main']);
+    }, 10000);
   }
 }
