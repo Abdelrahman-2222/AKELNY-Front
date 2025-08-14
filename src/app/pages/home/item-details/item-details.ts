@@ -22,6 +22,7 @@ interface ItemReview {
 export class ItemDetails implements OnInit, OnDestroy {
   itemId = 0;
   restaurantId: number = -1;
+  itemData: any;
   itemDTO: ItemType = {} as ItemType;
 
   /**
@@ -61,10 +62,19 @@ export class ItemDetails implements OnInit, OnDestroy {
       .subscribe(
         (data: any) => {
           console.log(data);
-          this.itemDTO = data;
+          this.itemData = data;
           this.restaurantId = data?.restaurantId;
           console.log(this.restaurantId);
-          console.log(data);
+          this.itemDTO = {
+            id: data.id,
+            name: data.name,
+            price: data.price,
+            image: data.imageUrl,
+            categoryName: '',
+            addOnIds: structuredClone(data.addOnIds),
+            comboIds: structuredClone(data.comboIds),
+          };
+          console.log(this.itemDTO);
         },
         (error) => {
           console.log(error);
