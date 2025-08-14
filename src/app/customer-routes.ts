@@ -88,6 +88,13 @@ export const customerRoutes: Routes = [
       ),
   },
   {
+    path: 'success',
+    loadComponent: () =>
+      import('./pages/cart/success/success.component').then(
+        (m) => m.SuccessComponent
+      ),
+  },
+  {
     path: 'trending-dish-card',
     loadComponent: () =>
       import(
