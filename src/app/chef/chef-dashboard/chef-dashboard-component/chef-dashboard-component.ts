@@ -242,6 +242,7 @@ export class ChefDashboardComponent implements OnInit, OnDestroy {
   ViewOrders() {
     // Logic to view orders for the restaurant
     console.log('View orders clicked');
+    this.router.navigate(['/chef/chef-dashboard-order']);
     // You can implement the logic to navigate to a view orders page or open a modal
   }
 }

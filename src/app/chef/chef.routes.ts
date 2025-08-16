@@ -21,13 +21,13 @@ export const chefRoutes: Routes = [
         (m) => m.ChefDashboardComponent
       ),
   },
-  {
-    path: 'chef-dashboard-current-orders',
-    loadComponent: () =>
-      import('./chef-dashboard-current-orders/chef-dashboard-current-orders.component').then(
-        (m) => m.ChefDashboardCurrentOrdersComponent
-      ),
-  },
+  // {
+  //   path: 'chef-dashboard-current-orders',
+  //   loadComponent: () =>
+  //     import('./chef-dashboard-current-orders/chef-dashboard-current-orders.component').then(
+  //       (m) => m.ChefDashboardCurrentOrdersComponent
+  //     ),
+  // },
   {
     path:'chef-dashboard-earnings',
     loadComponent: () =>

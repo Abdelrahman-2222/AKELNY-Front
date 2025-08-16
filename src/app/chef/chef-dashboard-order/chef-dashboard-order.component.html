@@ -1,32 +1,97 @@
-<div
-  class="border border-gray-100 rounded-xl p-4 hover:shadow-md transition-shadow"
->
-  <div class="flex justify-between items-start">
-    <div>
-      <h3 class="font-bold text-dark-text">
-        {{ order.id }} • {{ order.customer }}
-      </h3>
-      <p class="text-gray-text text-sm">
-        {{ order.items }} items • ${{ order.amount }}
-      </p>
+<div class="order-card" [ngClass]="getOrderStatusClass()" *ngIf="order">
+<!-- Order Header -->
+  <div class="order-header">
+    <div class="order-info">
+      <div class="order-title">
+        <h3 class="order-id">Order #{{ order.id }}</h3>
+        <span class="status-badge" [ngClass]="'status-' + (order?.status || 'pending')">
+          {{ getStatusText() }}
+        </span>
+      </div>
+      <div class="customer-info">
+        <lucide-icon [img]="User" class="icon-sm"></lucide-icon>
+        <span>{{ order?.customer || 'Unknown' }}</span>
+      </div>
     </div>
-    <div class="flex gap-2">
+
+    <!-- Action Buttons -->
+    <div class="action-buttons" *ngIf="order.status === 'pending'">
       <button
-        class="bg-primary-green hover:bg-green-700 text-white text-sm font-bold py-2 px-4 rounded-full"
-      >
+        class="btn btn-accept"
+        (click)="acceptOrder()"
+        [disabled]="isProcessing">
+        <lucide-icon [img]="CheckCircle" class="icon-sm"></lucide-icon>
         Accept
       </button>
       <button
-        class="border border-gray-300 text-gray-700 text-sm font-bold py-2 px-4 rounded-full"
-      >
+        class="btn btn-decline"
+        (click)="rejectOrder()"
+        [disabled]="isProcessing">
+        <lucide-icon [img]="XCircle" class="icon-sm"></lucide-icon>
         Decline
       </button>
     </div>
+
+    <!-- Status Actions for Accepted Orders -->
+    <div class="status-actions" *ngIf="order.status === 'accepted' || order.status === 'in_progress'">
+      <button
+        class="btn btn-status"
+        (click)="markAsReady()"
+        *ngIf="order.status === 'accepted'"
+        [disabled]="isProcessing">
+        <lucide-icon [img]="Timer" class="icon-sm"></lucide-icon>
+        Mark Ready
+      </button>
+      <button
+        class="btn btn-complete"
+        (click)="completeOrder()"
+        *ngIf="order.status === 'in_progress'"
+        [disabled]="isProcessing">
+        <lucide-icon [img]="CheckCircle" class="icon-sm"></lucide-icon>
+        Complete
+      </button>
+    </div>
   </div>
-  <div
-    class="mt-3 pt-3 border-t border-gray-100 flex items-center text-gray-text text-sm"
-  >
-    <lucide-icon [img]="Clock" class="w-4 h-4"></lucide-icon>
-    <span class="ml-2">Preparation time: {{ order.time }}</span>
+
+  <!-- Order Details -->
+  <div class="order-details">
+    <div class="detail-row">
+      <div class="detail-item">
+        <lucide-icon [img]="Package" class="icon-sm"></lucide-icon>
+        <span>{{ order.items }} items</span>
+      </div>
+      <div class="detail-item">
+        <lucide-icon [img]="DollarSign" class="icon-sm"></lucide-icon>
+        <span>${{ order.amount }}</span>
+      </div>
+      <div class="detail-item">
+        <lucide-icon [img]="Clock" class="icon-sm"></lucide-icon>
+        <span>{{ order.time }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Status -->
+  <div class="payment-status" *ngIf="showPaymentStatus()">
+    <div class="payment-indicator" [ngClass]="getPaymentStatusClass()">
+      <lucide-icon [img]="getPaymentIcon()" class="icon-sm"></lucide-icon>
+      <span>{{ getPaymentStatusText() }}</span>
+    </div>
+  </div>
+
+  <!-- Order Timeline for Past Orders -->
+  <div class="order-timeline" *ngIf="isPastOrder()">
+    <div class="timeline-item" *ngFor="let event of orderTimeline">
+      <div class="timeline-dot" [ngClass]="'dot-' + event.type"></div>
+      <div class="timeline-content">
+        <span class="timeline-event">{{ event.event }}</span>
+        <span class="timeline-time">{{ event.time }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="isProcessing">
+    <div class="spinner"></div>
   </div>
 </div>
