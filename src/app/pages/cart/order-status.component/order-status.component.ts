@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
           </div>
 
           <h3 class="text-lg font-semibold mb-2">{{ statusMessage }}</h3>
-          <p class="text-gray-600 mb-4">Order #{{ orderId }}</p>
+          <p class="text-gray-600 mb-4">Order #{{ orderId ?? '...' }}</p>
 
           <div *ngIf="orderStatus === 'accepted'" class="space-y-4">
             <p class="text-green-600 font-semibold">Chef approved your order!</p>
@@ -59,10 +59,31 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.orderId = +params['orderId'];
-      this.statusMessage = params['message'] || 'Waiting for chef approval...';
-    });
+    // Resolve orderId from query params first
+    this.subscriptions.push(
+      this.route.queryParams.subscribe(params => {
+        const qpId = params['orderId'];
+        const fromQuery = qpId !== undefined ? Number(qpId) : NaN;
+
+        // Fallback to history.state or cart service if needed
+        const stateId = history.state?.orderId;
+        const fromState = stateId !== undefined ? Number(stateId) : NaN;
+
+        const cartId = (this.cartService as any)?.lastOrderId;
+        const fromCart = cartId !== undefined ? Number(cartId) : NaN;
+
+        const resolved = [fromQuery, fromState, fromCart].find(n => Number.isFinite(n));
+        this.orderId = resolved as number | undefined;
+
+        this.statusMessage = params['message'] || this.statusMessage;
+
+        if (!this.orderId) {
+          // No valid order id -> go back
+          this.router.navigate(['/customer/cart']);
+          return;
+        }
+      })
+    );
 
     this.setupSignalRSubscriptions();
   }
@@ -74,28 +95,39 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
   private setupSignalRSubscriptions() {
     this.subscriptions.push(
       this.signalrService.getOrderStatusUpdates().subscribe((update) => {
-        if (update && update.orderId === this.orderId) {
-          this.orderStatus = update.status;
+        if (!update) return;
 
-          if (update.status === 'accepted') {
-            this.statusMessage = 'Chef approved your order!';
-          } else if (update.status === 'rejected') {
-            this.statusMessage = 'Chef declined your order';
-          }
+        const incomingId = Number(update.orderId ?? update.id);
+        if (!this.orderId || !Number.isFinite(incomingId) || incomingId !== this.orderId) {
+          return;
+        }
+
+        const status = String(update.status || '').toLowerCase();
+        if (status === 'accepted' || status === 'approved') {
+          this.orderStatus = 'accepted';
+          this.statusMessage = 'Chef approved your order!';
+          // Optional: auto-start payment
+          this.proceedToPayment();
+        } else if (status === 'rejected' || status === 'suspended') {
+          this.orderStatus = 'rejected';
+          this.statusMessage = 'Chef declined your order';
         }
       })
     );
   }
 
   proceedToPayment() {
-    if (!this.orderId) return;
+    if (!this.orderId || this.isCreatingPayment) return;
 
     this.isCreatingPayment = true;
     this.cartService.createPaymentSession(this.orderId).subscribe(
       (res: any) => {
-        if (res.url) {
+        if (res?.url) {
           this.cartService.clearCart();
           window.location.href = res.url;
+        } else {
+          this.isCreatingPayment = false;
+          alert('No payment URL received. Please try again.');
         }
       },
       (err) => {

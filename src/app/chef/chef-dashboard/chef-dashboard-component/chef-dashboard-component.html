@@ -182,5 +182,16 @@
          [class]="notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
       {{ notification.message }}
     </div>
+
+    <!-- In chef-dashboard-component.html -->
+    <div class="orders-section">
+      <h2>Current Orders</h2>
+      <div *ngFor="let order of currentOrders" class="order-container">
+        <app-chef-dashboard-order
+          [order]="order"
+          [chefId]="chefId">
+        </app-chef-dashboard-order>
+      </div>
+    </div>
   </div>
 </section>

@@ -1,97 +1,206 @@
-<div class="order-card" [ngClass]="getOrderStatusClass()" *ngIf="order">
-<!-- Order Header -->
-  <div class="order-header">
-    <div class="order-info">
-      <div class="order-title">
-        <h3 class="order-id">Order #{{ order.id }}</h3>
-        <span class="status-badge" [ngClass]="'status-' + (order?.status || 'pending')">
-          {{ getStatusText() }}
-        </span>
+<!-- If an order is passed in (embedded card use-case), render the single-card view -->
+<ng-container *ngIf="order; else workspace">
+  <div class="order-card" [ngClass]="getOrderStatusClass()">
+    <!-- Order Header -->
+    <div class="order-header">
+      <div class="order-info">
+        <div class="order-title">
+          <h3 class="order-id">Order #{{ order.id }}</h3>
+          <div class="status-badge" [ngClass]="'status-' + (order.status || 'pending')">
+            {{ getStatusText() }}
+          </div>
+        </div>
+        <div class="customer-info">
+          <lucide-icon [img]="User" class="icon-sm"></lucide-icon>
+          <span>{{ order.customer || 'Unknown' }}</span>
+        </div>
       </div>
-      <div class="customer-info">
-        <lucide-icon [img]="User" class="icon-sm"></lucide-icon>
-        <span>{{ order?.customer || 'Unknown' }}</span>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons"
+           *ngIf="(order?.paymentStatus || selectedOrder?.paymentStatus) !== 'paid' && (order?.status || selectedOrder?.status) === 'pending'">
+        <button class="btn btn-accept" (click)="acceptOrder()" [disabled]="isProcessing">
+          <lucide-icon [img]="CheckCircle" class="icon-sm"></lucide-icon>
+          Accept
+        </button>
+        <button class="btn btn-decline" (click)="rejectOrder()" [disabled]="isProcessing">
+          <lucide-icon [img]="XCircle" class="icon-sm"></lucide-icon>
+          Decline
+        </button>
       </div>
-    </div>
 
-    <!-- Action Buttons -->
-    <div class="action-buttons" *ngIf="order.status === 'pending'">
-      <button
-        class="btn btn-accept"
-        (click)="acceptOrder()"
-        [disabled]="isProcessing">
-        <lucide-icon [img]="CheckCircle" class="icon-sm"></lucide-icon>
-        Accept
-      </button>
-      <button
-        class="btn btn-decline"
-        (click)="rejectOrder()"
-        [disabled]="isProcessing">
-        <lucide-icon [img]="XCircle" class="icon-sm"></lucide-icon>
-        Decline
-      </button>
-    </div>
 
-    <!-- Status Actions for Accepted Orders -->
-    <div class="status-actions" *ngIf="order.status === 'accepted' || order.status === 'in_progress'">
-      <button
-        class="btn btn-status"
-        (click)="markAsReady()"
-        *ngIf="order.status === 'accepted'"
-        [disabled]="isProcessing">
-        <lucide-icon [img]="Timer" class="icon-sm"></lucide-icon>
-        Mark Ready
-      </button>
-      <button
-        class="btn btn-complete"
-        (click)="completeOrder()"
-        *ngIf="order.status === 'in_progress'"
-        [disabled]="isProcessing">
-        <lucide-icon [img]="CheckCircle" class="icon-sm"></lucide-icon>
-        Complete
-      </button>
+      <!-- Status Actions -->
+      <div class="status-actions"
+           *ngIf="(order?.paymentStatus || selectedOrder?.paymentStatus) !== 'paid' && ((order?.status || selectedOrder?.status) === 'accepted' || (order?.status || selectedOrder?.status) === 'in_progress')">
+        <button class="btn btn-status" (click)="markAsReady()"
+                *ngIf="(order?.status || selectedOrder?.status) === 'accepted'" [disabled]="isProcessing">
+          <lucide-icon [img]="Timer" class="icon-sm"></lucide-icon>
+          Mark Ready
+        </button>
+        <button class="btn btn-complete" (click)="completeOrder()"
+                *ngIf="(order?.status || selectedOrder?.status) === 'in_progress'" [disabled]="isProcessing">
+          <lucide-icon [img]="CheckCircle" class="icon-sm"></lucide-icon>
+          Complete
+        </button>
+      </div>
+
+
+      <!-- Order Details -->
+      <div class="order-details">
+        <div class="detail-row">
+          <div class="detail-item">
+            <lucide-icon [img]="Package" class="icon-sm"></lucide-icon>
+            <span>{{ order.items }} items</span>
+          </div>
+          <div class="detail-item">
+            <lucide-icon [img]="DollarSign" class="icon-sm"></lucide-icon>
+            <span>${{ order.amount }}</span>
+          </div>
+          <div class="detail-item">
+            <lucide-icon [img]="Clock" class="icon-sm"></lucide-icon>
+            <span>{{ order.time }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Status -->
+      <div class="payment-status" *ngIf="showPaymentStatus()">
+        <div class="payment-indicator" [ngClass]="getPaymentStatusClass()">
+          <lucide-icon [img]="getPaymentIcon()" class="icon-sm"></lucide-icon>
+          <span>{{ getPaymentStatusText() }}</span>
+        </div>
+      </div>
+
+      <!-- Order Timeline -->
+      <div class="order-timeline" *ngIf="isPastOrder()">
+        <div class="timeline-item" *ngFor="let event of orderTimeline">
+          <div class="timeline-dot" [ngClass]="'dot-' + event.type"></div>
+          <div class="timeline-content">
+            <span class="timeline-event">{{ event.event }}</span>
+            <span class="timeline-time">{{ event.time }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading Overlay -->
+      <div class="loading-overlay" *ngIf="isProcessing">
+        <div class="spinner"></div>
+      </div>
     </div>
   </div>
+</ng-container>
 
-  <!-- Order Details -->
-  <div class="order-details">
-    <div class="detail-row">
-      <div class="detail-item">
-        <lucide-icon [img]="Package" class="icon-sm"></lucide-icon>
-        <span>{{ order.items }} items</span>
-      </div>
-      <div class="detail-item">
-        <lucide-icon [img]="DollarSign" class="icon-sm"></lucide-icon>
-        <span>${{ order.amount }}</span>
-      </div>
-      <div class="detail-item">
-        <lucide-icon [img]="Clock" class="icon-sm"></lucide-icon>
-        <span>{{ order.time }}</span>
-      </div>
+<!-- Full-page workspace when opened via route (no @Input order) -->
+<ng-template #workspace>
+  <section class="pt-24 pb-16 min-h-screen container mx-auto px-4">
+    <h2 class="text-2xl font-bold mb-6">Orders</h2>
+
+    <!-- Empty state -->
+    <div *ngIf="orders.length === 0" class="text-center py-16 text-gray-500">
+      No current orders yet.
     </div>
-  </div>
 
-  <!-- Payment Status -->
-  <div class="payment-status" *ngIf="showPaymentStatus()">
-    <div class="payment-indicator" [ngClass]="getPaymentStatusClass()">
-      <lucide-icon [img]="getPaymentIcon()" class="icon-sm"></lucide-icon>
-      <span>{{ getPaymentStatusText() }}</span>
-    </div>
-  </div>
-
-  <!-- Order Timeline for Past Orders -->
-  <div class="order-timeline" *ngIf="isPastOrder()">
-    <div class="timeline-item" *ngFor="let event of orderTimeline">
-      <div class="timeline-dot" [ngClass]="'dot-' + event.type"></div>
-      <div class="timeline-content">
-        <span class="timeline-event">{{ event.event }}</span>
-        <span class="timeline-time">{{ event.time }}</span>
+    <!-- Two-column layout -->
+    <div *ngIf="orders.length > 0" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left: orders list -->
+      <div class="lg:col-span-1 space-y-3">
+        <div
+          *ngFor="let o of orders"
+          (click)="selectOrder(o.id)"
+          class="p-4 rounded-lg border cursor-pointer transition-colors"
+          [class.bg-orange-50]="selectedOrderId === o.id"
+          [class.border-orange-400]="selectedOrderId === o.id"
+        >
+          <div class="flex justify-between items-center">
+            <div class="font-semibold">#{{ o.id }}</div>
+            <span class="text-xs px-2 py-1 rounded bg-gray-100 capitalize">{{ o.status }}</span>
+          </div>
+          <div class="text-sm text-gray-600 mt-1">
+            {{ o.customer || 'Customer' }} • {{ o.items }} items • ${{ o.amount }}
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Loading Overlay -->
-  <div class="loading-overlay" *ngIf="isProcessing">
-    <div class="spinner"></div>
-  </div>
-</div>
+      <!-- Right: selected order detail -->
+      <!-- ... existing code ... -->
+      <div class="lg:col-span-2">
+        <div *ngIf="selectedOrderId; else pickOne" class="p-6 rounded-xl border bg-white">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <div class="text-lg font-bold">Order #{{ selectedOrderId }}</div>
+              <div class="text-sm text-gray-600">
+                Status:
+                <span class="capitalize">{{ selectedOrder?.status || 'pending' }}</span>
+                • Payment:
+                <span class="capitalize">{{ selectedOrder?.paymentStatus || 'pending' }}</span>
+              </div>
+            </div>
+            <!--            <div class="space-x-2">-->
+            <!--              <button class="btn btn-accept" (click)="acceptOrder()" [disabled]="isProcessing">-->
+            <!--                Accept-->
+            <!--              </button>-->
+            <!--              <button class="btn btn-decline" (click)="rejectOrder()" [disabled]="isProcessing">-->
+            <!--                Reject-->
+            <!--              </button>-->
+            <!--              <button class="btn btn-status" (click)="markAsReady()" [disabled]="isProcessing">-->
+            <!--                Mark Ready-->
+            <!--              </button>-->
+            <!--              <button class="btn btn-complete" (click)="completeOrder()" [disabled]="isProcessing">-->
+            <!--                Complete-->
+            <!--              </button>-->
+            <!--            </div>-->
+            <div class="space-x-2">
+              <!-- Only show Complete if paid and not already completed -->
+              <button
+                class="btn btn-complete"
+                (click)="completeOrder()"
+                [disabled]="isProcessing || selectedOrder?.paymentStatus !== 'paid' || selectedOrder?.status === 'completed'">
+                Complete
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Detail body -->
+          <div *ngIf="selectedOrderDetails as d">
+            <div class="mb-4">
+              <div class="font-semibold">Customer</div>
+              <div class="text-sm text-gray-700">{{ d.customerName || 'Customer' }}</div>
+              <div class="text-sm text-gray-500" *ngIf="d.deliveryAddress">
+                {{ d.deliveryAddress }}
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="font-semibold">Items</div>
+              <ul class="text-sm text-gray-700 list-disc ml-5">
+                <li *ngFor="let it of d.items">
+                  {{ it.itemName }} × {{ it.quantity }} — ${{ it.totalPrice }}
+                </li>
+              </ul>
+            </div>
+
+            <div class="mt-4 border-t pt-4 text-sm">
+              <div>Subtotal: ${{ d.subTotal }}</div>
+              <div>Delivery: ${{ d.deliveryFee }}</div>
+              <div>Platform: ${{ d.platformFee }}</div>
+              <div class="font-bold">Total: ${{ (d.subTotal || 0) + (d.deliveryFee || 0) + (d.platformFee || 0) }}</div>
+            </div>
+          </div>
+
+          <div *ngIf="!selectedOrderDetails" class="text-gray-500">
+            Loading order details...
+          </div>
+        </div>
+
+        <ng-template #pickOne>
+          <div class="p-6 rounded-xl border bg-white text-gray-500">
+            Pick an order from the list to view details.
+          </div>
+        </ng-template>
+      </div>
+      <!-- ... existing code ... -->
+    </div>
+  </section>
+</ng-template>

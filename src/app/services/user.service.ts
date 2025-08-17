@@ -69,7 +69,7 @@ export class UserService {
   private userSubject = new BehaviorSubject<User | null>(null);
   user$ = this.userSubject.asObservable();
 
-  constructor(private profileService: ProfileService) {} // ✅ Inject ProfileService
+  constructor(private profileService: ProfileService) {}
 
   setUser(user: User) {
     this.userSubject.next(user);
@@ -78,6 +78,12 @@ export class UserService {
   getUser(): User | null {
     return this.userSubject.value;
   }
+
+  getUserId(): string {
+    const user = this.userSubject.value;
+    return user?.id || '';
+  }
+
 
   clearUser() {
     this.userSubject.next(null);

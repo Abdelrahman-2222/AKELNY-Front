@@ -10,6 +10,7 @@ import { Order } from '../../models/order-model';
   providedIn: 'root',
 })
 export class CartService {
+  public lastOrderId: number | null = null;
   orderDTO: OrderCreateDTO = {
     RestaurantId: 0,
     Items: [

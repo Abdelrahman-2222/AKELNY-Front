@@ -9,24 +9,29 @@ export class OrderManagementService {
   private http = inject(HttpClient);
   private baseUrl = 'https://localhost:7045/api/OrderManagement';
 
-  // acceptOrder(orderId: number): Observable<any> {
-  //   return this.http.post(`${this.baseUrl}/${orderId}/accept`, {});
-  // }
-  async acceptOrder() {
-    this.isProcessing = true;
-    try {
-      const response = await this.orderManagementService.acceptOrder(this.order.id).toPromise();
-      this.order.status = 'accepted';
-      this.addTimelineEvent('Order accepted by chef', 'success');
-    } catch (error) {
-      console.error('Failed to accept order:', error);
-      // Optionally show user feedback
-    } finally {
-      this.isProcessing = false;
-    }
+  acceptOrder(orderId: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${orderId}/accept`, {});
   }
 
-  rejectOrder(orderId: number, reason: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/${orderId}/reject`, { reason });
+  rejectOrder(orderId: number, reason: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${orderId}/reject`, { reason });
   }
+  getChefCurrentOrders(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/chef/current`);
+  }
+
+  // Fetch full details for one order (items, customer, address, totals, etc.)
+  getOrderDetails(orderId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/orders/${orderId}`);
+  }
+
+  // Optional: update statuses from the card actions
+  markAsReady(orderId: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${orderId}/ready`, {});
+  }
+
+  completeOrder(orderId: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${orderId}/complete`, {});
+  }
+
 }

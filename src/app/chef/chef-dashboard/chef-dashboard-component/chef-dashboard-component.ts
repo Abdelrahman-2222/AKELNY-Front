@@ -1,12 +1,15 @@
 // Clean chef-dashboard-component.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {Router, RouterModule} from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
-
+import { Subject, takeUntil, Subscription } from 'rxjs';
+import { ChefCurrentOrder } from '../../../models/ChefCurrentOrder.model';
+import { SignalrService } from '../../../services/signalr.service';
+import { ChefDashboardOrderComponent } from '../../chef-dashboard-order/chef-dashboard-order.component';
 import { ChefDashboardService } from '../../chef-dashboard.service';
 import { AddRestaurant } from '../../../services/chef/add-restaurant';
 import { AuthService } from '../../../services/auth.service';
+import { UserService } from '../../../services/user.service';
 import { Restaurant, RestaurantInputDto } from '../../../models/AddRestaurant.model';
 
 import { LucideAngularModule, Clock, Star, MapPin,  Store} from 'lucide-angular';
@@ -33,12 +36,18 @@ import { ChefRestaurantSettingsComponent } from '../../chef-restaurant-settings/
     // ChefDashboardCurrentOrdersComponent,
     // ChefDashboardMenuComponent,
     ChefRestaurantSettingsComponent,
+    ChefDashboardOrderComponent,
     LucideAngularModule
   ],
   templateUrl: './chef-dashboard-component.html',
   styleUrl: './chef-dashboard-component.css'
 })
-export class ChefDashboardComponent implements OnInit, OnDestroy {
+export class ChefDashboardComponent implements OnInit, OnDestroy
+{
+  currentOrders: ChefCurrentOrder[] = [];
+  chefId: string = '';
+  subscriptions: Subscription[] = [];
+  signalrService = inject(SignalrService);
   restaurant: Restaurant | null = null;
   hasRestaurant = false;
   isLoading = true;
@@ -56,17 +65,35 @@ export class ChefDashboardComponent implements OnInit, OnDestroy {
     public chefDashboardService: ChefDashboardService,
     private restaurantService: AddRestaurant,
     private authService: AuthService,
+    private userService: UserService,
     private router: Router
   ) {
   }
 
   ngOnInit(): void {
     this.checkRestaurantStatus();
+    // const user = this.userService.getUser();
+    this.chefId = this.userService.getUserId() || '';
+    // Start listening for incoming orders for this chef
+    this.setupSignalRSubscriptions();
+
+    // Join chef SignalR group when connected
+    this.subscriptions.push(
+      this.signalrService.getConnectionStatus().subscribe((connected) => {
+        if (connected && this.chefId) {
+          this.signalrService.joinChefGroup(this.chefId);
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.chefId) {
+      this.signalrService.leaveChefGroup(this.chefId);
+    }
   }
 
   // Check if chef has a restaurant
@@ -227,6 +254,97 @@ export class ChefDashboardComponent implements OnInit, OnDestroy {
     document.body.classList.remove('overflow-hidden');
   }
 
+  // private setupSignalRSubscriptions() {
+  //   this.subscriptions.push(
+  //     this.signalrService.getOrderRequests().subscribe((orderData) => {
+  //       if (orderData && orderData.orderId) {
+  //         // Convert the incoming order to ChefCurrentOrder format
+  //         const newOrder: ChefCurrentOrder = {
+  //           id: orderData.orderId,
+  //           customer: orderData.customerName || 'Customer',
+  //           items: orderData.items?.length || 0,
+  //           amount: orderData.totalAmount || 0,
+  //           time: new Date().toLocaleTimeString(),
+  //           status: 'pending',
+  //           paymentStatus: 'pending',
+  //           createdAt: orderData.createdAt ? new Date(orderData.createdAt) : new Date(),
+  //         };
+  //
+  //         this.currentOrders.unshift(newOrder);
+  //       }
+  //     })
+  //   );
+  // }
+
+  private setupSignalRSubscriptions() {
+    this.subscriptions.push(
+      this.signalrService.getOrderRequests().subscribe((orderData) => {
+        if (orderData && orderData.orderId) {
+          // Convert the incoming order to ChefCurrentOrder format
+          const incoming: ChefCurrentOrder = {
+            id: orderData.orderId,
+            customer: orderData.customerName || 'Customer',
+            items: Array.isArray(orderData.items) ? orderData.items.length : (orderData.itemsCount || 0),
+            amount: Number(orderData.totalAmount || 0),
+            time: new Date().toLocaleTimeString(),
+            status: 'pending',
+            paymentStatus: 'pending',
+            createdAt: orderData.createdAt ? new Date(orderData.createdAt) : new Date(),
+          };
+
+          // Upsert into the list (avoid duplicates)
+          const idx = this.currentOrders.findIndex(o => o.id === incoming.id);
+          if (idx >= 0) {
+            this.currentOrders[idx] = { ...this.currentOrders[idx], ...incoming };
+          } else {
+            this.currentOrders.unshift(incoming);
+          }
+        }
+      })
+    );
+
+    // Listen for status changes and patch the matching order
+    this.subscriptions.push(
+      this.signalrService.getOrderStatusUpdates().subscribe((u) => {
+        if (!u || !u.orderId) return;
+        const idx = this.currentOrders.findIndex(o => o.id === u.orderId);
+        if (idx >= 0) {
+          this.currentOrders[idx] = {
+            ...this.currentOrders[idx],
+            status: String(u.status || 'pending').toLowerCase() as ChefCurrentOrder['status']
+          };
+        }
+      })
+    );
+
+    // Listen for payment success
+    this.subscriptions.push(
+      this.signalrService.getOrderPaidNotifications().subscribe((n) => {
+        if (!n || !n.orderId) return;
+        const idx = this.currentOrders.findIndex(o => o.id === n.orderId);
+        if (idx >= 0) {
+          this.currentOrders[idx] = {
+            ...this.currentOrders[idx],
+            paymentStatus: 'paid'
+          };
+        }
+      })
+    );
+
+    // Listen for payment cancelled
+    this.subscriptions.push(
+      this.signalrService.getOrderPaymentCancelledNotifications().subscribe((n) => {
+        if (!n || !n.orderId) return;
+        const idx = this.currentOrders.findIndex(o => o.id === n.orderId);
+        if (idx >= 0) {
+          this.currentOrders[idx] = {
+            ...this.currentOrders[idx],
+            paymentStatus: 'cancelled'
+          };
+        }
+      })
+    );
+  }
   AddItems()
   {
     // navigate to chef-dashboard-item.component.html

@@ -88,22 +88,42 @@ export class SignalrService {
     this.hubConnection.on('OrderAccepted', (response) => {
       console.log('Order accepted:', response);
       this.orderAcceptedSubject.next(response);
+      const orderId = response?.orderId ?? response?.id;
+      if (orderId) {
+        this.orderStatusUpdateSubject.next({ orderId, status: 'accepted' });
+      }
     });
+
 
     this.hubConnection.on('OrderRejected', (response) => {
       console.log('Order rejected:', response);
       this.orderRejectedSubject.next(response);
+      const orderId = response?.orderId ?? response?.id;
+      if (orderId) {
+        this.orderStatusUpdateSubject.next({ orderId, status: 'rejected' });
+      }
     });
+
 
     this.hubConnection.on('OrderPaid', (notification) => {
       console.log('Order paid:', notification);
       this.orderPaidSubject.next(notification);
+      const orderId = notification?.orderId ?? notification?.id;
+      if (orderId) {
+        this.orderStatusUpdateSubject.next({ orderId, status: 'paid' });
+      }
     });
+
 
     this.hubConnection.on('OrderPaymentCancelled', (notification) => {
       console.log('Order payment cancelled:', notification);
       this.orderPaymentCancelledSubject.next(notification);
+      const orderId = notification?.orderId ?? notification?.id;
+      if (orderId) {
+        this.orderStatusUpdateSubject.next({ orderId, status: 'cancelled' });
+      }
     });
+
 
     this.hubConnection.on('OrderStatusUpdate', (update) => {
       console.log('Order status update:', update);
