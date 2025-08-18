@@ -189,7 +189,13 @@
 //   protected readonly navigator = navigator;
 // }
 
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
@@ -204,8 +210,12 @@ import {
   Moon,
 } from 'lucide-angular';
 import { AuthService } from '../../../../services/auth.service';
-import { SearchConfig, SearchService } from '../../../../services/search.service';
+import {
+  SearchConfig,
+  SearchService,
+} from '../../../../services/search.service';
 import { UserService } from '../../../../services/user.service';
+import { CartService } from '../../../../pages/cart/cart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -220,7 +230,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   cartCount = 3;
   isDarkMode = false;
   isAuthenticated = false;
-  searchConfig: SearchConfig = { placeholder: '', searchFunction: () => {}, isVisible: false, showResultsDropdown: false };
+  searchConfig: SearchConfig = {
+    placeholder: '',
+    searchFunction: () => {},
+    isVisible: false,
+    showResultsDropdown: false,
+  };
   searchQuery = '';
   searchResults: any[] = [];
   showSearchResults = false;
@@ -245,12 +260,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
   }
 
+  public cartService = inject(CartService);
+
   ngOnInit() {
-    this.userService.user$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
-        this.userImageUrl = user?.imageUrl ? `https://localhost:7045${user.imageUrl}` : null;
-      });
+    this.userService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
+      this.userImageUrl = user?.imageUrl
+        ? `https://localhost:7045${user.imageUrl}`
+        : null;
+    });
 
     const savedTheme = localStorage.getItem('theme');
     this.isDarkMode = savedTheme === 'dark';
@@ -260,7 +277,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     this.searchService.searchConfig$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(config => {
+      .subscribe((config) => {
         this.searchConfig = config;
       });
   }
@@ -276,7 +293,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.searchConfig.searchFunction) {
       this.searchConfig.searchFunction(this.searchQuery.trim());
     }
-    this.showSearchResults = this.searchConfig.showResultsDropdown && this.searchQuery.trim().length > 0;
+    this.showSearchResults =
+      this.searchConfig.showResultsDropdown &&
+      this.searchQuery.trim().length > 0;
   }
 
   ngOnDestroy() {

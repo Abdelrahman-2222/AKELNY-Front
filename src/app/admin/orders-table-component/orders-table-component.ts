@@ -1,22 +1,22 @@
 import { Component } from '@angular/core';
-import { NgClass , CurrencyPipe } from '@angular/common';
-import { Order , OrderStatus } from '../../models/order-model';
+import { NgClass, CurrencyPipe } from '@angular/common';
+import { Order, OrderStatus } from '../../models/order-model';
 
 @Component({
   selector: 'app-orders-table',
-  imports: [NgClass , CurrencyPipe],
+  imports: [NgClass, CurrencyPipe],
   templateUrl: './orders-table-component.html',
-  styleUrl: './orders-table-component.css'
+  styleUrl: './orders-table-component.css',
 })
 export class OrdersTableComponent {
-sortColumn = 'customer';
+  sortColumn = 'customer';
   sortDirection: 'asc' | 'desc' = 'asc';
 
   tableHeaders = [
     { key: 'customer', label: 'Customer' },
     { key: 'status', label: 'Status' },
     { key: 'intervention', label: 'All Inverventon' },
-    { key: 'total', label: 'All Orders' }
+    { key: 'total', label: 'All Orders' },
   ];
 
   orders: Order[] = [
@@ -26,7 +26,7 @@ sortColumn = 'customer';
       status: OrderStatus.PENDING,
       intervention: 'All Invervenron',
       total: 42.99,
-      items: []
+      items: [],
     },
     // More orders...
   ];
@@ -47,7 +47,7 @@ sortColumn = 'customer';
       'bg-yellow-100 text-yellow-800': status === OrderStatus.PENDING,
       'bg-green-100 text-green-800': status === OrderStatus.APPROVED,
       'bg-red-100 text-red-800': status === OrderStatus.SUSPENDED,
-      'bg-blue-100 text-blue-800': status === OrderStatus.COMPLETED
+      'bg-blue-100 text-blue-800': status === OrderStatus.COMPLETED,
     };
   }
 }

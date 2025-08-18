@@ -7,8 +7,8 @@ import { CustomerRestaurant } from '../../../models/CustomerRestaurant.model'; /
 import { FilterItemView } from '../../../shared/components/filters/filter-item-view/filter-item-view';
 import { FilterRestaurantView } from '../../../shared/components/filters/filter-restaurant-view/filter-restaurant-view';
 import { Pagination } from '../../../shared/components/pagination/pagination';
-import { Router } from '@angular/router';
-
+import { Router, NavigationExtras } from '@angular/router';
+import { CartService } from '../../cart/cart.service';
 
 interface Chef {
   id: number;
@@ -24,15 +24,22 @@ interface Chef {
 
 @Component({
   selector: 'app-restaurant-component',
-  imports: [LucideAngularModule, FoodCategoryCardComponent, FilterRestaurantView, FilterItemView, Pagination, NgFor],
+  imports: [
+    LucideAngularModule,
+    FoodCategoryCardComponent,
+    FilterRestaurantView,
+    FilterItemView,
+    Pagination,
+    NgFor,
+  ],
   templateUrl: './restaurant-component.html',
 })
 export class RestaurantComponent implements OnInit {
   getService = inject(GetService);
   router = inject(Router);
+  cartService: CartService = inject(CartService);
 
   restaurants: CustomerRestaurant[] = [];
-
 
   //pagination
   page = 1;
@@ -42,37 +49,40 @@ export class RestaurantComponent implements OnInit {
   //sorting
   sortBy: string = '';
   sortOrder: string = ''; // 'asc' for ascending, 'desc' for descending
-  url = 'https://localhost:7045/api/restaurants?' +
+  url =
+    'https://localhost:7045/api/restaurants?' +
     (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
-    `page=${this.page}&pageSize=${this.pageSize}`
+    `page=${this.page}&pageSize=${this.pageSize}`;
 
   ngOnInit(): void {
     //restaurants
     this.loadRestaurants();
   }
   loadRestaurants(): void {
-    this.getService.get<CustomerRestaurant[]>({
-      url: 'https://localhost:7045/api/restaurants?' +
-        (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
-        `page=${this.page}&pageSize=${this.pageSize}`,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
-      }
-    }
-    ).subscribe({
-      next: (data: any) => {
-        this.restaurants = data.categories;
-        this.totalPages = data.totalCount;
-        console.log(this.restaurants);
-      }
-      , error: (err) => {
-        console.error('Error fetching restaurants:', err);
-      }
-      , complete: () => {
-        console.log('Restaurant data fetch complete');
-      }
-    })
+    this.getService
+      .get<CustomerRestaurant[]>({
+        url:
+          'https://localhost:7045/api/restaurants?' +
+          (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
+          `page=${this.page}&pageSize=${this.pageSize}`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.restaurants = data.categories;
+          this.totalPages = data.totalCount;
+          console.log(this.restaurants);
+        },
+        error: (err) => {
+          console.error('Error fetching restaurants:', err);
+        },
+        complete: () => {
+          console.log('Restaurant data fetch complete');
+        },
+      });
   }
   onPageChange(event: { page: number; pageSize: number }): void {
     this.page = event.page;
@@ -88,8 +98,17 @@ export class RestaurantComponent implements OnInit {
     // You can also update the restaurant list based on the sorting criteria
     this.loadRestaurants();
   }
-showRestaurantDetails(restaurantId: number): void {
-  console.log(`restaurantId : ${restaurantId}`);
-  this.router.navigate(['/customer/restaurant-details', restaurantId]);
-}
+  showRestaurantDetails(restaurantId: number): void {
+    const data = {
+      restId: restaurantId,
+    };
+    const navigationExtras: NavigationExtras = {
+      state: data,
+    };
+    console.log(`restaurantId : ${restaurantId}`);
+    this.router.navigate(
+      ['/customer/restaurant-details', restaurantId],
+      navigationExtras
+    );
+  }
 }
