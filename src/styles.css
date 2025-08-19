@@ -50,6 +50,15 @@
   --menu-item-hover-shadow: 0 10px 25px var(--shadow-color);
   --menu-category-badge: var(--primary-orange);
   --menu-price: var(--primary-orange);
+
+
+  /* Restaurant Component Theme */
+  --restaurant-card-bg: var(--card-bg);
+  --restaurant-card-shadow: 0 4px 6px var(--shadow-color);
+  --restaurant-card-hover-shadow: 0 10px 15px var(--shadow-color);
+  --restaurant-rating-star: var(--warm-yellow);
+  --restaurant-btn-bg: var(--primary-orange);
+  --restaurant-btn-hover: var(--primary-amber);
 }
 
 [data-theme="dark"] {
@@ -87,6 +96,14 @@
   --menu-item-hover-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   --menu-category-badge: var(--primary-amber);
   --menu-price: var(--primary-amber);
+
+ /* Restaurant Component Dark Theme */
+  --restaurant-card-bg: var(--bg-secondary);
+  --restaurant-card-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --restaurant-card-hover-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+  --restaurant-rating-star: var(--primary-amber);
+  --restaurant-btn-bg: var(--primary-amber);
+  --restaurant-btn-hover: var(--primary-orange);
 }
 
 /* Opening Hours Styling Classes */

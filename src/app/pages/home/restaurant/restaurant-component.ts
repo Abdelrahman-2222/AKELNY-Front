@@ -35,6 +35,7 @@ interface Chef {
     NgIf
   ],
   templateUrl: './restaurant-component.html',
+  styleUrl:'./restaurant-component.css'
 })
 export class RestaurantComponent implements OnInit {
 

@@ -1,0 +1,37 @@
+.restaurant-card {
+  @apply rounded-lg p-4 transition-all duration-300;
+  background: var(--restaurant-card-bg);
+  box-shadow: var(--restaurant-card-shadow);
+}
+
+.restaurant-card:hover {
+  box-shadow: var(--restaurant-card-hover-shadow);
+  transform: translateY(-2px);
+}
+
+.restaurant-image {
+  @apply w-full h-48 object-cover rounded-lg;
+}
+
+.restaurant-rating {
+  @apply flex items-center gap-1;
+}
+
+.rating-star {
+  color: var(--restaurant-rating-star);
+}
+
+.view-menu-btn {
+  @apply w-full mt-4 py-2 text-white rounded-lg transition-colors duration-300;
+  background: var(--restaurant-btn-bg);
+}
+
+.view-menu-btn:hover {
+  background: var(--restaurant-btn-hover);
+}
+
+.loading-spinner {
+  @apply relative size-16;
+  border: 4px solid var(--bg-accent);
+  border-top-color: var(--primary-orange);
+}
