@@ -23,11 +23,11 @@
 
   /* Opening Hours Colors */
   --closed-day-text: #6b7280;
-  --open-day-text: #059669; /* Better contrast for light theme */
+  --open-day-text: #059669;
   --open-day-bg: #ecfdf5;
   --open-day-border: #a7f3d0;
 
-  /* Footer Specific Colors - Much Softer */
+  /* Footer Specific Colors */
   --footer-bg: #f8fafc;
   --footer-secondary: #f1f5f9;
   --footer-accent: #e2e8f0;
@@ -59,11 +59,11 @@
 
   /* Opening Hours Colors for Dark Theme */
   --closed-day-text: #9ca3af;
-  --open-day-text: #6ee7b7; /* Better contrast for dark theme */
+  --open-day-text: #6ee7b7;
   --open-day-bg: rgba(6, 78, 59, 0.3);
   --open-day-border: rgba(6, 78, 59, 0.8);
 
-  /* Footer Specific Colors for Dark Theme - Keep as is */
+  /* Footer Specific Colors for Dark Theme */
   --footer-bg: #1f2937;
   --footer-secondary: #111827;
   --footer-accent: #374151;
@@ -71,53 +71,6 @@
   --footer-text-muted: rgba(249, 250, 251, 0.7);
   --footer-border: rgba(251, 146, 60, 0.2);
   --footer-card: rgba(255, 255, 255, 0.05);
-}
-
-/* Opening Hours Styling Classes */
-.closed-day-message {
-  color: var(--closed-day-text) !important;
-}
-
-.open-day-message {
-  color: var(--open-day-text) !important;
-}
-
-.open-day-bg {
-  background-color: var(--open-day-bg) !important;
-  border-color: var(--open-day-border) !important;
-}
-
-/* Rest of your existing CSS... */
-/* Footer Theme Classes */
-.footer-bg {
-  background-color: var(--footer-bg);
-}
-
-.footer-bg-secondary {
-  background-color: var(--footer-secondary);
-}
-
-.footer-bg-accent {
-  background-color: var(--footer-accent);
-}
-
-.footer-text {
-  color: var(--footer-text);
-}
-
-.footer-text-muted {
-  color: var(--footer-text-muted);
-}
-
-.footer-border {
-  border-color: var(--footer-border);
-}
-
-.footer-card {
-  background-color: var(--footer-card);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--footer-border);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 body {
@@ -143,6 +96,310 @@ body::before {
   pointer-events: none;
   z-index: -1;
   transition: all 0.3s ease;
+}
+
+/* Global Dashboard Utility Classes */
+@layer components {
+  /* Layout Components */
+  .dashboard-container {
+    @apply min-h-screen;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-accent) 100%);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+  }
+
+  .dashboard-header {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    @apply border-b sticky top-0 z-40;
+    border-color: var(--border-color);
+    box-shadow: 0 4px 6px var(--shadow-color);
+  }
+
+  .header-content {
+    @apply max-w-7xl mx-auto px-6 py-4 flex items-center justify-between;
+  }
+
+  .dashboard-subtitle {
+    @apply text-sm;
+    color: var(--text-secondary);
+  }
+
+  /* Card Components */
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 25px 45px var(--shadow-color);
+    transition: all 0.3s ease;
+  }
+
+  .modern-card {
+    @apply rounded-2xl;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px var(--shadow-color);
+    backdrop-filter: blur(20px);
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  .chart-card {
+    @apply rounded-2xl overflow-hidden;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px var(--shadow-color);
+    backdrop-filter: blur(20px);
+  }
+
+  .enhanced-card {
+    @apply rounded-xl p-5 hover:shadow-lg transition-all duration-300 cursor-pointer relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    backdrop-filter: blur(20px);
+  }
+
+  .enhanced-card:hover {
+    @apply -translate-y-0.5;
+    box-shadow: 0 12px 35px var(--shadow-color);
+  }
+
+  /* Button Components */
+  .btn-icon {
+    @apply w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+  }
+
+  .btn-icon:hover {
+    color: var(--primary-orange);
+    border-color: var(--primary-orange);
+    box-shadow: 0 4px 12px var(--shadow-color);
+  }
+
+  .btn-primary {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors;
+    background: linear-gradient(135deg, var(--primary-orange), var(--primary-amber));
+    @apply text-white;
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px var(--shadow-color);
+  }
+
+  .btn-outline {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg transition-colors;
+    border: 1px solid var(--border-color);
+    background: var(--glass-bg);
+    color: var(--text-primary);
+  }
+
+  .btn-outline:hover {
+    background: var(--bg-accent);
+    border-color: var(--primary-orange);
+  }
+
+  /* Form Components */
+  .form-input {
+    @apply w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+  }
+
+  .form-input:focus {
+    ring-color: var(--primary-orange);
+    border-color: var(--primary-orange);
+  }
+
+  .form-select {
+    @apply px-3 py-2 rounded-lg focus:outline-none focus:ring-2;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+  }
+
+  .form-select:focus {
+    ring-color: var(--primary-orange);
+  }
+
+  /* Status Components */
+  .status-badge {
+    @apply px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2;
+  }
+
+  .status-pending {
+    @apply bg-amber-100 text-amber-800;
+  }
+
+  .status-accepted {
+    background: rgba(249, 115, 22, 0.1);
+    color: var(--primary-orange);
+  }
+
+  .status-completed {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--accent-green);
+  }
+
+  .status-rejected {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--accent-red);
+  }
+
+  .status-in_progress {
+    @apply bg-purple-100 text-purple-800;
+  }
+
+  .status-ready {
+    @apply bg-green-100 text-green-800;
+  }
+
+  /* Dark theme status adjustments */
+  [data-theme="dark"] .status-pending {
+    @apply bg-amber-900 text-amber-300;
+  }
+
+  [data-theme="dark"] .status-in_progress {
+    @apply bg-purple-900 text-purple-300;
+  }
+
+  [data-theme="dark"] .status-ready {
+    @apply bg-green-900 text-green-300;
+  }
+
+  /* Payment Status */
+  .payment-paid {
+    color: var(--accent-green);
+  }
+
+  .payment-pending {
+    @apply text-amber-600;
+  }
+
+  .payment-cancelled {
+    color: var(--accent-red);
+  }
+
+  [data-theme="dark"] .payment-pending {
+    @apply text-amber-400;
+  }
+
+  /* Quick Action Buttons */
+  .quick-btn {
+    @apply w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200;
+  }
+
+  .accept-btn {
+    @apply bg-green-100 text-green-600 hover:bg-green-200;
+  }
+
+  .reject-btn {
+    @apply bg-red-100 text-red-600 hover:bg-red-200;
+  }
+
+  .complete-btn {
+    @apply px-3 w-auto gap-2;
+    background: rgba(249, 115, 22, 0.1);
+    color: var(--primary-orange);
+  }
+
+  .complete-btn:hover {
+    background: rgba(249, 115, 22, 0.2);
+  }
+
+  [data-theme="dark"] .accept-btn {
+    @apply bg-green-900 text-green-400 hover:bg-green-800;
+  }
+
+  [data-theme="dark"] .reject-btn {
+    @apply bg-red-900 text-red-400 hover:bg-red-800;
+  }
+
+  [data-theme="dark"] .complete-btn {
+    background: rgba(249, 115, 22, 0.2);
+    color: var(--primary-amber);
+  }
+
+  [data-theme="dark"] .complete-btn:hover {
+    background: rgba(249, 115, 22, 0.3);
+  }
+
+  /* Trend Components */
+  .metric-trend {
+    @apply flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .metric-trend.up {
+    @apply bg-green-100 text-green-700;
+  }
+
+  .metric-trend.down {
+    @apply bg-red-100 text-red-700;
+  }
+
+  .metric-trend.stable {
+    @apply bg-gray-100 text-gray-700;
+  }
+
+  [data-theme="dark"] .metric-trend.up {
+    @apply bg-green-900 text-green-300;
+  }
+
+  [data-theme="dark"] .metric-trend.down {
+    @apply bg-red-900 text-red-300;
+  }
+
+  [data-theme="dark"] .metric-trend.stable {
+    @apply bg-gray-700 text-gray-300;
+  }
+
+  /* Loading Components */
+  .modern-spinner {
+    @apply w-8 h-8 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin;
+  }
+
+  .loading-overlay {
+    @apply absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center rounded-xl;
+    backdrop-filter: blur(2px);
+  }
+
+  /* Timeline Components */
+  .timeline-dot {
+    @apply w-3 h-3 rounded-full mt-1;
+  }
+
+  .timeline-dot.dot-success {
+    background: var(--accent-green);
+  }
+
+  .timeline-dot.dot-info {
+    background: var(--primary-orange);
+  }
+
+  .timeline-dot.dot-error {
+    background: var(--accent-red);
+  }
+
+  /* Panel Components */
+  .order-details-panel {
+    @apply rounded-xl h-fit sticky top-24;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px var(--shadow-color);
+    backdrop-filter: blur(20px);
+  }
+
+  .panel-header {
+    @apply px-6 py-4 flex items-center justify-between;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .section-divider {
+    border-bottom: 1px solid var(--border-color);
+  }
 }
 
 /* Global Theme Classes */
@@ -186,15 +443,53 @@ body::before {
   box-shadow: 0 10px 25px var(--shadow-color);
 }
 
-/* Enhanced Components */
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 25px 45px var(--shadow-color);
-  transition: all 0.3s ease;
+/* Opening Hours Styling Classes */
+.closed-day-message {
+  color: var(--closed-day-text) !important;
 }
 
+.open-day-message {
+  color: var(--open-day-text) !important;
+}
+
+.open-day-bg {
+  background-color: var(--open-day-bg) !important;
+  border-color: var(--open-day-border) !important;
+}
+
+/* Footer Theme Classes */
+.footer-bg {
+  background-color: var(--footer-bg);
+}
+
+.footer-bg-secondary {
+  background-color: var(--footer-secondary);
+}
+
+.footer-bg-accent {
+  background-color: var(--footer-accent);
+}
+
+.footer-text {
+  color: var(--footer-text);
+}
+
+.footer-text-muted {
+  color: var(--footer-text-muted);
+}
+
+.footer-border {
+  border-color: var(--footer-border);
+}
+
+.footer-card {
+  background-color: var(--footer-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--footer-border);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced Components */
 .food-gradient {
   background: linear-gradient(135deg, var(--primary-orange), var(--primary-amber));
 }
