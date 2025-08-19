@@ -1,31 +1,38 @@
-<div class="w-80 bg-white border-r border-gray-200  overflow-y-auto">
+
+
+
+
+
+
+
+<div class="filter-sidebar">
   <!-- Filter Header -->
-  <div class="p-6 border-b border-gray-200">
+  <div class="filter-header">
     <div class="flex items-center justify-between">
-      <h2 class="text-xl font-semibold text-gray-900">Filters</h2>
-      <button (click)="clearAll()" class="text-sm text-orange-600 hover:text-orange-700 font-medium transition-colors">
+      <h2 class="filter-title">Filters</h2>
+      <button (click)="clearAll()" class="clear-button">
         Clear All
       </button>
     </div>
   </div>
 
   <!-- Sort Options -->
-  <div class="p-6">
-    <h3 class="text-lg font-medium text-gray-900 mb-4">Sort By</h3>
+  <div class="filter-section">
+    <h3 class="filter-section-title">Sort By</h3>
 
     <!-- Sort Field Selection -->
     <div class="space-y-3 mb-6">
       <div class="flex items-center">
         <input [(ngModel)]='sortBy' id="sort-rating" type="radio" name="sortBy" value="rating" checked
-          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500 focus:ring-2">
-        <label for="sort-rating" class="ml-3 text-sm text-gray-700 cursor-pointer">
+          class="filter-input">
+        <label for="sort-rating" class="filter-label">
           Rating
         </label>
       </div>
       <div class="flex items-center">
         <input [(ngModel)]='sortBy' id="sort-name" type="radio" name="sortBy" value="name"
-          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500 focus:ring-2">
-        <label for="sort-name" class="ml-3 text-sm text-gray-700 cursor-pointer">
+          class="filter-input">
+        <label for="sort-name" class="filter-label">
           Restaurant Name
         </label>
       </div>
@@ -35,18 +42,18 @@
 
     <!-- Sort Order Selection -->
     <div class="space-y-3">
-      <h4 class="text-sm font-medium text-gray-900">Order</h4>
+      <h4 class="filter-section-title">Order</h4>
       <div class="flex items-center">
         <input [(ngModel)]="sortOrder" id="sort-desc" type="radio" name="sortOrder" value="-" checked
-          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500 focus:ring-2">
-        <label for="sort-desc" class="ml-3 text-sm text-gray-700 cursor-pointer">
+          class="filter-input">
+        <label for="sort-desc" class="filter-label">
           Highest to Lowest
         </label>
       </div>
       <div class="flex items-center">
         <input [(ngModel)]="sortOrder" id="sort-asc" type="radio" name="sortOrder" value=""
-          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500 focus:ring-2">
-        <label for="sort-asc" class="ml-3 text-sm text-gray-700 cursor-pointer">
+          class="filter-input">
+        <label for="sort-asc" class="filter-label">
           Lowest to Highest
         </label>
       </div>
@@ -54,12 +61,15 @@
   </div>
 
   <!-- Apply Button -->
-  <div class="p-6 border-t border-gray-200">
+  <div class="p-6 border-t" style="border-color: var(--filter-border)">
     <button
      (click)="applyFilters()"
-      class="w-full bg-orange-600 text-white py-3 px-4 rounded-lg hover:bg-orange-700 transition-colors duration-200 font-medium">
+      class="apply-button">
       Apply Filters
     </button>
   </div>
 </div>
+
+
+
 

@@ -59,6 +59,25 @@
   --restaurant-rating-star: var(--warm-yellow);
   --restaurant-btn-bg: var(--primary-orange);
   --restaurant-btn-hover: var(--primary-amber);
+
+    /* Filter Component Theme */
+  --filter-bg: var(--card-bg);
+  --filter-border: var(--border-color);
+  --filter-header-bg:white;
+  --filter-input-bg: var(--bg-accent);
+  --filter-input-checked: var(--primary-orange);
+  --filter-input-border: var(--border-color);
+  --filter-label-text: var(--text-primary);
+  --filter-clear-text: var(--primary-orange);
+
+   /* Pagination Theme */
+  --pagination-bg: var(--card-bg);
+  --pagination-border: var(--border-color);
+  --pagination-text: var(--text-primary);
+  --pagination-hover-bg: var(--bg-accent);
+  --pagination-active-bg: var(--primary-orange);
+  --pagination-active-text: white;
+  --pagination-disabled-text: var(--text-muted);
 }
 
 [data-theme="dark"] {
@@ -104,6 +123,25 @@
   --restaurant-rating-star: var(--primary-amber);
   --restaurant-btn-bg: var(--primary-amber);
   --restaurant-btn-hover: var(--primary-orange);
+
+    /* Filter Component Dark Theme */
+  --filter-bg: var(--bg-secondary);
+  --filter-border: var(--border-color);
+  --filter-header-bg: var(--bg-accent);
+  --filter-input-bg: var(--bg-primary);
+  --filter-input-checked: var(--primary-amber);
+  --filter-input-border: var(--border-color);
+  --filter-label-text: var(--text-primary);
+  --filter-clear-text: var(--primary-amber);
+
+   /* Pagination Dark Theme */
+  --pagination-bg: var(--bg-secondary);
+  --pagination-border: var(--border-color);
+  --pagination-text: var(--text-primary);
+  --pagination-hover-bg: var(--bg-accent);
+  --pagination-active-bg: var(--primary-amber);
+  --pagination-active-text: var(--text-primary);
+  --pagination-disabled-text: var(--text-muted);
 }
 
 /* Opening Hours Styling Classes */
