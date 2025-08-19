@@ -30,76 +30,62 @@
 </div>
 
 
-<section *ngIf="errorMessage=='' && !isLoading" class="bg-white py-8 mt-24">
+<section *ngIf="errorMessage=='' && !isLoading" class="theme-bg-primary py-8 mt-24">
   <div class="container mx-auto px-4">
-    <h2 class="text-2xl font-bold">Restaurant (Chef)</h2>
-    <h3 class="text-xl font-semibold mb-6">Home Chefs</h3>
+    <h2 class="text-2xl font-bold theme-text-primary">Restaurant (Chef)</h2>
+    <h3 class="text-xl font-semibold mb-6 theme-text-secondary">Home Chefs</h3>
+
     <div class="grid grid-cols-1 xl:grid-cols-4 gap-4">
-      <!-- cards -->
-      <div
-        class="col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-      >
-        <!-- Restaurants Card -->
-        <div
-          *ngFor="let restaurant of restaurants"
-          [attr.data-rest-id]="restaurant.id"
-          class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-4 "
-        >
+      <!-- Restaurant Cards Grid -->
+      <div class="col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div *ngFor="let restaurant of restaurants"
+             [attr.data-rest-id]="restaurant.id"
+             class="restaurant-card">
+
           <div class="w-full relative">
-            <img
-              [src]="restaurant.imageUrl"
-              alt="restaurant's food"
-              class="w-full h-48 object-cover rounded-lg"
-            />
-            <!-- <img src="https://cdn-icons-png.flaticon.com/512/4825/4825015.png" [alt]="restaurant.name"
-              class="w-20 h-20 rounded-full object-cover absolute top-1/4 left-3 -translate-y-1/2"> -->
-          </div>
-          <div class="flex items-start gap-4 mt-5">
-            <!-- restaurant Information -->
-            <div>
-              <h4 class="font-semibold">{{ restaurant.name }}</h4>
-              <p class="text-gray-500 text-sm">
-                {{ restaurant.location }} / location
-              </p>
-              <div class="flex items-center gap-2 mt-2">
-                <div class="flex items-center">
-                  <span class="text-sm font-medium">{{
-                    restaurant.rating
-                  }}</span>
-                  <span class="text-yellow-400">★</span>
-                </div>
-                <span class="text-sm text-gray-500"
-                  >{{ restaurant.description }} description</span
-                >
-                <!-- <span class="text-sm text-gray-500">{{restaurant.openingHours}} Opening Time</span> -->
-              </div>
-            </div>
-            <!-- restaurant Information -->
+            <img [src]="restaurant.imageUrl"
+                 alt="restaurant's food"
+                 class="restaurant-image">
           </div>
 
-          <button
-            (click)="showRestaurantDetails(restaurant.id)"
-            class="w-full mt-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-300"
-          >
+          <div class="flex items-start gap-4 mt-5">
+            <div>
+              <h4 class="font-semibold theme-text-primary">{{restaurant.name}}</h4>
+              <p class="theme-text-muted text-sm">
+                {{restaurant.location}} / location
+              </p>
+
+              <div class="flex items-center gap-2 mt-2">
+                <div class="restaurant-rating">
+                  <span class="text-sm font-medium">{{restaurant.rating}}</span>
+                  <span class="rating-star">★</span>
+                </div>
+                <span class="theme-text-muted text-sm">
+                  {{restaurant.description}} description
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <button (click)="showRestaurantDetails(restaurant.id)"
+                  class="view-menu-btn">
             View Menu
           </button>
         </div>
-        <!-- Restaurants Card -->
       </div>
-      <!-- cards -->
 
-      <!-- sideFilterBar -->
-      <app-filter-restaurant-view (sortChanged)="onSortChanged($event)">
+      <!-- Sidebar Filter -->
+      <app-filter-restaurant-view
+        (sortChanged)="onSortChanged($event)">
       </app-filter-restaurant-view>
-      <!-- <app-filter-item-view></app-filter-item-view> -->
-      <!-- sideFilterBar -->
+
+      <!-- Pagination -->
       <app-pagination
         class="col-span-1 xl:col-span-3 col-start-1 xl:col-start-2 xl:col-end-4"
         [page]="page"
         [pageSize]="pageSize"
         [totalPages]="totalPages"
-        (pageChange)="onPageChange($event)"
-      >
+        (pageChange)="onPageChange($event)">
       </app-pagination>
     </div>
   </div>
