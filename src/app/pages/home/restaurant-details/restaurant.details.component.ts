@@ -8,28 +8,27 @@ import { GetService } from '../../../services/requests/get-service';
 import { RestaurantDetails } from '../../../models/RestaurantDetails.model';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { CartService } from '../../cart/cart.service';
+import { LucideAngularModule,Package} from 'lucide-angular';
 
-interface MenuItem {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-}
 
 @Component({
   selector: 'app-restaurant-details',
   templateUrl: './restaurant.details.component.html',
-  imports: [CommonModule, CategoriesComponent, Pagination],
+  styleUrl:'./restaurant.details.component.css',
+  imports: [CommonModule, CategoriesComponent, Pagination , LucideAngularModule],
 })
 export class RestaurantDetailsComponent implements OnInit {
+
+  readonly Package = Package;
+  isLoading = true;
+  errorMessage = ''
+
   router = inject(Router);
   cartService = inject(CartService);
   getService = inject(GetService);
   route = inject(ActivatedRoute);
   restId: number = 0;
-  restDetails: RestaurantDetails | null = null;
+  restDetails: RestaurantDetails | undefined;
 
   //pagination
   page = 1;
@@ -53,6 +52,9 @@ export class RestaurantDetailsComponent implements OnInit {
   }
 
   loadRestaurantDetails() {
+    this.isLoading = true;
+    this.errorMessage = '';
+
     this.getService
       .get<RestaurantDetails>({
         url: `https://localhost:7045/api/Restaurants/customer-restaurant/${this.restId}?page=${this.page}&pageSize=${this.pageSize}`,
@@ -65,9 +67,12 @@ export class RestaurantDetailsComponent implements OnInit {
         next: (data: any) => {
           this.restDetails = data;
           this.totalPages = data.totalPages;
+          this.isLoading = false
           console.log(this.restDetails);
         },
         error: (err) => {
+          this.isLoading = false
+          this.errorMessage = "Can't fetch restaurant Details"
           console.error('Error fetching restDetails:', err);
         },
         complete: () => {

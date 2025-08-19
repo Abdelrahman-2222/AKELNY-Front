@@ -1,0 +1,60 @@
+/* Restaurant Banner */
+.restaurant-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--restaurant-banner-overlay);
+  z-index: 1;
+}
+
+.restaurant-info {
+  @apply py-2 px-5 rounded-xl;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+/* Category Cards */
+.category-overlay {
+  @apply absolute top-0 left-0 size-44 rounded-full;
+  background: var(--category-card-overlay);
+}
+
+/* Menu Items */
+.menu-item-card {
+  @apply rounded-lg overflow-hidden transition-all duration-300;
+  background: var(--menu-item-bg);
+}
+
+.menu-item-card:hover {
+  box-shadow: var(--menu-item-hover-shadow);
+  transform: translateY(-2px);
+}
+
+.menu-category-badge {
+  @apply absolute top-3 right-3 text-white text-sm px-3 py-1 rounded-full;
+  background: var(--menu-category-badge);
+}
+
+.menu-price {
+  color: var(--menu-price);
+  @apply font-semibold;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply px-4 py-2 bg-green-700 text-white rounded-lg transition-colors;
+}
+
+.btn-primary:hover {
+  @apply bg-green-800;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 rounded-lg transition-colors;
+  background: var(--bg-accent);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  filter: brightness(0.95);
+}
