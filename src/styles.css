@@ -78,6 +78,14 @@
   --pagination-active-bg: var(--primary-orange);
   --pagination-active-text: white;
   --pagination-disabled-text: var(--text-muted);
+
+      /* Popup Theme */
+  --popup-overlay: rgba(0, 0, 0, 0.5);
+  --popup-bg: var(--card-bg);
+  --popup-border: var(--border-color);
+  --popup-shadow: 0 25px 50px var(--shadow-color);
+  --popup-input-bg: var(--bg-accent);
+  --popup-input-border: var(--border-color);
 }
 
 [data-theme="dark"] {
@@ -142,6 +150,14 @@
   --pagination-active-bg: var(--primary-amber);
   --pagination-active-text: var(--text-primary);
   --pagination-disabled-text: var(--text-muted);
+
+    /* Popup Dark Theme */
+  --popup-overlay: rgba(0, 0, 0, 0.7);
+  --popup-bg: var(--bg-secondary);
+  --popup-border: var(--border-color);
+  --popup-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  --popup-input-bg: var(--bg-primary);
+  --popup-input-border: var(--border-color);
 }
 
 /* Opening Hours Styling Classes */

@@ -1,0 +1,37 @@
+.popup-overlay {
+  @apply fixed inset-0 flex items-center justify-center z-50;
+  background: var(--popup-overlay);
+  backdrop-filter: blur(5px);
+}
+
+.popup-content {
+  @apply relative w-full max-w-md p-6 rounded-xl;
+  background: var(--popup-bg);
+  border: 1px solid var(--popup-border);
+  box-shadow: var(--popup-shadow);
+  animation: popup-appear 0.3s ease-out;
+}
+
+.date-input {
+  @apply w-full px-4 py-2 rounded-lg mt-2 transition-colors duration-200;
+  background: var(--popup-input-bg);
+  border: 1px solid var(--popup-input-border);
+  color: var(--text-primary);
+}
+
+.date-input:focus {
+  @apply outline-none ring-2;
+  border-color: var(--primary-orange);
+  ring-color: var(--primary-orange);
+}
+
+@keyframes popup-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

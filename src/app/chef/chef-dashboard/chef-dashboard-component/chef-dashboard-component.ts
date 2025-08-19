@@ -19,6 +19,7 @@ import { ChefDashboardHeaderComponent } from '../../chef-dashboard-header/chef-d
 // import { ChefDashboardCurrentOrdersComponent } from '../../chef-dashboard-current-orders/chef-dashboard-current-orders.component';
 // import { ChefDashboardMenuComponent } from '../../chef-dashboard-menu/chef-dashboard-menu.component';
 import { ChefRestaurantSettingsComponent } from '../../chef-restaurant-settings/chef-restaurant-settings';
+import { ChefOrderReport } from '../../chef-order-report/chef-order-report';
 
 @Component({
   selector: 'app-chef-dashboard',
@@ -33,7 +34,9 @@ import { ChefRestaurantSettingsComponent } from '../../chef-restaurant-settings/
     // ChefDashboardCurrentOrdersComponent,
     // ChefDashboardMenuComponent,
     ChefRestaurantSettingsComponent,
-    LucideAngularModule
+    LucideAngularModule,
+
+    ChefOrderReport
   ],
   templateUrl: './chef-dashboard-component.html',
   styleUrl: './chef-dashboard-component.css'

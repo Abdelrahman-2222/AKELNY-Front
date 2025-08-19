@@ -12,7 +12,7 @@ export interface RestaurantDetails {
     categoryName: string;
   }[];
   categories?: {
-      categoryId: number;
-      categoryName: string;
+      id: number;
+      name: string;
     }[];
 }

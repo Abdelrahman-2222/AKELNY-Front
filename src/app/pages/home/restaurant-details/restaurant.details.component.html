@@ -55,12 +55,12 @@
         <div *ngFor="let category of restDetails?.categories"
              class="category-card hover:transform hover:scale-105 transition-transform duration-300">
           <div class="relative rounded-full">
-            <img src="https://wallpapers.com/images/hd/food-4k-m37wpodzrcbv5gvw.jpg" [alt]="category.categoryName"
+            <img src="https://wallpapers.com/images/hd/food-4k-m37wpodzrcbv5gvw.jpg" [alt]="category.name"
                  class="size-44 rounded-full object-cover border-4 border-orange-500" />
             <div class="category-overlay"></div>
             <p class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full
                       text-center text-white font-bold text-xl">
-              {{ category.categoryName }}
+              {{ category.name }}
             </p>
           </div>
         </div>
