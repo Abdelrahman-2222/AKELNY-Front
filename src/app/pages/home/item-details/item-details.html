@@ -1,99 +1,289 @@
-<div class="min-h-screen bg-cream">
-  <!-- Item Header -->
-  <div class="container mx-auto px-4 py-8">
-    <nav class="flex items-center gap-2 text-sm mb-6">
-      <a href="#" class="text-gray-500 hover:text-orange-500">Home</a>
-      <span class="text-gray-400">/</span>
-      <span class="text-gray-800">{{ item.name }}</span>
-    </nav>
+<!--<div class="min-h-screen bg-cream">-->
+<!--  &lt;!&ndash; Item Header &ndash;&gt;-->
+<!--  <div class="container mx-auto px-4 py-8">-->
+<!--    <nav class="flex items-center gap-2 text-sm mb-6">-->
+<!--      <a href="#" class="text-gray-500 hover:text-orange-500">Home</a>-->
+<!--      <span class="text-gray-400">/</span>-->
+<!--      <span class="text-gray-800">{{ item.name }}</span>-->
+<!--    </nav>-->
 
-    <!-- Item Main Content -->
-    <div class="grid md:grid-cols-2 gap-8">
-      <!-- Images Section -->
-      <div class="space-y-4">
-        <div class="bg-peach-100 rounded-xl p-4">
-          <img
-            [src]="item.mainImage"
-            [alt]="item.name"
-            class="w-full h-[400px] object-cover rounded-lg transform transition-transform hover:scale-105"
-          />
+<!--    &lt;!&ndash; Item Main Content &ndash;&gt;-->
+<!--    <div class="grid md:grid-cols-2 gap-8">-->
+<!--      &lt;!&ndash; Images Section &ndash;&gt;-->
+<!--      <div class="space-y-4">-->
+<!--        <div class="bg-peach-100 rounded-xl p-4">-->
+<!--          <img-->
+<!--            [src]="item.mainImage"-->
+<!--            [alt]="item.name"-->
+<!--            class="w-full h-[400px] object-cover rounded-lg transform transition-transform hover:scale-105"-->
+<!--          />-->
+<!--        </div>-->
+<!--        <div class="grid grid-cols-2 gap-4">-->
+<!--          <div-->
+<!--            *ngFor="let img of item.images"-->
+<!--            class="bg-peach-100 rounded-xl p-2 cursor-pointer hover:shadow-lg transition-shadow"-->
+<!--          >-->
+<!--            <img-->
+<!--              [src]="img"-->
+<!--              [alt]="item.name"-->
+<!--              class="w-full h-24 object-cover rounded-lg"-->
+<!--            />-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Details Section &ndash;&gt;-->
+<!--      <div class="space-y-6">-->
+<!--        <h1 class="text-3xl font-bold text-green-800">{{ item.name }}</h1>-->
+
+<!--        &lt;!&ndash; Overview &ndash;&gt;-->
+<!--        <section>-->
+<!--          <h2 class="text-xl font-semibold mb-3 text-green-800">Overview</h2>-->
+<!--          <p class="text-gray-600 leading-relaxed">{{ item.description }}</p>-->
+<!--        </section>-->
+
+<!--        &lt;!&ndash; Ingredients &ndash;&gt;-->
+<!--        <section>-->
+<!--          <h2 class="text-xl font-semibold mb-3 text-green-800">Ingredients</h2>-->
+<!--          <div class="flex flex-wrap gap-2">-->
+<!--            <span-->
+<!--              *ngFor="let ingredient of item.ingredients"-->
+<!--              class="px-4 py-2 bg-peach-100 text-orange-600 rounded-full text-sm"-->
+<!--            >-->
+<!--              {{ ingredient }}-->
+<!--            </span>-->
+<!--          </div>-->
+<!--        </section>-->
+
+<!--        &lt;!&ndash; Add to Cart &ndash;&gt;-->
+<!--        <button-->
+<!--          (click)="cartService.addToCart(restaurantId, itemDTO)"-->
+<!--          class="w-full py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-300 transform hover:scale-[1.02]"-->
+<!--        >-->
+<!--          Add to Cart-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Reviews Section &ndash;&gt;-->
+<!--    <section class="mt-16">-->
+<!--      <h2 class="text-2xl font-semibold mb-6 text-green-800">-->
+<!--        Customer Reviews-->
+<!--      </h2>-->
+<!--      <div class="grid md:grid-cols-2 gap-6">-->
+<!--        <div-->
+<!--          *ngFor="let review of reviews"-->
+<!--          class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"-->
+<!--        >-->
+<!--          <div class="flex items-center gap-4 mb-4">-->
+<!--            <img-->
+<!--              [src]="review.userImage"-->
+<!--              [alt]="review.userName"-->
+<!--              class="w-12 h-12 rounded-full object-cover"-->
+<!--            />-->
+<!--            <div>-->
+<!--              <h3 class="font-semibold">{{ review.userName }}</h3>-->
+<!--              <div class="flex items-center gap-2">-->
+<!--                <div class="flex text-yellow-400">-->
+<!--                  <span *ngFor="let star of [1, 2, 3, 4, 5]">★</span>-->
+<!--                </div>-->
+<!--                <span class="text-sm text-gray-500">{{ review.date }}</span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <p class="text-gray-600">{{ review.comment }}</p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </section>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!-- src/app/pages/home/item-details/item-details.html -->
+<!-- src/app/pages/home/item-details/item-details.html -->
+<div class="min-h-screen theme-bg-primary pt-20 pb-32">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="container mx-auto px-4 py-8">
+    <div class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+      <span class="ml-3 theme-text-primary">Loading item details...</span>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="container mx-auto px-4 py-8">
+    <div class="glass-card p-6 text-center">
+      <p class="text-red-500 mb-4">{{ error }}</p>
+      <button
+        (click)="loadItemDetails()"
+        class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+      >
+        Try Again
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="itemData && !loading" class="container mx-auto px-4 py-8">
+    <!-- Back Button and Breadcrumb -->
+    <div class="flex items-center justify-between mb-6">
+      <!-- Back Button -->
+      <button
+        (click)="goBack()"
+        class="group flex items-center gap-3 px-6 py-3 glass-card rounded-xl hover:scale-105 transition-all duration-300 hover:shadow-lg"
+      >
+        <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center group-hover:bg-orange-600 transition-colors">
+          <svg class="w-4 h-4 text-white transform group-hover:translate-x-[-2px] transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div
-            *ngFor="let img of item.images"
-            class="bg-peach-100 rounded-xl p-2 cursor-pointer hover:shadow-lg transition-shadow"
-          >
-            <img
-              [src]="img"
-              [alt]="item.name"
-              class="w-full h-24 object-cover rounded-lg"
-            />
-          </div>
+        <span class="font-medium theme-text-primary group-hover:text-orange-500 transition-colors">Back to Menu</span>
+      </button>
+
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm">
+        <a routerLink="/main" class="theme-text-secondary hover:text-orange-500 transition-colors">Home</a>
+        <span class="theme-text-muted">/</span>
+        <button (click)="goBack()" class="theme-text-secondary hover:text-orange-500 transition-colors">Restaurant Menu</button>
+        <span class="theme-text-muted">/</span>
+        <span class="theme-text-primary font-medium">{{ itemData.name }}</span>
+      </nav>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid lg:grid-cols-2 gap-12">
+      <!-- Image Section -->
+      <div class="space-y-6">
+        <div class="glass-card p-6 rounded-2xl">
+          <img
+            [src]="itemData.imageUrl || 'https://via.placeholder.com/400x400?text=No+Image'"
+            [alt]="itemData.name"
+            class="w-full h-[400px] object-cover rounded-xl shadow-lg transform transition-transform hover:scale-105"
+          />
         </div>
       </div>
 
       <!-- Details Section -->
-      <div class="space-y-6">
-        <h1 class="text-3xl font-bold text-green-800">{{ item.name }}</h1>
+      <div class="space-y-8">
+        <!-- Header -->
+        <div class="glass-card p-6 rounded-2xl">
+          <h1 class="text-4xl font-bold theme-text-primary mb-4">{{ itemData.name }}</h1>
+          <p class="theme-text-secondary text-lg leading-relaxed">{{ itemData.description }}</p>
+        </div>
 
-        <!-- Overview -->
-        <section>
-          <h2 class="text-xl font-semibold mb-3 text-green-800">Overview</h2>
-          <p class="text-gray-600 leading-relaxed">{{ item.description }}</p>
-        </section>
+        <!-- Pricing Section -->
+        <div class="glass-card p-6 rounded-2xl">
+          <h3 class="text-xl font-semibold theme-text-primary mb-4">Pricing Options</h3>
 
-        <!-- Ingredients -->
-        <section>
-          <h2 class="text-xl font-semibold mb-3 text-green-800">Ingredients</h2>
-          <div class="flex flex-wrap gap-2">
-            <span
-              *ngFor="let ingredient of item.ingredients"
-              class="px-4 py-2 bg-peach-100 text-orange-600 rounded-full text-sm"
-            >
-              {{ ingredient }}
-            </span>
+          <!-- Fixed Price -->
+          <div *ngIf="itemData.sizeType === 0" class="text-2xl font-bold text-orange-500">
+            ${{ itemData.price }}
           </div>
-        </section>
 
-        <!-- Add to Cart -->
-        <button
-          (click)="cartService.addToCart(restaurantId, itemDTO)"
-          class="w-full py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-300 transform hover:scale-[1.02]"
-        >
-          Add to Cart
-        </button>
-      </div>
-    </div>
-
-    <!-- Reviews Section -->
-    <section class="mt-16">
-      <h2 class="text-2xl font-semibold mb-6 text-green-800">
-        Customer Reviews
-      </h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div
-          *ngFor="let review of reviews"
-          class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div class="flex items-center gap-4 mb-4">
-            <img
-              [src]="review.userImage"
-              [alt]="review.userName"
-              class="w-12 h-12 rounded-full object-cover"
-            />
-            <div>
-              <h3 class="font-semibold">{{ review.userName }}</h3>
-              <div class="flex items-center gap-2">
-                <div class="flex text-yellow-400">
-                  <span *ngFor="let star of [1, 2, 3, 4, 5]">★</span>
-                </div>
-                <span class="text-sm text-gray-500">{{ review.date }}</span>
-              </div>
+          <!-- Sized Options -->
+          <div *ngIf="itemData.sizeType === 1" class="space-y-3">
+            <div
+              *ngFor="let sizeOption of itemData.sizePricing"
+              class="flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-all duration-300"
+              [class.border-orange-500]="selectedSize?.size === sizeOption.size"
+              [class.theme-bg-accent]="selectedSize?.size === sizeOption.size"
+              [class.theme-border]="selectedSize?.size !== sizeOption.size"
+              (click)="selectSize(sizeOption)"
+            >
+              <span class="font-medium theme-text-primary">{{ getSizeLabel(sizeOption.size) }}</span>
+              <span class="font-bold text-orange-500">${{ sizeOption.price }}</span>
             </div>
           </div>
-          <p class="text-gray-600">{{ review.comment }}</p>
+
+          <!-- Weighted Options -->
+          <div *ngIf="itemData.sizeType === 2" class="space-y-4">
+            <div class="flex items-center gap-4">
+              <span class="theme-text-primary font-medium">Weight (kg):</span>
+              <input
+                type="number"
+                [(ngModel)]="selectedWeight"
+                min="0.1"
+                step="0.1"
+                class="px-3 py-2 border theme-border rounded-lg theme-bg-secondary theme-text-primary focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+            <div class="text-lg theme-text-secondary">
+              Price: ${{ itemData.price }}/kg =
+              <span class="font-bold text-orange-500">${{ (itemData.price * selectedWeight).toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add-ons Section -->
+        <div *ngIf="itemData.addOns && itemData.addOns.length > 0" class="glass-card p-6 rounded-2xl">
+          <h3 class="text-xl font-semibold theme-text-primary mb-4">Add-ons</h3>
+          <div class="grid gap-3">
+            <div
+              *ngFor="let addOn of itemData.addOns"
+              class="flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-md"
+              [class.border-orange-500]="selectedAddOns.has(addOn.id)"
+              [class.theme-bg-accent]="selectedAddOns.has(addOn.id)"
+              [class.theme-border]="!selectedAddOns.has(addOn.id)"
+              (click)="toggleAddOn(addOn)"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-5 h-5 border-2 rounded transition-colors"
+                  [class.bg-orange-500]="selectedAddOns.has(addOn.id)"
+                  [class.border-orange-500]="selectedAddOns.has(addOn.id)"
+                  [class.theme-border]="!selectedAddOns.has(addOn.id)"
+                >
+                  <span *ngIf="selectedAddOns.has(addOn.id)" class="text-white text-xs flex justify-center">✓</span>
+                </div>
+                <span class="font-medium theme-text-primary">{{ addOn.name }}</span>
+              </div>
+              <span class="font-bold text-orange-500">+${{ addOn.additionalPrice }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Combos Section -->
+        <div *ngIf="itemData.combos && itemData.combos.length > 0" class="glass-card p-6 rounded-2xl">
+          <h3 class="text-xl font-semibold theme-text-primary mb-4">Combo Options</h3>
+          <div class="grid gap-3">
+            <div
+              *ngFor="let combo of itemData.combos"
+              class="flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-md"
+              [class.border-orange-500]="selectedCombos.has(combo.id)"
+              [class.theme-bg-accent]="selectedCombos.has(combo.id)"
+              [class.theme-border]="!selectedCombos.has(combo.id)"
+              (click)="toggleCombo(combo)"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-5 h-5 border-2 rounded transition-colors"
+                  [class.bg-orange-500]="selectedCombos.has(combo.id)"
+                  [class.border-orange-500]="selectedCombos.has(combo.id)"
+                  [class.theme-border]="!selectedCombos.has(combo.id)"
+                >
+                  <span *ngIf="selectedCombos.has(combo.id)" class="text-white text-xs flex justify-center">✓</span>
+                </div>
+                <span class="font-medium theme-text-primary">{{ combo.name }}</span>
+              </div>
+              <span class="font-bold text-orange-500">+${{ combo.comboPrice }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total and Add to Cart -->
+        <div class="glass-card p-6 rounded-2xl">
+          <div class="flex items-center justify-between mb-6">
+            <span class="text-xl font-semibold theme-text-primary">Total Price:</span>
+            <span class="text-3xl font-bold text-orange-500">${{ calculateTotalPrice().toFixed(2) }}</span>
+          </div>
+
+          <button
+            (click)="addToCart()"
+            class="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-lg font-semibold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </div>

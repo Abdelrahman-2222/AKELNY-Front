@@ -1,534 +1,534 @@
+
 <!-- Single Order Card View (when @Input order is provided) -->
 <div class="min-h-screen pt-20">
-<!--  <div class="container mx-auto px-4 py-8">-->
-    <ng-container *ngIf="order; else workspace">
-      <div class="order-card modern-card container mx-auto px-4 py-8" [ngClass]="getOrderStatusClass()">
-        <!-- Order Header -->
-        <div class="order-header">
-          <div class="order-info">
-            <div class="order-title">
-              <h3 class="order-id">Order #{{ order.id }}</h3>
-              <div class="status-badge modern-badge" [ngClass]="'status-' + (order.status || 'pending')">
-                {{ getStatusText() }}
-              </div>
-            </div>
-            <div class="customer-info">
-              <lucide-icon [img]="User" class="icon-sm"></lucide-icon>
-              <span>{{ order.customer || 'Unknown' }}</span>
+  <ng-container *ngIf="order; else workspace">
+    <div class="order-card modern-card container mx-auto px-4 py-8" [ngClass]="getOrderStatusClass()">
+      <!-- Order Header -->
+      <div class="order-header">
+        <div class="order-info">
+          <div class="order-title">
+            <h3 class="order-id">Order #{{ order.id }}</h3>
+            <div class="status-badge modern-badge" [ngClass]="'status-' + (order.status || 'pending')">
+              {{ getStatusText() }}
             </div>
           </div>
-
-          <!-- Action Buttons -->
-          <div class="action-buttons"
-               *ngIf="(order?.paymentStatus || selectedOrder?.paymentStatus) !== 'paid' && (order?.status || selectedOrder?.status) === 'pending'">
-            <button class="btn btn-accept modern-btn" (click)="acceptOrder()" [disabled]="isProcessing">
-              <lucide-icon [img]="CheckCircle" class="icon-sm"></lucide-icon>
-              Accept
-            </button>
-            <button class="btn btn-decline modern-btn" (click)="rejectOrder()" [disabled]="isProcessing">
-              <lucide-icon [img]="XCircle" class="icon-sm"></lucide-icon>
-              Decline
-            </button>
+          <div class="customer-info">
+            <lucide-icon [img]="User" class="icon-sm"></lucide-icon>
+            <span>{{ order.customer || 'Unknown' }}</span>
           </div>
+        </div>
 
-          <!-- Status Actions -->
-          <div class="status-actions"
-               *ngIf="(order?.paymentStatus || selectedOrder?.paymentStatus) !== 'paid' && ((order?.status || selectedOrder?.status) === 'accepted' || (order?.status || selectedOrder?.status) === 'in_progress')">
-            <button class="btn btn-status modern-btn" (click)="markAsReady()"
-                    *ngIf="(order?.status || selectedOrder?.status) === 'accepted'" [disabled]="isProcessing">
-              <lucide-icon [img]="Timer" class="icon-sm"></lucide-icon>
-              Mark Ready
-            </button>
-            <button class="btn btn-complete modern-btn" (click)="completeOrder()"
-                    *ngIf="(order?.status || selectedOrder?.status) === 'in_progress'" [disabled]="isProcessing">
-              <lucide-icon [img]="CheckCircle" class="icon-sm"></lucide-icon>
-              Complete
-            </button>
-          </div>
+        <!-- Action Buttons -->
+        <div class="action-buttons"
+             *ngIf="(order?.paymentStatus || selectedOrder?.paymentStatus) !== 'paid' && (order?.status || selectedOrder?.status) === 'pending'">
+          <button class="btn btn-accept modern-btn" (click)="acceptOrder()" [disabled]="isProcessing">
+            <lucide-icon [img]="CheckCircle" class="icon-sm"></lucide-icon>
+            Accept
+          </button>
+          <button class="btn btn-decline modern-btn" (click)="rejectOrder()" [disabled]="isProcessing">
+            <lucide-icon [img]="XCircle" class="icon-sm"></lucide-icon>
+            Decline
+          </button>
+        </div>
 
-          <!-- Order Details -->
-          <div class="order-details">
-            <div class="detail-row">
-              <div class="detail-item">
-                <lucide-icon [img]="Package" class="icon-sm"></lucide-icon>
-                <span>{{ order.items }} items</span>
-              </div>
-              <div class="detail-item">
-                <lucide-icon [img]="DollarSign" class="icon-sm"></lucide-icon>
-                <span>${{ order.amount }}</span>
-              </div>
-              <div class="detail-item">
-                <lucide-icon [img]="Clock" class="icon-sm"></lucide-icon>
-                <span>{{ order.time }}</span>
-              </div>
+        <!-- Status Actions -->
+        <div class="status-actions"
+             *ngIf="(order?.paymentStatus || selectedOrder?.paymentStatus) !== 'paid' && ((order?.status || selectedOrder?.status) === 'accepted' || (order?.status || selectedOrder?.status) === 'in_progress')">
+          <button class="btn btn-status modern-btn" (click)="markAsReady()"
+                  *ngIf="(order?.status || selectedOrder?.status) === 'accepted'" [disabled]="isProcessing">
+            <lucide-icon [img]="Timer" class="icon-sm"></lucide-icon>
+            Mark Ready
+          </button>
+          <button class="btn btn-complete modern-btn" (click)="completeOrder()"
+                  *ngIf="(order?.status || selectedOrder?.status) === 'in_progress'" [disabled]="isProcessing">
+            <lucide-icon [img]="CheckCircle" class="icon-sm"></lucide-icon>
+            Complete
+          </button>
+        </div>
+
+        <!-- Order Details -->
+        <div class="order-details">
+          <div class="detail-row">
+            <div class="detail-item">
+              <lucide-icon [img]="Package" class="icon-sm"></lucide-icon>
+              <span>{{ order.items }} items</span>
+            </div>
+            <div class="detail-item">
+              <lucide-icon [img]="DollarSign" class="icon-sm"></lucide-icon>
+              <span>${{ order.amount }}</span>
+            </div>
+            <div class="detail-item">
+              <lucide-icon [img]="Clock" class="icon-sm"></lucide-icon>
+              <span>{{ order.time }}</span>
             </div>
           </div>
+        </div>
 
-          <!-- Payment Status -->
-          <div class="payment-status" *ngIf="showPaymentStatus()">
-            <div class="payment-indicator modern-indicator" [ngClass]="getPaymentStatusClass()">
-              <lucide-icon [img]="getPaymentIcon()" class="icon-sm"></lucide-icon>
-              <span>{{ getPaymentStatusText() }}</span>
-            </div>
+        <!-- Payment Status -->
+        <div class="payment-status" *ngIf="showPaymentStatus()">
+          <div class="payment-indicator modern-indicator" [ngClass]="getPaymentStatusClass()">
+            <lucide-icon [img]="getPaymentIcon()" class="icon-sm"></lucide-icon>
+            <span>{{ getPaymentStatusText() }}</span>
           </div>
+        </div>
 
-          <!-- Loading Overlay -->
-          <div class="loading-overlay" *ngIf="isProcessing">
-            <div class="spinner modern-spinner"></div>
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" *ngIf="isProcessing">
+          <div class="spinner modern-spinner"></div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Enhanced Dashboard Workspace -->
+  <ng-template #workspace>
+    <div class="dashboard-container">
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <div class="header-content">
+          <div class="header-left">
+            <h1 class="dashboard-title">Order Management</h1>
+            <p class="dashboard-subtitle">Monitor and manage your restaurant orders</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn-icon" (click)="refreshData()" [disabled]="isRefreshing">
+              <lucide-icon [img]="RefreshCw" [class.animate-spin]="isRefreshing"></lucide-icon>
+            </button>
+            <div class="view-switcher">
+              <button
+                [class.active]="currentView === 'overview'"
+                (click)="switchView('overview')"
+                class="view-btn">
+                <lucide-icon [img]="BarChart3"></lucide-icon>
+                Overview
+              </button>
+              <button
+                [class.active]="currentView === 'orders'"
+                (click)="switchView('orders')"
+                class="view-btn">
+                <lucide-icon [img]="ShoppingBag"></lucide-icon>
+                Orders
+              </button>
+              <button
+                [class.active]="currentView === 'analytics'"
+                (click)="switchView('analytics')"
+                class="view-btn">
+                <lucide-icon [img]="PieChart"></lucide-icon>
+                Analytics
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </ng-container>
 
-    <!-- Enhanced Dashboard Workspace -->
-    <ng-template #workspace>
-      <div class="dashboard-container">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-          <div class="header-content">
-            <div class="header-left">
-              <h1 class="dashboard-title">Order Management</h1>
-              <p class="dashboard-subtitle">Monitor and manage your restaurant orders</p>
-            </div>
-            <div class="header-actions">
-              <button class="btn-icon" (click)="refreshData()" [disabled]="isRefreshing">
-                <lucide-icon [img]="RefreshCw" [class.animate-spin]="isRefreshing"></lucide-icon>
-              </button>
-              <div class="view-switcher">
-                <button
-                  [class.active]="currentView === 'overview'"
-                  (click)="switchView('overview')"
-                  class="view-btn">
-                  <lucide-icon [img]="BarChart3"></lucide-icon>
-                  Overview
-                </button>
-                <button
-                  [class.active]="currentView === 'orders'"
-                  (click)="switchView('orders')"
-                  class="view-btn">
-                  <lucide-icon [img]="ShoppingBag"></lucide-icon>
-                  Orders
-                </button>
-                <button
-                  [class.active]="currentView === 'analytics'"
-                  (click)="switchView('analytics')"
-                  class="view-btn">
-                  <lucide-icon [img]="PieChart"></lucide-icon>
-                  Analytics
-                </button>
+      <!-- Overview Dashboard -->
+      <div *ngIf="currentView === 'overview'" class="overview-section">
+        <!-- Key Metrics Cards -->
+        <div class="metrics-grid">
+          <!-- Revenue Card -->
+          <div class="metric-card revenue-card">
+            <div class="metric-header">
+              <div class="metric-icon revenue-icon">
+                <lucide-icon [img]="DollarSign"></lucide-icon>
+              </div>
+              <div class="metric-trend" [ngClass]="getRevenueChange().trend">
+                <lucide-icon [img]="getRevenueChange().trend === 'up' ? TrendingUp : TrendingDown"></lucide-icon>
+                <span>{{ formatPercentage(getRevenueChange().percentage) }}</span>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Overview Dashboard -->
-        <div *ngIf="currentView === 'overview'" class="overview-section">
-          <!-- Key Metrics Cards -->
-          <div class="metrics-grid">
-            <!-- Revenue Card -->
-            <div class="metric-card revenue-card">
-              <div class="metric-header">
-                <div class="metric-icon revenue-icon">
-                  <lucide-icon [img]="DollarSign"></lucide-icon>
-                </div>
-                <div class="metric-trend" [ngClass]="getRevenueChange().trend">
-                  <lucide-icon [img]="getRevenueChange().trend === 'up' ? TrendingUp : TrendingDown"></lucide-icon>
-                  <span>{{ formatPercentage(getRevenueChange().percentage) }}</span>
-                </div>
-              </div>
-              <div class="metric-content">
-                <h3 class="metric-value">{{ formatCurrency(dashboardStats.todayRevenue) }}</h3>
-                <p class="metric-label">Today's Revenue</p>
-                <div class="metric-comparison">
-                  <span class="comparison-label">Yesterday:</span>
-                  <span class="comparison-value">{{ formatCurrency(dashboardStats.yesterdayRevenue) }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Orders Card -->
-            <div class="metric-card orders-card">
-              <div class="metric-header">
-                <div class="metric-icon orders-icon">
-                  <lucide-icon [img]="ShoppingBag"></lucide-icon>
-                </div>
-                <div class="metric-badge">
-                  <span class="badge-text">{{ dashboardStats.pendingOrders }} pending</span>
-                </div>
-              </div>
-              <div class="metric-content">
-                <h3 class="metric-value">{{ dashboardStats.totalOrders }}</h3>
-                <p class="metric-label">Total Orders</p>
-                <div class="metric-breakdown">
-                  <div class="breakdown-item">
-                    <span class="dot completed"></span>
-                    <span>{{ dashboardStats.completedOrders }} completed</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Average Order Value -->
-            <div class="metric-card aov-card">
-              <div class="metric-header">
-                <div class="metric-icon aov-icon">
-                  <lucide-icon [img]="Target"></lucide-icon>
-                </div>
-                <div class="metric-indicator positive">
-                  <lucide-icon [img]="TrendingUp"></lucide-icon>
-                </div>
-              </div>
-              <div class="metric-content">
-                <h3 class="metric-value">{{ formatCurrency(dashboardStats.averageOrderValue) }}</h3>
-                <p class="metric-label">Avg Order Value</p>
-                <div class="metric-detail">
-                  <span>Based on {{ dashboardStats.completedOrders }} orders</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Performance Score -->
-            <div class="metric-card performance-card">
-              <div class="metric-header">
-                <div class="metric-icon performance-icon">
-                  <lucide-icon [img]="Award"></lucide-icon>
-                </div>
-                <div class="metric-score">{{ dashboardStats.performanceMetrics.customerSatisfaction }}/5</div>
-              </div>
-              <div class="metric-content">
-                <h3
-                  class="metric-value">{{ formatPercentage(dashboardStats.performanceMetrics.orderAcceptanceRate) }}</h3>
-                <p class="metric-label">Acceptance Rate</p>
-                <div class="performance-bars">
-                  <div class="performance-item">
-                    <span>On-time delivery</span>
-                    <div class="progress-bar">
-                      <div class="progress-fill"
-                           [style.width.%]="dashboardStats.performanceMetrics.onTimeDelivery"></div>
-                    </div>
-                    <span>{{ formatPercentage(dashboardStats.performanceMetrics.onTimeDelivery) }}</span>
-                  </div>
-                </div>
+            <div class="metric-content">
+              <h3 class="metric-value">{{ formatCurrency(dashboardStats.todayRevenue) }}</h3>
+              <p class="metric-label">Today's Revenue</p>
+              <div class="metric-comparison">
+                <span class="comparison-label">Yesterday:</span>
+                <span class="comparison-value">{{ formatCurrency(dashboardStats.yesterdayRevenue) }}</span>
               </div>
             </div>
           </div>
 
-          <!-- Charts Section -->
-          <div class="charts-section">
-            <!-- Revenue Chart -->
-            <div class="chart-card revenue-chart-card">
-              <div class="chart-header">
-                <h3 class="chart-title">Revenue Trends</h3>
-                <div class="chart-controls">
-                  <select [(ngModel)]="selectedTimeRange" class="time-selector">
-                    <option value="7days">Last 7 days</option>
-                    <option value="30days">Last 30 days</option>
-                    <option value="90days">Last 3 months</option>
-                  </select>
-                </div>
-              </div>
-              <div class="chart-content">
-                <div class="revenue-chart">
-                  <div class="chart-bars">
-                    <div
-                      *ngFor="let day of dashboardStats.revenueByDay; let i = index"
-                      class="bar-container">
-                      <div
-                        class="revenue-bar"
-                        [style.height.%]="(day.revenue / 2000) * 100">
-                      </div>
-                      <span class="bar-label">{{ day.day }}</span>
-                      <div class="bar-tooltip">
-                        <div class="tooltip-content">
-                          <span class="tooltip-revenue">{{ formatCurrency(day.revenue) }}</span>
-                          <span class="tooltip-orders">{{ day.orders }} orders</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Top Items -->
-            <div class="chart-card top-items-card">
-              <div class="chart-header">
-                <h3 class="chart-title">Top Selling Items</h3>
-                <button class="btn-text">
-                  <lucide-icon [img]="Eye"></lucide-icon>
-                  View All
-                </button>
-              </div>
-              <div class="chart-content">
-                <div class="top-items-list">
-                  <div
-                    *ngFor="let item of dashboardStats.topSellingItems; let i = index"
-                    class="top-item">
-                    <div class="item-rank">{{ i + 1 }}</div>
-                    <div class="item-details">
-                      <div class="item-name">{{ item.name }}</div>
-                      <div class="item-stats">
-                        <span class="quantity">{{ item.quantity }} sold</span>
-                        <span class="revenue">{{ formatCurrency(item.revenue) }}</span>
-                      </div>
-                    </div>
-                    <div class="item-trend" [ngClass]="item.trend">
-                      <lucide-icon
-                        [img]="item.trend === 'up' ? TrendingUp : item.trend === 'down' ? TrendingDown : Target">
-                      </lucide-icon>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Recent Orders Preview -->
-          <div class="recent-orders-preview">
-            <div class="section-header">
-              <h3 class="section-title">Recent Orders</h3>
-              <button class="btn-primary" (click)="switchView('orders')">
+          <!-- Orders Card -->
+          <div class="metric-card orders-card">
+            <div class="metric-header">
+              <div class="metric-icon orders-icon">
                 <lucide-icon [img]="ShoppingBag"></lucide-icon>
-                View All Orders
-              </button>
+              </div>
+              <div class="metric-badge">
+                <span class="badge-text">{{ dashboardStats.pendingOrders }} pending</span>
+              </div>
             </div>
-            <div class="orders-preview-grid">
-              <div
-                *ngFor="let order of filteredOrders.slice(0, 6)"
-                class="order-preview-card"
-                [ngClass]="order.status"
-                (click)="selectOrder(order.id)">
-                <div class="order-preview-header">
-                  <span class="order-preview-id">#{{ order.id }}</span>
-                  <span class="order-preview-status" [ngClass]="'status-' + order.status">
-                {{ order.status | titlecase }}
-              </span>
+            <div class="metric-content">
+              <h3 class="metric-value">{{ dashboardStats.totalOrders }}</h3>
+              <p class="metric-label">Total Orders</p>
+              <div class="metric-breakdown">
+                <div class="breakdown-item">
+                  <span class="dot completed"></span>
+                  <span>{{ dashboardStats.completedOrders }} completed</span>
                 </div>
-                <div class="order-preview-content">
-                  <div class="order-customer">{{ order.customer }}</div>
-                  <div class="order-summary">{{ order.items }} items • {{ formatCurrency(order.amount) }}</div>
-                  <div class="order-time">{{ order.time }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Average Order Value -->
+          <div class="metric-card aov-card">
+            <div class="metric-header">
+              <div class="metric-icon aov-icon">
+                <lucide-icon [img]="Target"></lucide-icon>
+              </div>
+              <div class="metric-indicator positive">
+                <lucide-icon [img]="TrendingUp"></lucide-icon>
+              </div>
+            </div>
+            <div class="metric-content">
+              <h3 class="metric-value">{{ formatCurrency(dashboardStats.averageOrderValue) }}</h3>
+              <p class="metric-label">Avg Order Value</p>
+              <div class="metric-detail">
+                <span>Based on {{ dashboardStats.completedOrders }} orders</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance Score -->
+          <div class="metric-card performance-card">
+            <div class="metric-header">
+              <div class="metric-icon performance-icon">
+                <lucide-icon [img]="Award"></lucide-icon>
+              </div>
+              <div class="metric-score">{{ dashboardStats.performanceMetrics.customerSatisfaction }}/5</div>
+            </div>
+            <div class="metric-content">
+              <h3 class="metric-value">{{ formatPercentage(dashboardStats.performanceMetrics.orderAcceptanceRate) }}</h3>
+              <p class="metric-label">Acceptance Rate</p>
+              <div class="performance-bars">
+                <div class="performance-item">
+                  <span>On-time delivery</span>
+                  <div class="progress-bar">
+                    <div class="progress-fill"
+                         [style.width.%]="dashboardStats.performanceMetrics.onTimeDelivery"></div>
+                  </div>
+                  <span>{{ formatPercentage(dashboardStats.performanceMetrics.onTimeDelivery) }}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Orders Management View -->
-        <div *ngIf="currentView === 'orders'" class="orders-section">
-          <!-- Orders Controls -->
-          <div class="orders-controls">
-            <div class="search-filters">
-              <div class="search-box">
-                <lucide-icon [img]="Search" class="search-icon"></lucide-icon>
-                <input
-                  type="text"
-                  placeholder="Search orders..."
-                  [(ngModel)]="searchQuery"
-                  class="search-input">
-              </div>
-              <div class="filter-group">
-                <select [(ngModel)]="statusFilter" class="filter-select">
-                  <option value="all">All Status</option>
-                  <option value="pending">Pending</option>
-                  <option value="accepted">Accepted</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="ready">Ready</option>
-                  <option value="completed">Completed</option>
-                  <option value="rejected">Rejected</option>
-                </select>
-                <select [(ngModel)]="dateFilter" class="filter-select">
-                  <option value="all">All Time</option>
-                  <option value="today">Today</option>
-                  <option value="week">This Week</option>
-                  <option value="month">This Month</option>
-                </select>
-                <select [(ngModel)]="sortBy" class="filter-select">
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                  <option value="amount">Highest Amount</option>
+        <!-- Charts Section -->
+        <div class="charts-section">
+          <!-- Revenue Chart -->
+          <div class="chart-card revenue-chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Revenue Trends</h3>
+              <div class="chart-controls">
+                <select [(ngModel)]="selectedTimeRange" class="time-selector">
+                  <option value="7days">Last 7 days</option>
+                  <option value="30days">Last 30 days</option>
+                  <option value="90days">Last 3 months</option>
                 </select>
               </div>
             </div>
-            <div class="orders-actions">
-              <button class="btn-outline">
-                <lucide-icon [img]="Download"></lucide-icon>
-                Export
-              </button>
-              <button class="btn-outline">
-                <lucide-icon [img]="Filter"></lucide-icon>
-                Advanced Filters
-              </button>
+            <div class="chart-content">
+              <div class="revenue-chart">
+                <div class="chart-bars">
+                  <div
+                    *ngFor="let day of dashboardStats.revenueByDay; let i = index"
+                    class="bar-container">
+                    <div
+                      class="revenue-bar"
+                      [style.height.%]="(day.revenue / 2000) * 100">
+                    </div>
+                    <span class="bar-label">{{ day.day }}</span>
+                    <div class="bar-tooltip">
+                      <div class="tooltip-content">
+                        <span class="tooltip-revenue">{{ formatCurrency(day.revenue) }}</span>
+                        <span class="tooltip-orders">{{ day.orders }} orders</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Orders Grid -->
-          <div class="orders-layout">
-            <!-- Orders List -->
-            <div class="orders-list">
-              <div class="orders-count">
-                <span>{{ filteredOrders.length }} orders found</span>
-              </div>
-              <div class="orders-grid">
+          <!-- Top Items -->
+          <div class="chart-card top-items-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Top Selling Items</h3>
+              <button class="btn-text">
+                <lucide-icon [img]="Eye"></lucide-icon>
+                View All
+              </button>
+            </div>
+            <div class="chart-content">
+              <div class="top-items-list">
                 <div
-                  *ngFor="let order of filteredOrders"
-                  class="order-card enhanced-card"
-                  [ngClass]="[order.status, { 'selected': selectedOrderId === order.id }]"
-                  (click)="selectOrder(order.id)">
-
-                  <div class="order-card-header">
-                    <div class="order-info-section">
-                      <div class="order-title-row">
-                        <h4 class="order-number">#{{ order.id }}</h4>
-                        <span class="order-timestamp">{{ order.time }}</span>
-                      </div>
-                      <div class="status-badge-new" [ngClass]="'status-' + order.status">
-                        <span class="status-dot"></span>
-                        {{ order.status | titlecase }}
-                      </div>
-                    </div>
-                    <div class="order-amount-section">
-                      <div class="amount">{{ formatCurrency(order.amount) }}</div>
-                      <div class="items-count">{{ order.items }} items</div>
+                  *ngFor="let item of dashboardStats.topSellingItems; let i = index"
+                  class="top-item">
+                  <div class="item-rank">{{ i + 1 }}</div>
+                  <div class="item-details">
+                    <div class="item-name">{{ item.name }}</div>
+                    <div class="item-stats">
+                      <span class="quantity">{{ item.quantity }} sold</span>
+                      <span class="revenue">{{ formatCurrency(item.revenue) }}</span>
                     </div>
                   </div>
-
-                  <div class="order-card-body">
-                    <div class="customer-section">
-                      <lucide-icon [img]="User" class="customer-icon"></lucide-icon>
-                      <span class="customer-name">{{ order.customer }}</span>
-                    </div>
-
-                    <div class="payment-section" *ngIf="order.paymentStatus">
-                      <lucide-icon [img]="CreditCard" class="payment-icon"></lucide-icon>
-                      <span class="payment-status" [ngClass]="'payment-' + order.paymentStatus">
-                    {{ order.paymentStatus | titlecase }}
-                  </span>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="quick-actions" *ngIf="order.status === 'pending' && order.paymentStatus !== 'paid'">
-                      <button
-                        class="quick-btn accept-btn"
-                        (click)="acceptOrder(); $event.stopPropagation()"
-                        [disabled]="isProcessing">
-                        <lucide-icon [img]="CheckCircle"></lucide-icon>
-                      </button>
-                      <button
-                        class="quick-btn reject-btn"
-                        (click)="rejectOrder(); $event.stopPropagation()"
-                        [disabled]="isProcessing">
-                        <lucide-icon [img]="XCircle"></lucide-icon>
-                      </button>
-                    </div>
-
-                    <div class="quick-actions" *ngIf="order.paymentStatus === 'paid' && order.status !== 'completed'">
-                      <button
-                        class="quick-btn complete-btn"
-                        (click)="completeOrder(); $event.stopPropagation()"
-                        [disabled]="isProcessing">
-                        <lucide-icon [img]="CheckCircle"></lucide-icon>
-                        Complete
-                      </button>
-                    </div>
+                  <div class="item-trend" [ngClass]="item.trend">
+                    <lucide-icon
+                      [img]="item.trend === 'up' ? TrendingUp : item.trend === 'down' ? TrendingDown : Target">
+                    </lucide-icon>
                   </div>
-
-                  <!-- Selection Indicator -->
-                  <div class="selection-indicator" *ngIf="selectedOrderId === order.id"></div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <!-- Order Details Panel -->
-            <div class="order-details-panel" *ngIf="selectedOrderId">
-              <div class="panel-header">
-                <h3 class="panel-title">Order #{{ selectedOrderId }}</h3>
-                <div class="panel-actions">
-                  <button class="btn-icon" (click)="selectedOrderId = null">
-                    <lucide-icon [img]="XCircle"></lucide-icon>
-                  </button>
+        <!-- Recent Orders Preview -->
+        <div class="recent-orders-preview">
+          <div class="section-header">
+            <h3 class="section-title">Recent Orders</h3>
+            <button class="btn-primary" (click)="switchView('orders')">
+              <lucide-icon [img]="ShoppingBag"></lucide-icon>
+              View All Orders
+            </button>
+          </div>
+          <div class="orders-preview-grid">
+            <div
+              *ngFor="let order of filteredOrders.slice(0, 6)"
+              class="order-preview-card"
+              [ngClass]="order.status"
+              (click)="selectOrder(order.id)">
+              <div class="order-preview-header">
+                <span class="order-preview-id">#{{ order.id }}</span>
+                <span class="order-preview-status" [ngClass]="'status-' + order.status">
+                  {{ order.status | titlecase }}
+                </span>
+              </div>
+              <div class="order-preview-content">
+                <div class="order-customer">{{ order.customer }}</div>
+                <div class="order-summary">{{ order.items }} items • {{ formatCurrency(order.amount) }}</div>
+                <div class="order-time">{{ order.time }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Management View -->
+      <div *ngIf="currentView === 'orders'" class="orders-section">
+        <!-- Orders Controls -->
+        <div class="orders-controls">
+          <div class="search-filters">
+            <div class="search-box">
+              <lucide-icon [img]="Search" class="search-icon"></lucide-icon>
+              <input
+                type="text"
+                placeholder="Search orders..."
+                [(ngModel)]="searchQuery"
+                class="search-input">
+            </div>
+            <div class="filter-group">
+              <select [(ngModel)]="statusFilter" class="filter-select">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="accepted">Accepted</option>
+                <option value="in_progress">In Progress</option>
+                <option value="ready">Ready</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <select [(ngModel)]="dateFilter" class="filter-select">
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+              </select>
+              <select [(ngModel)]="sortBy" class="filter-select">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="amount">Highest Amount</option>
+              </select>
+            </div>
+          </div>
+          <div class="orders-actions">
+            <button class="btn-outline">
+              <lucide-icon [img]="Download"></lucide-icon>
+              Export
+            </button>
+            <button class="btn-outline">
+              <lucide-icon [img]="Filter"></lucide-icon>
+              Advanced Filters
+            </button>
+          </div>
+        </div>
+
+        <!-- Orders Grid -->
+        <div class="orders-layout">
+          <!-- Orders List -->
+          <div class="orders-list">
+            <div class="orders-count">
+              <span>{{ filteredOrders.length }} orders found</span>
+            </div>
+            <div class="orders-grid">
+              <div
+                *ngFor="let order of filteredOrders"
+                class="order-card enhanced-card"
+                [class]="order.status"
+                [class.selected]="selectedOrderId === order.id"
+                (click)="selectOrder(order.id)">
+                <!-- Order Card Header -->
+                <div class="order-card-header">
+                  <div class="order-info-section">
+                    <div class="order-title-row">
+                      <h4 class="order-number">#{{ order.id }}</h4>
+                      <span class="order-timestamp">{{ order.time }}</span>
+                    </div>
+                    <div class="status-badge-new" [ngClass]="'status-' + order.status">
+                      <span class="status-dot"></span>
+                      {{ order.status | titlecase }}
+                    </div>
+                  </div>
+                  <div class="order-amount-section">
+                    <div class="amount">{{ formatCurrency(order.amount) }}</div>
+                    <div class="items-count">{{ order.items }} items</div>
+                  </div>
+                </div>
+
+                <div class="order-card-body">
+                  <div class="customer-section">
+                    <lucide-icon [img]="User" class="customer-icon"></lucide-icon>
+                    <span class="customer-name">{{ order.customer }}</span>
+                  </div>
+
+                  <div class="payment-section" *ngIf="order.paymentStatus">
+                    <lucide-icon [img]="CreditCard" class="payment-icon"></lucide-icon>
+                    <span class="payment-status" [ngClass]="'payment-' + order.paymentStatus">
+                      {{ order.paymentStatus | titlecase }}
+                    </span>
+                  </div>
+
+                  <!-- Quick Actions -->
+                  <div class="quick-actions" *ngIf="order.status === 'pending' && order.paymentStatus !== 'paid'">
+                    <button
+                      class="quick-btn accept-btn"
+                      (click)="acceptOrder(); $event.stopPropagation()"
+                      [disabled]="isProcessing">
+                      <lucide-icon [img]="CheckCircle"></lucide-icon>
+                    </button>
+                    <button
+                      class="quick-btn reject-btn"
+                      (click)="rejectOrder(); $event.stopPropagation()"
+                      [disabled]="isProcessing">
+                      <lucide-icon [img]="XCircle"></lucide-icon>
+                    </button>
+                  </div>
+
+                  <div class="quick-actions" *ngIf="order.paymentStatus === 'paid' && order.status !== 'completed'">
+                    <button
+                      class="quick-btn complete-btn"
+                      (click)="completeOrder(); $event.stopPropagation()"
+                      [disabled]="isProcessing">
+                      <lucide-icon [img]="CheckCircle"></lucide-icon>
+                      Complete
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Selection Indicator -->
+                <div class="selection-indicator" *ngIf="selectedOrderId === order.id"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Details Panel -->
+          <div class="order-details-panel" *ngIf="selectedOrderId">
+            <div class="panel-header">
+              <h3 class="panel-title">Order #{{ selectedOrderId }}</h3>
+              <div class="panel-actions">
+                <button class="btn-icon" (click)="selectedOrderId = null">
+                  <lucide-icon [img]="XCircle"></lucide-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="panel-content" *ngIf="selectedOrderDetails as details">
+              <!-- Order Summary -->
+              <div class="detail-section">
+                <h4 class="detail-title">Order Summary</h4>
+                <div class="order-summary-grid">
+                  <div class="summary-item">
+                    <span class="summary-label">Status</span>
+                    <span class="summary-value status-value" [ngClass]="'status-' + selectedOrder?.status">
+                      {{ selectedOrder?.status | titlecase }}
+                    </span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="summary-label">Payment</span>
+                    <span class="summary-value payment-value" [ngClass]="'payment-' + selectedOrder?.paymentStatus">
+                      {{ selectedOrder?.paymentStatus | titlecase }}
+                    </span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="summary-label">Total</span>
+                    <span class="summary-value amount-value">{{ formatCurrency(selectedOrder?.amount || 0) }}</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="summary-label">Items</span>
+                    <span class="summary-value">{{ selectedOrder?.items }} items</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="panel-content" *ngIf="selectedOrderDetails as details">
-                <!-- Order Summary -->
-                <div class="detail-section">
-                  <h4 class="detail-title">Order Summary</h4>
-                  <div class="order-summary-grid">
-                    <div class="summary-item">
-                      <span class="summary-label">Status</span>
-                      <span class="summary-value status-value" [ngClass]="'status-' + selectedOrder?.status">
-                    {{ selectedOrder?.status | titlecase }}
-                  </span>
-                    </div>
-                    <div class="summary-item">
-                      <span class="summary-label">Payment</span>
-                      <span class="summary-value payment-value" [ngClass]="'payment-' + selectedOrder?.paymentStatus">
-                    {{ selectedOrder?.paymentStatus | titlecase }}
-                  </span>
-                    </div>
-                    <div class="summary-item">
-                      <span class="summary-label">Total</span>
-                      <span class="summary-value amount-value">{{ formatCurrency(selectedOrder?.amount || 0) }}</span>
-                    </div>
-                    <div class="summary-item">
-                      <span class="summary-label">Items</span>
-                      <span class="summary-value">{{ selectedOrder?.items }} items</span>
-                    </div>
+              <!-- Customer Details -->
+              <div class="detail-section">
+                <h4 class="detail-title">Customer Information</h4>
+                <div class="customer-details">
+                  <div class="customer-name-section">
+                    <lucide-icon [img]="User" class="detail-icon"></lucide-icon>
+                    <span class="customer-name">{{ details.customerName || 'Customer' }}</span>
+                  </div>
+                  <div class="customer-address" *ngIf="details.deliveryAddress">
+                    <lucide-icon [img]="MapPin" class="detail-icon"></lucide-icon>
+                    <span>{{ details.deliveryAddress }}</span>
                   </div>
                 </div>
+              </div>
 
-                <!-- Customer Details -->
-                <div class="detail-section">
-                  <h4 class="detail-title">Customer Information</h4>
-                  <div class="customer-details">
-                    <div class="customer-name-section">
-                      <lucide-icon [img]="User" class="detail-icon"></lucide-icon>
-                      <span class="customer-name">{{ details.customerName || 'Customer' }}</span>
+              <!-- Order Items -->
+              <div class="detail-section">
+                <h4 class="detail-title">Order Items</h4>
+                <div class="items-list">
+                  <div *ngFor="let item of details.items" class="order-item">
+                    <div class="item-details">
+                      <span class="item-name">{{ item.itemName }}</span>
+                      <span class="item-quantity">× {{ item.quantity }}</span>
                     </div>
-                    <div class="customer-address" *ngIf="details.deliveryAddress">
-                      <lucide-icon [img]="MapPin" class="detail-icon"></lucide-icon>
-                      <span>{{ details.deliveryAddress }}</span>
-                    </div>
+                    <span class="item-price">{{ formatCurrency(item.totalPrice) }}</span>
                   </div>
                 </div>
+              </div>
 
-                <!-- Order Items -->
-                <div class="detail-section">
-                  <h4 class="detail-title">Order Items</h4>
-                  <div class="items-list">
-                    <div *ngFor="let item of details.items" class="order-item">
-                      <div class="item-details">
-                        <span class="item-name">{{ item.itemName }}</span>
-                        <span class="item-quantity">× {{ item.quantity }}</span>
-                      </div>
-                      <span class="item-price">{{ formatCurrency(item.totalPrice) }}</span>
-                    </div>
+              <!-- Order Total -->
+              <div class="detail-section">
+                <h4 class="detail-title">Order Total</h4>
+                <div class="total-breakdown">
+                  <div class="total-item">
+                    <span>Subtotal</span>
+                    <span>{{ formatCurrency(details.subTotal || 0) }}</span>
+                  </div>
+                  <div class="total-item">
+                    <span>Delivery Fee</span>
+                    <span>{{ formatCurrency(details.deliveryFee || 0) }}</span>
+                  </div>
+                  <div class="total-item">
+                    <span>Platform Fee</span>
+                    <span>{{ formatCurrency(details.platformFee || 0) }}</span>
+                  </div>
+                  <div class="total-item total-final">
+                    <span>Total</span>
+                    <span>{{ formatCurrency((details.subTotal || 0) + (details.deliveryFee || 0) + (details.platformFee || 0)) }}</span>
                   </div>
                 </div>
-
-                <!-- Order Total -->
-                <div class="detail-section">
-                  <h4 class="detail-title">Order Total</h4>
-                  <div class="total-breakdown">
-                    <div class="total-item">
-                      <span>Subtotal</span>
-                      <span>{{ formatCurrency(details.subTotal || 0) }}</span>
-                    </div>
-                    <div class="total-item">
-                      <span>Delivery Fee</span>
-                      <span>{{ formatCurrency(details.deliveryFee || 0) }}</span>
-                    </div>
-                    <div class="total-item">
-                      <span>Platform Fee</span>
-                      <span>{{ formatCurrency(details.platformFee || 0) }}</span>
-                    </div>
-                    <div class="total-item total-final">
-                      <span>Total</span>
-                      <span>{{ formatCurrency((details.subTotal || 0) + (details.deliveryFee || 0) + (details.platformFee || 0)) }}</span>
-                    </div>
-                  </div>
-                </div>
+              </div>
 
                 <!-- Order Timeline -->
                 <div class="detail-section" *ngIf="isPastOrder()">

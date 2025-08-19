@@ -19,4 +19,9 @@ export interface RestaurantDetails {
       categoryName: string;
     }
   ]
+  // Add pagination properties
+  totalPages: number;
+  currentPage: number;
+  totalItems: number;
+  pageSize: number;
 }

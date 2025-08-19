@@ -1,73 +1,68 @@
-<div class="register-container">
-  <div class="w-full px-4">
+<div class="register-container min-h-screen">
+  <div class="w-full">
     <div class="flex flex-col lg:flex-row min-h-screen">
       <!-- Left side - Image/Branding -->
-      <div class="hidden lg:flex flex-1 items-center justify-center relative">
+      <div class="hidden lg:flex lg:w-1/2 xl:w-3/5 items-center justify-center relative bg-gradient-to-br from-orange-50 to-amber-50">
         <img src="/assets/images/sign-up.png"
              alt="Sign Up"
-             class="max-w-full h-auto register-image">
+             class="max-w-full max-h-[80vh] w-auto h-auto object-contain">
       </div>
 
       <!-- Right side - Registration Form -->
-      <div class="flex flex-1 items-center justify-center p-4">
-        <div class="register-form-wrapper w-full max-w-lg">
-          <div class="text-center mb-12">
-            <h2 class="font-bold text-3xl text-gray-900">Create Account</h2>
-            <p class="text-gray-500">Sign up to get started</p>
+      <div class="flex flex-1 lg:w-1/2 xl:w-2/5 items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div class="w-full max-w-md lg:max-w-lg xl:max-w-xl">
+          <!-- Header -->
+          <div class="text-center mb-8 sm:mb-12">
+            <h2 class="font-bold text-2xl sm:text-3xl lg:text-4xl text-gray-900 mb-2">Create Account</h2>
+            <p class="text-sm sm:text-base text-gray-500">Sign up to get started</p>
           </div>
 
-          <!-- Social Login Buttons -->
-          <div class="mb-8">
-            <div class="flex gap-2">
-              <!-- Google button section -->
-              <div class="flex-1">
-                <div id="google-signin-button"></div>
+          <!-- Error/Success Message -->
+          <div class="mb-4" *ngIf="message">
+            <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base flex items-start gap-2 sm:gap-3">
+              <i class="fas fa-exclamation-circle mt-0.5 sm:mt-0 flex-shrink-0"></i>
+              <span class="leading-relaxed">{{message}}</span>
+            </div>
+          </div>
 
-                <button (click)="loginWithGoogle()"
-                        [disabled]="isLoading"
-                        class="hidden w-full border border-red-500 text-red-500 py-2 rounded flex items-center justify-center gap-2">
-                  <i class="fab fa-google"></i>
-                  <span *ngIf="!isLoading">Google</span>
-                  <span *ngIf="isLoading">...</span>
-                </button>
+          <!-- Social Login Button -->
+          <div class="mb-6 sm:mb-8">
+            <div id="google-signin-button" class="w-full flex justify-center"></div>
+          </div>
+
+          <!-- OR Divider -->
+          <div class="mb-6 sm:mb-8 text-center">
+            <div class="relative">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-300"></div>
               </div>
-              <div class="flex-1">
-                <button type="button"
-                        class="w-full border border-blue-600 text-blue-600 py-2 rounded flex items-center justify-center"
-                        (click)="onSocialLogin('Facebook')">
-                  <i class="fab fa-facebook-f"></i>
-                </button>
-              </div>
-              <div class="flex-1">
-                <button type="button"
-                        class="w-full border border-gray-800 text-gray-800 py-2 rounded flex items-center justify-center"
-                        (click)="onSocialLogin('Twitter')">
-                  <i class="fab fa-x-twitter"></i>
-                </button>
+              <div class="relative flex justify-center text-xs sm:text-sm">
+                <span class="px-3 sm:px-4 bg-white text-gray-500">or continue with email</span>
               </div>
             </div>
           </div>
 
           <!-- Registration Form -->
-          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate class="space-y-5 sm:space-y-6">
             <!-- Email Field -->
-            <div class="mb-6">
-              <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-              <div class="flex items-center border rounded">
-                <span class="px-3 text-gray-400">
-                  <i class="fas fa-envelope"></i>
-                </span>
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-envelope text-gray-400 text-sm"></i>
+                </div>
                 <input type="email"
                        id="email"
-                       class="flex-1 py-2 px-3 outline-none rounded-r border-l-0"
+                       class="block w-full pl-10 pr-3 py-2.5 sm:py-3 border rounded-lg text-sm sm:text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                        [ngClass]="{
-                         'border-red-500': email?.invalid && email?.touched,
-                         'border-green-500': email?.valid && email?.touched
+                         'border-red-300 focus:ring-red-500': email?.invalid && email?.touched,
+                         'border-green-300 focus:ring-green-500': email?.valid && email?.touched,
+                         'border-gray-300': !email?.touched
                        }"
                        placeholder="Enter your email"
                        formControlName="email">
               </div>
-              <div class="text-red-500 text-xs mt-1" *ngIf="email?.invalid && email?.touched">
+              <div class="text-red-500 text-xs sm:text-sm mt-1 min-h-[1.25rem]" *ngIf="email?.invalid && email?.touched">
                 <small *ngIf="email?.errors?.['required']">Email is required</small>
                 <small *ngIf="email?.errors?.['email']">Please enter a valid email</small>
                 <small *ngIf="email?.errors?.['tempEmail']">Temporary or disposable email addresses are not allowed</small>
@@ -75,148 +70,138 @@
             </div>
 
             <!-- Password Field -->
-            <div class="mb-6">
-              <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <div class="flex items-center border rounded">
-    <span class="px-3 text-gray-400">
-      <i class="fas fa-lock"></i>
-    </span>
+            <div>
+              <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-lock text-gray-400 text-sm"></i>
+                </div>
                 <input [type]="showPassword ? 'text' : 'password'"
                        id="password"
-                       class="flex-1 py-2 px-3 outline-none rounded-r border-l-0"
+                       class="block w-full pl-10 pr-12 py-2.5 sm:py-3 border rounded-lg text-sm sm:text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                        [ngClass]="{
-             'border-red-500': password?.invalid && password?.touched,
-             'border-green-500': password?.valid && password?.touched
-           }"
+                         'border-red-300 focus:ring-red-500': password?.invalid && password?.touched,
+                         'border-green-300 focus:ring-green-500': password?.valid && password?.touched,
+                         'border-gray-300': !password?.touched
+                       }"
                        placeholder="Enter your password"
                        formControlName="password"
                        (input)="password?.markAsTouched()">
                 <button type="button"
-                        class="px-3 py-2 text-gray-500 hover:text-gray-700"
+                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
                         (click)="togglePasswordVisibility()">
-                  <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                  <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" class="text-sm"></i>
                 </button>
               </div>
+
               <!-- Password requirements feedback -->
-              <ul class="mt-2 space-y-1 text-sm">
-                <li [ngClass]="getPasswordRequirementClass('minlength')">
-                  <i [ngClass]="getPasswordRequirementIcon('minlength')"></i>
-                  At least 6 characters
-                </li>
-                <li [ngClass]="getPasswordRequirementClass('requireDigit')">
-                  <i [ngClass]="getPasswordRequirementIcon('requireDigit')"></i>
-                  At least one digit (0-9)
-                </li>
-                <li [ngClass]="getPasswordRequirementClass('requireLowercase')">
-                  <i [ngClass]="getPasswordRequirementIcon('requireLowercase')"></i>
-                  At least one lowercase letter (a-z)
-                </li>
-                <li [ngClass]="getPasswordRequirementClass('requireUppercase')">
-                  <i [ngClass]="getPasswordRequirementIcon('requireUppercase')"></i>
-                  At least one uppercase letter (A-Z)
-                </li>
-                <li [ngClass]="getPasswordRequirementClass('requireNonAlphanumeric')">
-                  <i [ngClass]="getPasswordRequirementIcon('requireNonAlphanumeric')"></i>
-                  At least one special character
-                </li>
-                <li [ngClass]="getPasswordRequirementClass('commonPassword')">
-                  <i [ngClass]="getPasswordRequirementIcon('commonPassword')"></i>
-                  This password is too common or weak
-                </li>
-              </ul>
-<!--              <div class="text-red-500 text-xs mt-1" *ngIf="password?.invalid && password?.touched">-->
-<!--                <small *ngIf="password?.errors?.['required']">Password is required</small>-->
-<!--                <small *ngIf="password?.errors?.['commonPassword']">This password is too common or weak</small>-->
-<!--                <small *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters long</small>-->
-<!--                <small *ngIf="password?.errors?.['requireDigit']">Password must contain at least one digit (0-9)</small>-->
-<!--                <small *ngIf="password?.errors?.['requireLowercase']">Password must contain at least one lowercase letter (a-z)</small>-->
-<!--                <small *ngIf="password?.errors?.['requireUppercase']">Password must contain at least one uppercase letter (A-Z)</small>-->
-<!--                <small *ngIf="password?.errors?.['requireNonAlphanumeric']">Password must contain at least one special character</small>-->
-<!--              </div>-->
-            </div>
-
-            <!-- Confirm Password Field -->
-            <div class="mb-6">
-              <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-              <div class="flex items-center border rounded">
-    <span class="px-3 text-gray-400">
-      <i class="fas fa-lock"></i>
-    </span>
-                <input [type]="showConfirmPassword ? 'text' : 'password'"
-                       id="confirmPassword"
-                       class="flex-1 py-2 px-3 outline-none rounded-r border-l-0"
-                       [ngClass]="{
-             'border-red-500': (confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched),
-             'border-green-500': confirmPassword?.valid && confirmPassword?.touched && !registerForm.errors?.['passwordMismatch']
-           }"
-                       placeholder="Confirm your password"
-                       formControlName="confirmPassword">
-                <button type="button"
-                        class="px-3 py-2 text-gray-500 hover:text-gray-700"
-                        (click)="toggleConfirmPasswordVisibility()">
-                  <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                </button>
-              </div>
-              <div class="text-red-500 text-xs mt-1"
-                   *ngIf="(confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched)">
-                <small *ngIf="confirmPassword?.errors?.['required']">Please confirm your password</small>
-                <small *ngIf="registerForm.errors?.['passwordMismatch'] && !confirmPassword?.errors?.['required']">Passwords
-                  do not match</small>
-              </div>
-            </div>
-
-            <!-- Role Selection -->
-            <div class="mb-8">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Sign up as</label>
-              <div class="role-selection">
-                <div class="flex gap-2">
-                  <div class="flex-1" *ngFor="let roleOption of roles">
-                    <input type="radio"
-                           class="hidden peer"
-                           [id]="roleOption.value"
-                           [value]="roleOption.value"
-                           formControlName="role">
-                    <label
-                      class="block border border-blue-500 text-blue-500 rounded py-3 text-center cursor-pointer peer-checked:bg-blue-500 peer-checked:text-white transition"
-                      [for]="roleOption.value">
-                      <i [class]="roleOption.icon + ' block mb-2'"></i>
-                      <small class="font-semibold">{{ roleOption.label }}</small>
-                    </label>
+              <div class="mt-3 space-y-1">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs sm:text-sm">
+                  <div [ngClass]="getPasswordRequirementClass('minlength')" class="flex items-center">
+                    <i [ngClass]="getPasswordRequirementIcon('minlength')" class="w-3 h-3 mr-2 flex-shrink-0"></i>
+                    <span>At least 6 characters</span>
+                  </div>
+                  <div [ngClass]="getPasswordRequirementClass('requireDigit')" class="flex items-center">
+                    <i [ngClass]="getPasswordRequirementIcon('requireDigit')" class="w-3 h-3 mr-2 flex-shrink-0"></i>
+                    <span>One digit (0-9)</span>
+                  </div>
+                  <div [ngClass]="getPasswordRequirementClass('requireLowercase')" class="flex items-center">
+                    <i [ngClass]="getPasswordRequirementIcon('requireLowercase')" class="w-3 h-3 mr-2 flex-shrink-0"></i>
+                    <span>One lowercase (a-z)</span>
+                  </div>
+                  <div [ngClass]="getPasswordRequirementClass('requireUppercase')" class="flex items-center">
+                    <i [ngClass]="getPasswordRequirementIcon('requireUppercase')" class="w-3 h-3 mr-2 flex-shrink-0"></i>
+                    <span>One uppercase (A-Z)</span>
+                  </div>
+                  <div [ngClass]="getPasswordRequirementClass('requireNonAlphanumeric')" class="flex items-center sm:col-span-2">
+                    <i [ngClass]="getPasswordRequirementIcon('requireNonAlphanumeric')" class="w-3 h-3 mr-2 flex-shrink-0"></i>
+                    <span>One special character</span>
+                  </div>
+                  <div [ngClass]="getPasswordRequirementClass('commonPassword')" class="flex items-center sm:col-span-2" *ngIf="password?.errors?.['commonPassword']">
+                    <i [ngClass]="getPasswordRequirementIcon('commonPassword')" class="w-3 h-3 mr-2 flex-shrink-0"></i>
+                    <span>This password is too common or weak</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div
-              class="bg-blue-50 border border-blue-200 text-blue-700 rounded px-4 py-2 mt-3 text-sm flex items-center gap-2"
-              *ngIf="registerForm.get('role')?.value">
-              <i class="fas fa-info-circle"></i>
-              <span>
-                Social sign-up will register you as: <strong>{{ registerForm.get('role')?.value }}</strong>
-              </span>
+            <!-- Confirm Password Field -->
+            <div>
+              <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-lock text-gray-400 text-sm"></i>
+                </div>
+                <input [type]="showConfirmPassword ? 'text' : 'password'"
+                       id="confirmPassword"
+                       class="block w-full pl-10 pr-12 py-2.5 sm:py-3 border rounded-lg text-sm sm:text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                       [ngClass]="{
+                         'border-red-300 focus:ring-red-500': (confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched),
+                         'border-green-300 focus:ring-green-500': confirmPassword?.valid && confirmPassword?.touched && !registerForm.errors?.['passwordMismatch'],
+                         'border-gray-300': !confirmPassword?.touched
+                       }"
+                       placeholder="Confirm your password"
+                       formControlName="confirmPassword">
+                <button type="button"
+                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                        (click)="toggleConfirmPasswordVisibility()">
+                  <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" class="text-sm"></i>
+                </button>
+              </div>
+              <div class="text-red-500 text-xs sm:text-sm mt-1 min-h-[1.25rem]"
+                   *ngIf="(confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched)">
+                <small *ngIf="confirmPassword?.errors?.['required']">Please confirm your password</small>
+                <small *ngIf="registerForm.errors?.['passwordMismatch'] && !confirmPassword?.errors?.['required']">Passwords do not match</small>
+              </div>
+            </div>
+
+            <!-- Role Selection -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-3">Sign up as</label>
+              <div class="grid grid-cols-2 gap-3">
+                <div *ngFor="let roleOption of roles">
+                  <input type="radio"
+                         class="hidden peer"
+                         [id]="roleOption.value"
+                         [value]="roleOption.value"
+                         formControlName="role">
+                  <label
+                    class="block border-2 border-blue-200 text-blue-600 rounded-lg py-4 px-3 text-center cursor-pointer peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500 hover:border-blue-300 transition-all duration-200"
+                    [for]="roleOption.value">
+                    <i [class]="roleOption.icon + ' block mb-2 text-lg sm:text-xl'"></i>
+                    <span class="text-sm sm:text-base font-semibold">{{ roleOption.label }}</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="bg-blue-50 border border-blue-200 text-blue-700 rounded-lg px-4 py-3 mt-3 text-xs sm:text-sm flex items-start gap-2"
+                   *ngIf="registerForm.get('role')?.value">
+                <i class="fas fa-info-circle mt-0.5 flex-shrink-0"></i>
+                <span>
+                  Social sign-up will register you as: <strong>{{ registerForm.get('role')?.value }}</strong>
+                </span>
+              </div>
             </div>
 
             <!-- Submit Button -->
-            <div class="mb-6">
-              <button type="submit"
-                      class="w-full bg-blue-600 text-white text-lg font-semibold py-3 rounded hover:bg-blue-700 transition flex items-center justify-center"
-                      [disabled]="registerForm.invalid || isLoading">
-                <span *ngIf="isLoading" class="animate-spin mr-2">
-                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                  </svg>
-                </span>
-                <span *ngIf="!isLoading">Create Account</span>
-                <span *ngIf="isLoading">Creating Account...</span>
-              </button>
-            </div>
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white text-base sm:text-lg font-semibold py-3 sm:py-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    [disabled]="registerForm.invalid || isLoading">
+              <span *ngIf="isLoading" class="animate-spin mr-2">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                </svg>
+              </span>
+              <span *ngIf="!isLoading">Create Account</span>
+              <span *ngIf="isLoading">Creating Account...</span>
+            </button>
 
             <!-- Login Link -->
-            <div class="text-center">
-              <p class="text-gray-500">
+            <div class="text-center pt-4">
+              <p class="text-sm sm:text-base text-gray-500">
                 Already have an account?
-                <a routerLink="/login" class="text-blue-600 hover:underline font-semibold">Sign in</a>
+                <a routerLink="/login" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold focus:outline-none focus:underline">Sign in</a>
               </p>
             </div>
           </form>

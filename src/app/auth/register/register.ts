@@ -133,7 +133,7 @@ export class Register implements OnInit {
   roles = [
     { value: 'Customer', label: 'Customer', icon: 'fas fa-user' },
     { value: 'Chef', label: 'Chef', icon: 'fas fa-utensils' },
-    { value: 'Admin', label: 'Admin', icon: 'fas fa-user-shield' }
+    // { value: 'Admin', label: 'Admin', icon: 'fas fa-user-shield' }
   ];
 
   constructor(

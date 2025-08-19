@@ -2,7 +2,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {Router, RouterModule} from '@angular/router';
-import { Subject, takeUntil, Subscription } from 'rxjs';
+import { Subject, takeUntil, Subscription, firstValueFrom } from 'rxjs';
 import { ChefCurrentOrder } from '../../../models/ChefCurrentOrder.model';
 import { SignalrService } from '../../../services/signalr.service';
 import { ChefDashboardOrderComponent } from '../../chef-dashboard-order/chef-dashboard-order.component';
@@ -11,8 +11,12 @@ import { AddRestaurant } from '../../../services/chef/add-restaurant';
 import { AuthService } from '../../../services/auth.service';
 import { UserService } from '../../../services/user.service';
 import { Restaurant, RestaurantInputDto } from '../../../models/AddRestaurant.model';
+import { OrderManagementService } from '../../../services/order-management-service';
 
-import { LucideAngularModule, Clock, Star, MapPin,  Store} from 'lucide-angular';
+import { LucideAngularModule, Clock, Star, CheckCircle, XCircle, DollarSign,
+  User, Package, Timer, AlertCircle, TrendingUp, TrendingDown, BarChart3,
+  PieChart, Calendar, Eye, Filter, Search, Download, Bell, RefreshCw,
+  Zap, Award, Target, ShoppingBag, Users, CreditCard, MapPin, Store } from 'lucide-angular';
 
 // Component imports
 import { ChefDashboardHeaderComponent } from '../../chef-dashboard-header/chef-dashboard-header.component';
@@ -58,8 +62,23 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
   readonly Star = Star;
   readonly MapPin = MapPin;
   readonly Store = Store;
+  readonly Bell = Bell;
+  readonly RefreshCw = RefreshCw;
+  readonly User = User;
+  readonly CheckCircle = CheckCircle;
+  readonly XCircle = XCircle;
+  readonly Timer = Timer;
+  readonly AlertCircle = AlertCircle;
+  readonly ShoppingBag = ShoppingBag;
 
   private destroy$ = new Subject<void>();
+
+  // Add missing state properties
+  isRefreshing = false;
+
+  // Add missing service injection
+  private orderManagementService = inject(OrderManagementService);
+
 
   constructor(
     public chefDashboardService: ChefDashboardService,
@@ -131,6 +150,84 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
           console.error('Error getting restaurant details:', error);
         }
       });
+  }
+
+  getPaymentIcon(paymentStatus: string | undefined) {
+    switch (paymentStatus) {
+      case 'paid': return CheckCircle;
+      case 'cancelled': return XCircle;
+      default: return Clock;
+    }
+  }
+
+  getPaymentStatusText(paymentStatus: string | undefined): string {
+    const statusMap: { [key: string]: string } = {
+      'paid': 'Payment Received',
+      'pending': 'Awaiting Payment',
+      'cancelled': 'Payment Cancelled'
+    };
+    return statusMap[paymentStatus || 'pending'] || 'Payment Status Unknown';
+  }
+
+  private mapOrdersFromResponse(response: any[]): ChefCurrentOrder[] {
+    return response.map((r: any) => ({
+      id: Number(r.id ?? r.orderId),
+      customer: r.customerName ?? r.customer ?? 'Customer',
+      items: Array.isArray(r.items) ? r.items.length : (Number(r.itemsCount) || 0),
+      amount: Number(r.totalAmount ?? r.amount ?? r.total ?? 0),
+      time: new Date(r.createdAt ?? Date.now()).toLocaleTimeString(),
+      status: (String(r.status || 'pending').toLowerCase() as ChefCurrentOrder['status']),
+      paymentStatus: (String(r.paymentStatus || 'pending').toLowerCase() as ChefCurrentOrder['paymentStatus']),
+      createdAt: r.createdAt ? new Date(r.createdAt) : new Date()
+    }));
+  }
+
+  async refreshCurrentOrders() {
+    this.isRefreshing = true;
+    try {
+      const orders = await firstValueFrom(this.orderManagementService.getChefCurrentOrders());
+      this.currentOrders = this.mapOrdersFromResponse(orders || []);
+    } catch (error) {
+      console.error('Failed to refresh orders:', error);
+    } finally {
+      this.isRefreshing = false;
+    }
+  }
+
+  async acceptOrder(orderId: number) {
+    try {
+      await firstValueFrom(this.orderManagementService.acceptOrder(orderId));
+      // Handle success
+    } catch (error) {
+      console.error('Failed to accept order:', error);
+    }
+  }
+
+  async rejectOrder(orderId: number) {
+    try {
+      await firstValueFrom(this.orderManagementService.rejectOrder(orderId, 'Chef declined'));
+      // Handle success
+    } catch (error) {
+      console.error('Failed to reject order:', error);
+    }
+  }
+
+  async markAsReady(orderId: number) {
+    try {
+      await firstValueFrom(this.orderManagementService.markAsReady(orderId));
+      // Handle success
+    } catch (error) {
+      console.error('Failed to mark as ready:', error);
+    }
+  }
+
+  async completeOrder(orderId: number) {
+    try {
+      await firstValueFrom(this.orderManagementService.completeOrder(orderId));
+      // Handle success
+    } catch (error) {
+      console.error('Failed to complete order:', error);
+    }
   }
 
   // Updated method to parse the string format opening hours from your API
@@ -244,7 +341,18 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
     }
   }
 
+  private saveOrdersToLocalStorage(): void {
+    localStorage.setItem('chef_current_orders', JSON.stringify(this.currentOrders));
+  }
 
+  private loadOrdersFromLocalStorage(): ChefCurrentOrder[] {
+    try {
+      const saved = localStorage.getItem('chef_current_orders');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  }
   onSettingsCancel(): void {
     this.closeSettingsModal();
   }
@@ -300,6 +408,7 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
             this.currentOrders.unshift(incoming);
           }
         }
+        this.saveOrdersToLocalStorage();
       })
     );
 
@@ -362,6 +471,87 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
     console.log('View orders clicked');
     this.router.navigate(['/chef/chef-dashboard-order']);
     // You can implement the logic to navigate to a view orders page or open a modal
+  }
+  // Enhanced order management methods
+  private processingOrders = new Set<number>();
+
+  trackByOrderId(index: number, order: ChefCurrentOrder): number {
+    return order.id;
+  }
+
+  isProcessingOrder(orderId: number): boolean {
+    return this.processingOrders.has(orderId);
+  }
+
+  getOrderCardClass(order: ChefCurrentOrder): string[] {
+    const classes = ['order-card', `status-${order.status}`];
+
+    if (this.isNewOrder(order)) {
+      classes.push('status-pending'); // Use existing status instead of 'new-order'
+    }
+
+    return classes;
+  }
+
+  getStatusLabel(status: string): string {
+    const labels: { [key: string]: string } = {
+      'pending': 'Pending Review',
+      'accepted': 'Accepted',
+      'ready': 'Ready',
+      'completed': 'Completed',
+      'rejected': 'Rejected'
+    };
+    return labels[status] || status;
+  }
+
+  showPaymentStatus(order: ChefCurrentOrder): boolean {
+    return ['accepted', 'ready', 'completed'].includes(order.status);
+  }
+
+  getStatusMessage(order: ChefCurrentOrder): string {
+    if (order.status === 'pending' && order.paymentStatus === 'paid') {
+      return 'Customer has paid. Review and accept the order.';
+    }
+    if (order.status === 'accepted' && order.paymentStatus === 'pending') {
+      return 'Waiting for customer payment to proceed.';
+    }
+    if (order.status === 'rejected') {
+      return 'Order has been rejected.';
+    }
+    if (order.status === 'completed') {
+      return 'Order completed successfully.';
+    }
+    return '';
+  }
+
+  private isNewOrder(order: ChefCurrentOrder): boolean {
+    const now = new Date();
+    const orderTime = order.createdAt ? new Date(order.createdAt) : new Date();
+    return (now.getTime() - orderTime.getTime()) < 30000; // 30 seconds
+  }
+
+  formatCurrency(amount: number): string {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  }
+
+
+  private updateOrderStatus(orderId: number, status: ChefCurrentOrder['status']): void {
+    const order = this.currentOrders.find(o => o.id === orderId);
+    if (order) {
+      order.status = status;
+    }
+  }
+
+  private async loadCurrentOrders(): Promise<void> {
+    try {
+      const orders = await firstValueFrom(this.orderManagementService.getChefCurrentOrders());
+      this.currentOrders = this.mapOrdersFromResponse(orders || []);
+    } catch (error) {
+      console.error('Failed to load current orders:', error);
+    }
   }
 }
 
