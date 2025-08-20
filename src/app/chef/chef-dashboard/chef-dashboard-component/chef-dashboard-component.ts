@@ -169,18 +169,45 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
     return statusMap[paymentStatus || 'pending'] || 'Payment Status Unknown';
   }
 
-  private mapOrdersFromResponse(response: any[]): ChefCurrentOrder[] {
-    return response.map((r: any) => ({
-      id: Number(r.id ?? r.orderId),
-      customer: r.customerName ?? r.customer ?? 'Customer',
-      items: Array.isArray(r.items) ? r.items.length : (Number(r.itemsCount) || 0),
-      amount: Number(r.totalAmount ?? r.amount ?? r.total ?? 0),
-      time: new Date(r.createdAt ?? Date.now()).toLocaleTimeString(),
-      status: (String(r.status || 'pending').toLowerCase() as ChefCurrentOrder['status']),
-      paymentStatus: (String(r.paymentStatus || 'pending').toLowerCase() as ChefCurrentOrder['paymentStatus']),
-      createdAt: r.createdAt ? new Date(r.createdAt) : new Date()
-    }));
+  // private mapOrdersFromResponse(response: any[]): ChefCurrentOrder[] {
+  //   return response.map((r: any) => ({
+  //     id: Number(r.id ?? r.orderId),
+  //     customer: r.customerName ?? r.customer ?? 'Customer',
+  //     items: Array.isArray(r.items) ? r.items.length : (Number(r.itemsCount) || 0),
+  //     amount: Number(r.totalAmount ?? r.amount ?? r.total ?? 0),
+  //     time: new Date(r.createdAt ?? Date.now()).toLocaleTimeString(),
+  //     status: (String(r.status || 'pending').toLowerCase() as ChefCurrentOrder['status']),
+  //     paymentStatus: (String(r.paymentStatus || 'pending').toLowerCase() as ChefCurrentOrder['paymentStatus']),
+  //     createdAt: r.createdAt ? new Date(r.createdAt) : new Date()
+  //   }));
+  // }
+  // Add this method to format time
+  private formatTime(date: Date): string {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
   }
+
+  private mapOrdersFromResponse(orders: any[]): ChefCurrentOrder[] {
+    return orders.map(order => {
+      const status = String(order.status || 'pending').toLowerCase();
+      const paymentStatus = String(order.payment_status || order.paymentStatus || 'pending').toLowerCase();
+
+      return {
+        id: order.id || order.orderId,
+        customer: order.customerName || order.customer_name || order.customer || 'Unknown Customer',
+        items: order.items?.length || order.item_count || order.itemsCount || 1,
+        amount: parseFloat(order.total_amount || order.totalAmount || order.amount || order.total || 0),
+        status: status as ChefCurrentOrder['status'],   // type narrowing
+        paymentStatus: paymentStatus as ChefCurrentOrder['paymentStatus'],
+        time: order.created_at ? this.formatTime(new Date(order.created_at)) : 'Just now',
+        createdAt: order.created_at || order.createdAt || new Date().toISOString()
+      };
+    });
+  }
+
 
   async refreshCurrentOrders() {
     this.isRefreshing = true;

@@ -7,7 +7,7 @@ import { LucideAngularModule, Clock, Star, CheckCircle,
   TrendingUp, TrendingDown, BarChart3, PieChart, Calendar,
   Eye, Filter, Search, Download, Bell, RefreshCw, Zap, Award,
   Target, ShoppingBag, Users, CreditCard, MapPin } from 'lucide-angular';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Subscription, firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { OrderManagementService } from '../../services/order-management-service';
 import { ActivatedRoute } from '@angular/router';
 import {FormsModule} from '@angular/forms';
@@ -66,6 +66,9 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
   @Input() order!: ChefCurrentOrder;
   @Input() chefId!: string;
 
+  private destroy$ = new Subject<void>();
+  private _selectedOrder: ChefCurrentOrder | null = null;
+
   // Icons
   readonly Clock = Clock;
   readonly Star = Star;
@@ -95,21 +98,22 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
   readonly CreditCard = CreditCard;
   readonly MapPin = MapPin;
 
-
   isProcessing = false;
-  orderTimeline: any[] = [];
+  orderTimeline: Array<{event: string, time: string, type: 'success' | 'error' | 'info'}> = [];
   isRefreshing = false;
 
   // Enhanced state management
   orders: ChefCurrentOrder[] = [];
   selectedOrderId: number | null = null;
-  selectedOrderDetails: any | null = null;
+  selectedOrderDetails: any = null;
+  isLoadingDetails = false;
   currentView: 'overview' | 'orders' | 'analytics' = 'overview';
+  currentOrders: ChefCurrentOrder[] = [];
 
   // Search and filter
   searchQuery = '';
   statusFilter = 'all';
-  dateFilter = 'today';
+  dateFilter = 'all';
   sortBy = 'newest';
 
   // Dashboard statistics
@@ -150,12 +154,19 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initializeComponent();
+    const routeOrderId = this.route.snapshot.paramMap.get('orderId');
+    if (routeOrderId) {
+      this.routeOrderId = parseInt(routeOrderId, 10);
+    }
     this.loadDashboardData();
+    this.loadOrders();
     this.setupSignalRSubscriptions();
     this.startRealtimeUpdates();
   }
 
   ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
     if (this.chefId) {
       this.signalrService.leaveChefGroup(this.chefId);
     }
@@ -198,18 +209,28 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
       this.isRefreshing = false;
     }
   }
+  // Add the formatTime method
+  private formatTime(date: Date): string {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
 
-  private async loadOrders() {
+  private async loadCurrentOrders(): Promise<void> {
+    try {
+      const orders = await firstValueFrom(this.orderManagementService.getChefCurrentOrders());
+      this.currentOrders = this.mapOrdersFromResponse(orders || []);
+    } catch (error) {
+      console.error('Failed to load current orders:', error);
+    }
+  }
+
+  async loadOrders(): Promise<void> {
     try {
       const response = await firstValueFrom(this.orderManagementService.getChefCurrentOrders());
       this.orders = this.mapOrdersFromResponse(response || []);
-      this.updateBasicStats();
-
-      if (this.routeOrderId && this.orders.some(o => o.id === this.routeOrderId)) {
-        this.selectOrder(this.routeOrderId);
-      } else if (this.orders.length && !this.selectedOrderId) {
-        this.selectOrder(this.orders[0].id);
-      }
     } catch (error) {
       console.error('Failed to load orders:', error);
     }
@@ -271,18 +292,58 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
     // This would typically come from your analytics service
   }
 
+  // private mapOrdersFromResponse(response: any[]): ChefCurrentOrder[] {
+  //   return response.map((r: any) => ({
+  //     id: Number(r.id ?? r.orderId),
+  //     customer: r.customerName ?? r.customer ?? 'Customer',
+  //     items: Array.isArray(r.items) ? r.items.length : (Number(r.itemsCount) || 0),
+  //     amount: Number(r.totalAmount ?? r.amount ?? r.total ?? 0),
+  //     time: new Date(r.createdAt ?? Date.now()).toLocaleTimeString(),
+  //     status: (String(r.status || 'pending').toLowerCase() as ChefCurrentOrder['status']),
+  //     paymentStatus: (String(r.paymentStatus || 'pending').toLowerCase() as ChefCurrentOrder['paymentStatus']),
+  //     createdAt: r.createdAt ? new Date(r.createdAt) : new Date()
+  //   }));
+  // }
+
   private mapOrdersFromResponse(response: any[]): ChefCurrentOrder[] {
     return response.map((r: any) => ({
-      id: Number(r.id ?? r.orderId),
-      customer: r.customerName ?? r.customer ?? 'Customer',
-      items: Array.isArray(r.items) ? r.items.length : (Number(r.itemsCount) || 0),
-      amount: Number(r.totalAmount ?? r.amount ?? r.total ?? 0),
-      time: new Date(r.createdAt ?? Date.now()).toLocaleTimeString(),
-      status: (String(r.status || 'pending').toLowerCase() as ChefCurrentOrder['status']),
-      paymentStatus: (String(r.paymentStatus || 'pending').toLowerCase() as ChefCurrentOrder['paymentStatus']),
-      createdAt: r.createdAt ? new Date(r.createdAt) : new Date()
+      id: Number(r.id),
+      customer: r.customerName || r.customer || 'Customer',
+      items: Array.isArray(r.items) ? r.items.length : 0,
+      amount: Number(r.totalAmount || 0),
+      time: new Date(r.createdAt).toLocaleTimeString(),
+      status: this.mapStatus(r.status),
+      paymentStatus: r.payment ? 'paid' : 'pending',
+      createdAt: new Date(r.createdAt),
+
+      // Map additional fields
+      subTotal: r.subTotal,
+      deliveryFee: r.deliveryFee,
+      platformFee: r.platformFee,
+      totalAmount: r.totalAmount,
+      distanceKm: r.distanceKm,
+      customerId: r.customerId,
+      customerName: r.customerName,
+      restaurantId: r.restaurantId,
+      restaurantName: r.restaurantName,
+      itemsArray: r.items,
+      payment: r.payment
     }));
   }
+
+  private mapStatus(status: number): ChefCurrentOrder['status'] {
+    const statusMap: { [key: number]: ChefCurrentOrder['status'] } = {
+      1: 'pending',
+      2: 'accepted',
+      3: 'in_progress',
+      4: 'ready',
+      5: 'completed',
+      6: 'rejected',
+      7: 'cancelled'
+    };
+    return statusMap[status] || 'pending';
+  }
+
 
   private updateBasicStats() {
     this.dashboardStats.totalOrders = this.orders.length;
@@ -293,6 +354,11 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
     const todayRevenue = paidOrders.reduce((sum, o) => sum + (o.amount || 0), 0);
     this.dashboardStats.todayRevenue = todayRevenue;
     this.dashboardStats.averageOrderValue = paidOrders.length ? todayRevenue / paidOrders.length : 0;
+  }
+
+  private getOrderAmount(orderId: number): number {
+    const order = this.orders.find(o => o.id === orderId);
+    return order?.amount || 0;
   }
 
   private setupSignalRSubscriptions() {
@@ -317,6 +383,7 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
         this.upsertOrder(incoming);
         this.updateBasicStats();
 
+        // Only auto-select if no order is currently selected
         if (!this.selectedOrderId) {
           this.selectOrder(id);
         }
@@ -334,25 +401,37 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
         this.patchOrder(id, { status });
 
         if (this.selectedOrderId === id) {
-          this.fetchOrderDetails(id);
+          setTimeout(() => this.fetchOrderDetails(id), 500);
           this.addTimelineEvent(`Order status: ${status}`, 'info');
+        }
+        this.updateBasicStats();
+      })
+    );
+
+    // Payment notifications - ENHANCED
+    this.subscriptions.push(
+      this.signalrService.getOrderPaidNotifications().subscribe((n) => {
+        if (!n || !n.orderId) return;
+        const id = Number(n.orderId);
+        if (!Number.isFinite(id)) return;
+
+        this.patchOrder(id, { paymentStatus: 'paid' });
+        if (this.selectedOrderId === id) {
+          this.addTimelineEvent('Payment received', 'success');
         }
       })
     );
 
-    // Payment notifications
+    // Payment cancelled
     this.subscriptions.push(
-      this.signalrService.getOrderPaidNotifications().subscribe((notification) => {
-        if (!notification) return;
-        const id = Number(notification.orderId ?? notification.id);
+      this.signalrService.getOrderPaymentCancelledNotifications().subscribe((n) => {
+        if (!n || !n.orderId) return;
+        const id = Number(n.orderId);
         if (!Number.isFinite(id)) return;
 
-        this.patchOrder(id, { paymentStatus: 'paid' });
-        this.updateBasicStats();
-
+        this.patchOrder(id, { paymentStatus: 'cancelled' });
         if (this.selectedOrderId === id) {
-          this.addTimelineEvent('Payment received', 'success');
-          this.fetchOrderDetails(id);
+          this.addTimelineEvent('Payment cancelled', 'error');
         }
       })
     );
@@ -370,104 +449,142 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
     this.currentView = view;
   }
 
-  async refreshData() {
-    await this.loadDashboardData();
+  refreshData() {
+    this.loadOrders();
   }
 
-  selectOrder(orderId: number) {
+  trackByOrderId(index: number, order: ChefCurrentOrder): number {
+    return order.id;
+  }
+
+
+// Update the selectOrder method
+  selectOrder(orderId: number): void {
     this.selectedOrderId = orderId;
+    this.selectedOrder = this.orders.find(o => o.id === orderId) || null;
+    this.loadOrderDetails(orderId);
+  }
+
+  public loadOrderDetails(orderId: number): void {
+    this.isLoadingDetails = true;
     this.selectedOrderDetails = null;
-    this.fetchOrderDetails(orderId);
+
+    this.orderManagementService.getOrderDetails(orderId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (details: any) => {
+          this.selectedOrderDetails = {
+            customerName: details?.customerName || 'Customer',
+            deliveryAddress: details?.deliveryAddress || 'No address provided',
+            items: details?.items || [],
+            subTotal: details?.subTotal || 0,
+            deliveryFee: details?.deliveryFee || 0,
+            platformFee: details?.platformFee || 0,
+            totalAmount: details?.totalAmount || 0,
+            customerId: details?.customerId,
+            restaurantId: details?.restaurantId,
+            restaurantName: details?.restaurantName
+          };
+          this.isLoadingDetails = false;
+        },
+        error: (error) => {
+          console.error('Failed to load order details:', error);
+          this.isLoadingDetails = false;
+          // Fallback to basic order info
+          this.selectedOrderDetails = {
+            customerName: this.selectedOrder?.customer || 'Customer',
+            deliveryAddress: 'No address provided',
+            items: [],
+            subTotal: this.selectedOrder?.amount || 0,
+            deliveryFee: 0,
+            platformFee: 0
+          };
+        }
+      });
   }
 
-  private async fetchOrderDetails(orderId: number) {
+  private async fetchOrderDetails(orderId: number): Promise<void> {
     try {
-      const details = await firstValueFrom(this.orderManagementService.getOrderDetails(orderId));
-      this.selectedOrderDetails = details;
+      this.selectedOrderDetails = await firstValueFrom(this.orderManagementService.getOrderDetails(orderId));
     } catch (error) {
-      console.error('Failed to load order details:', error);
+      console.error('Failed to fetch order details:', error);
+      this.selectedOrderDetails = null;
     }
   }
 
+  private updateOrderStatus(orderId: number, status: ChefCurrentOrder['status']): void {
+    const order = this.orders.find(o => o.id === orderId);
+    if (order) {
+      order.status = status;
+    }
+    if (this.order && this.order.id === orderId) {
+      this.order.status = status;
+    }
+  }
   // Order Management Methods
-  async acceptOrder() {
-    const id = this.trackedOrderId();
-    if (!id) return;
+  async acceptOrder(): Promise<void> {
+    if (!this.order && !this.selectedOrderId) return;
 
-    const current = this.orders.find(o => o.id === id) || this.order;
-    if (!current || current.paymentStatus === 'paid' || current.status !== 'pending') return;
-
+    const orderId = this.order?.id || this.selectedOrderId!;
     this.isProcessing = true;
+
     try {
-      await firstValueFrom(this.orderManagementService.acceptOrder(id));
-      this.patchOrder(id, { status: 'accepted' });
-      this.addTimelineEvent('Order accepted by chef', 'success');
-      this.fetchOrderDetails(id);
-      this.updateBasicStats();
-    } catch (e) {
-      console.error(e);
+      await firstValueFrom(this.orderManagementService.acceptOrder(orderId));
+      this.updateOrderStatus(orderId, 'accepted');
+      this.addTimelineEvent('Order accepted', 'success');
+    } catch (error) {
+      console.error('Failed to accept order:', error);
     } finally {
       this.isProcessing = false;
     }
   }
 
-  async rejectOrder() {
-    const id = this.trackedOrderId();
-    if (!id) return;
+  async rejectOrder(): Promise<void> {
+    if (!this.order && !this.selectedOrderId) return;
 
-    const current = this.orders.find(o => o.id === id) || this.order;
-    if (!current || current.paymentStatus === 'paid' || current.status !== 'pending') return;
-
+    const orderId = this.order?.id || this.selectedOrderId!;
     this.isProcessing = true;
+
     try {
-      await firstValueFrom(this.orderManagementService.rejectOrder(id, 'Chef declined'));
-      this.patchOrder(id, { status: 'rejected' });
-      this.addTimelineEvent('Order rejected by chef', 'error');
-      this.fetchOrderDetails(id);
-      this.updateBasicStats();
-    } catch (e) {
-      console.error(e);
+      await firstValueFrom(this.orderManagementService.rejectOrder(orderId, 'Chef declined'));
+      this.updateOrderStatus(orderId, 'rejected');
+      this.addTimelineEvent('Order rejected', 'error');
+    } catch (error) {
+      console.error('Failed to reject order:', error);
     } finally {
       this.isProcessing = false;
     }
   }
 
-  async markAsReady() {
-    const id = this.trackedOrderId();
-    if (!id) return;
+  async markAsReady(): Promise<void> {
+    if (!this.order && !this.selectedOrderId) return;
 
-    const current = this.orders.find(o => o.id === id) || this.order;
-    if (!current || current.paymentStatus === 'paid' || current.status !== 'accepted') return;
-
+    const orderId = this.order?.id || this.selectedOrderId!;
     this.isProcessing = true;
+
     try {
-      await firstValueFrom(this.orderManagementService.markAsReady(id));
-      this.patchOrder(id, { status: 'ready' });
-      this.addTimelineEvent('Order marked as ready', 'info');
-      this.fetchOrderDetails(id);
-    } catch (e) {
-      console.error(e);
+      await firstValueFrom(this.orderManagementService.markAsReady(orderId));
+      this.updateOrderStatus(orderId, 'ready');
+      this.addTimelineEvent('Order marked as ready', 'success');
+    } catch (error) {
+      console.error('Failed to mark as ready:', error);
     } finally {
       this.isProcessing = false;
     }
   }
 
-  async completeOrder() {
-    const id = this.trackedOrderId();
-    if (!id) return;
+  async completeOrder(): Promise<void> {
+    if (!this.order && !this.selectedOrderId) return;
 
-    const current = this.orders.find(o => o.id === id) || this.order;
-    if (!current || current.paymentStatus !== 'paid' || current.status === 'completed') return;
-
+    const orderId = this.order?.id || this.selectedOrderId!;
     this.isProcessing = true;
+
     try {
-      await firstValueFrom(this.orderManagementService.completeOrder(id));
-      this.patchOrder(id, { status: 'completed' });
+      await firstValueFrom(this.orderManagementService.completeOrder(orderId));
+      this.updateOrderStatus(orderId, 'completed');
       this.addTimelineEvent('Order completed', 'success');
-      this.fetchOrderDetails(id);
-      this.updateBasicStats();
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error('Failed to complete order:', error);
     } finally {
       this.isProcessing = false;
     }
@@ -478,7 +595,7 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
     return this.selectedOrderId ?? (this.order?.id as number | undefined) ?? this.routeOrderId ?? null;
   }
 
-  private upsertOrder(order: ChefCurrentOrder) {
+  private upsertOrder(order: ChefCurrentOrder): void {
     const idx = this.orders.findIndex(o => o.id === order.id);
     if (idx >= 0) {
       this.orders[idx] = { ...this.orders[idx], ...order };
@@ -487,59 +604,66 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
     }
   }
 
-  private patchOrder(orderId: number, patch: Partial<ChefCurrentOrder>) {
+  private patchOrder(orderId: number, updates: Partial<ChefCurrentOrder>): void {
     const idx = this.orders.findIndex(o => o.id === orderId);
     if (idx >= 0) {
-      this.orders[idx] = { ...this.orders[idx], ...patch };
+      this.orders[idx] = { ...this.orders[idx], ...updates };
     }
   }
 
-  get selectedOrder(): ChefCurrentOrder | undefined {
-    if (!this.selectedOrderId) return undefined;
-    return this.orders.find(o => o.id === this.selectedOrderId);
+  // Fix the selectedOrder getter/setter
+  get selectedOrder(): ChefCurrentOrder | null {
+    return this._selectedOrder;
+  }
+
+  private set selectedOrder(order: ChefCurrentOrder | null) {
+    this._selectedOrder = order;
   }
 
   get filteredOrders(): ChefCurrentOrder[] {
     let filtered = [...this.orders];
 
-    // Search filter
     if (this.searchQuery) {
       const query = this.searchQuery.toLowerCase();
       filtered = filtered.filter(order =>
-        (order.customer || '').toLowerCase().includes(query) ||
+        order.customer.toLowerCase().includes(query) ||
         order.id.toString().includes(query)
       );
     }
 
-    // Status filter
     if (this.statusFilter !== 'all') {
       filtered = filtered.filter(order => order.status === this.statusFilter);
     }
 
-    // Date filter
-    const now = new Date();
-    if (this.dateFilter === 'today') {
+    if (this.dateFilter !== 'all') {
+      const now = new Date();
       filtered = filtered.filter(order => {
-        const createdAt = order.createdAt ? new Date(order.createdAt as any) : new Date(0);
-        return createdAt.toDateString() === now.toDateString();
-      });
-    } else if (this.dateFilter === 'week') {
-      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      filtered = filtered.filter(order => {
-        const createdAt = order.createdAt ? new Date(order.createdAt as any) : new Date(0);
-        return createdAt >= weekAgo;
+        const orderDate = new Date(order.createdAt || '');
+        switch (this.dateFilter) {
+          case 'today':
+            return orderDate.toDateString() === now.toDateString();
+          case 'week':
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return orderDate >= weekAgo;
+          case 'month':
+            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            return orderDate >= monthAgo;
+          default:
+            return true;
+        }
       });
     }
 
-    // Sort
-    if (this.sortBy === 'newest') {
-      filtered.sort((a, b) => {
-        const bDate = b.createdAt ? new Date(b.createdAt as any).getTime() : 0;
-        const aDate = a.createdAt ? new Date(a.createdAt as any).getTime() : 0;
-        return bDate - aDate;
-      });
-    } else if (this.sortBy === 'amount') {
-      filtered.sort((a, b) => (b.amount || 0) - (a.amount || 0));
+    switch (this.sortBy) {
+      case 'newest':
+        filtered.sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime());
+        break;
+      case 'oldest':
+        filtered.sort((a, b) => new Date(a.createdAt || '').getTime() - new Date(b.createdAt || '').getTime());
+        break;
+      case 'amount':
+        filtered.sort((a, b) => b.amount - a.amount);
+        break;
     }
 
     return filtered;
@@ -547,9 +671,7 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
 
   // Status and UI helpers
   getOrderStatusClass(): string {
-    const id = this.trackedOrderId();
-    const o = id ? this.orders.find(x => x.id === id) : this.order;
-    return o?.status || 'pending';
+    return this.order ? `status-${this.order.status}` : '';
   }
 
   getStatusText(): string {
@@ -569,23 +691,18 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
   }
 
   showPaymentStatus(): boolean {
-    const id = this.trackedOrderId();
-    const o = id ? this.orders.find(x => x.id === id) : this.order;
-    return ['accepted', 'ready', 'completed'].includes(o?.status || 'pending');
+    return this.order ? ['accepted', 'ready', 'completed'].includes(this.order.status) : false;
   }
 
   getPaymentStatusClass(): string {
-    const id = this.trackedOrderId();
-    const o = id ? this.orders.find(x => x.id === id) : this.order;
-    const paymentStatus = o?.paymentStatus || 'pending';
-    return `payment-${paymentStatus}`;
+    const order = this.order || this.selectedOrder;
+    return order ? `payment-${order.paymentStatus}` : '';
   }
 
-  getPaymentIcon() {
-    const id = this.trackedOrderId();
-    const o = id ? this.orders.find(x => x.id === id) : this.order;
-    const paymentStatus = o?.paymentStatus || 'pending';
-    switch (paymentStatus) {
+  getPaymentIcon(): any {
+    if (!this.order && !this.selectedOrder) return Clock;
+    const order = this.order || this.selectedOrder;
+    switch (order?.paymentStatus) {
       case 'paid': return CheckCircle;
       case 'cancelled': return XCircle;
       default: return Clock;
@@ -593,34 +710,27 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
   }
 
   getPaymentStatusText(): string {
-    const id = this.trackedOrderId();
-    const o = id ? this.orders.find(x => x.id === id) : this.order;
-    const paymentStatus = o?.paymentStatus || 'pending';
+    if (!this.order && !this.selectedOrder) return 'Unknown';
+    const order = this.order || this.selectedOrder;
     const statusMap: { [key: string]: string } = {
       'paid': 'Payment Received',
       'pending': 'Awaiting Payment',
       'cancelled': 'Payment Cancelled'
     };
-    return statusMap[paymentStatus] || 'Payment Status Unknown';
+    return statusMap[order?.paymentStatus || 'pending'] || 'Payment Status Unknown';
   }
 
   isPastOrder(): boolean {
-    const id = this.trackedOrderId();
-    const o = id ? this.orders.find(x => x.id === id) : this.order;
-    return ['completed', 'rejected', 'cancelled'].includes(o?.status || '');
+    return this.selectedOrder?.status === 'completed' || this.selectedOrder?.status === 'rejected';
   }
 
-  private initializeOrderTimeline() {
+  private initializeOrderTimeline(): void {
     this.orderTimeline = [
-      {
-        event: 'Order placed',
-        time: new Date().toLocaleTimeString(),
-        type: 'info'
-      }
+      { event: 'Order placed', time: this.order?.time || 'Unknown', type: 'info' }
     ];
   }
 
-  private addTimelineEvent(event: string, type: 'success' | 'info' | 'warning' | 'error') {
+  private addTimelineEvent(event: string, type: 'success' | 'error' | 'info'): void {
     this.orderTimeline.push({
       event,
       time: new Date().toLocaleTimeString(),
@@ -629,16 +739,12 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
   }
 
   // Analytics helpers
-  getRevenueChange(): { percentage: number; trend: 'up' | 'down' | 'stable' } {
-    const today = this.dashboardStats.todayRevenue;
-    const yesterday = this.dashboardStats.yesterdayRevenue;
-
-    if (yesterday === 0) return { percentage: 0, trend: 'stable' };
-
-    const percentage = ((today - yesterday) / yesterday) * 100;
-    const trend = percentage > 0 ? 'up' : percentage < 0 ? 'down' : 'stable';
-
-    return { percentage: Math.abs(percentage), trend };
+  getRevenueChange(): { trend: 'up' | 'down', percentage: number } {
+    const change = ((this.dashboardStats.todayRevenue - this.dashboardStats.yesterdayRevenue) / this.dashboardStats.yesterdayRevenue) * 100;
+    return {
+      trend: change >= 0 ? 'up' : 'down',
+      percentage: Math.abs(change)
+    };
   }
 
   formatCurrency(amount: number): string {
@@ -650,5 +756,17 @@ export class ChefDashboardOrderComponent implements OnInit, OnDestroy {
 
   formatPercentage(value: number): string {
     return `${value.toFixed(1)}%`;
+  }
+
+  public refreshOrderData(): void {
+    this.loadCurrentOrders();
+  }
+
+
+  private handlePaymentStatusChange(orderId: number): void {
+    const order = this.currentOrders.find((o: ChefCurrentOrder) => o.id === orderId);
+    if (order) {
+      this.loadCurrentOrders();
+    }
   }
 }
