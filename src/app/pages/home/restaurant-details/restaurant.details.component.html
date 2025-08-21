@@ -54,7 +54,7 @@
       <div class="grid grid-cols-3 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-4">
         <div *ngFor="let category of restDetails?.categories"
              class="category-card hover:transform hover:scale-105 transition-transform duration-300">
-          <div class="relative rounded-full" (click)="showCategoryItems(category.id)">
+          <div class="relative rounded-full hover:cursor-pointer" (click)="showCategoryItems(category.id)">
             <img src="https://wallpapers.com/images/hd/food-4k-m37wpodzrcbv5gvw.jpg" [alt]="category.name"
                  class="size-44 rounded-full object-cover border-4 border-orange-500" />
             <div class="category-overlay"></div>

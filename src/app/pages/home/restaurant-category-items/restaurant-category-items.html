@@ -1,0 +1,65 @@
+<div *ngIf="loading" class="relative h-screen">
+  <!-- Loading State -->
+  <div class="max-w-7xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div class="flex flex-col items-center justify-center">
+      <div class="relative mb-8">
+        <div class="animate-spin rounded-full h-16 w-16 border-4 border-orange-200"></div>
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-orange-500 absolute top-0 left-0"></div>
+      </div>
+      <p class="theme-text-secondary font-medium">Loading your delicious menu...</p>
+    </div>
+  </div>
+  <!-- Loading State -->
+</div>
+
+<!-- Error State -->
+<div *ngIf="error && !loading" class="relative h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+    <div
+      class="glass-card rounded-2xl p-10 text-center border border-red-200 bg-red-50/80 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 ">
+      <div class="p-4 bg-red-100 rounded-full inline-block mb-4">
+        <lucide-angular [img]="Package" class="w-8 h-8 text-red-500"></lucide-angular>
+      </div>
+      <h3 class="text-xl font-bold text-red-700 mb-2">Oops! Something went wrong</h3>
+      <p class="text-red-600 font-medium mb-6">{{error}}</p>
+      <button (click)="loadCatItems()"
+        class="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-lg font-semibold">
+        Try Again
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<div
+  class="theme-bg-primary min-h-screen mt-20">
+  <!-- Menu Items -->
+  <div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold my-5 theme-text-primary">Menu Items</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let item of CategoryItem?.items" class="menu-item-card">
+        <div class="relative">
+          <img [src]="item.image" [alt]="item.name" class="w-full h-48 object-cover rounded-t-lg" />
+        </div>
+
+        <div class="p-4">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-semibold theme-text-primary">{{ item.name }}</h3>
+            <p class="menu-price">${{ item.price }}</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button (click)="showItemDetails(item.id)"
+              class="btn-secondary bg-green-400 rounded-md p-2 px-3 text-black font-semibold ">
+              Item Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-pagination class="mt-8" [page]="page" [pageSize]="pageSize" [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+  </div>
+</div>

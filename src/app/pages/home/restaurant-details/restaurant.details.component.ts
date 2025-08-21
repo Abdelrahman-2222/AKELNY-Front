@@ -91,7 +91,7 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { RestaurantDetails } from '../../../models/RestaurantDetails.model';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { CartService } from '../../cart/cart.service';
@@ -179,10 +179,10 @@ export class RestaurantDetailsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  showCategoryItems(id:number):void{
-    console.log(id)
-     var items = this.restDetails?.items
-     var catItems = items?.filter(item=>item.categoryId==id)
-     console.log(catItems)
+  showCategoryItems(catId:number):void{
+
+
+    this.router.navigate(['/customer/restaurant-category-items', this.restId ,catId]);
   }
+
 }
