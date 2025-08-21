@@ -188,5 +188,136 @@
          [class]="notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
       {{ notification.message }}
     </div>
+
+<!--    &lt;!&ndash; In chef-dashboard-component.html &ndash;&gt;-->
+<!--    <div class="orders-section">-->
+<!--      <h2>Current Orders</h2>-->
+<!--      <div *ngFor="let order of currentOrders" class="order-container">-->
+<!--        <app-chef-dashboard-order-->
+<!--          [order]="order"-->
+<!--          [chefId]="chefId">-->
+<!--        </app-chef-dashboard-order>-->
+<!--      </div>-->
+<!--    </div>-->
+    <!-- Enhanced Current Orders Section -->
+    <div class="current-orders-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <lucide-icon [img]="Bell" class="section-icon"></lucide-icon>
+          Live Orders
+          <span class="orders-count" *ngIf="currentOrders.length > 0">{{ currentOrders.length }}</span>
+        </h2>
+        <button class="btn-refresh" (click)="refreshCurrentOrders()" [disabled]="isRefreshing">
+          <lucide-icon [img]="RefreshCw" [class.animate-spin]="isRefreshing"></lucide-icon>
+        </button>
+      </div>
+
+      <div class="orders-grid" *ngIf="currentOrders.length > 0; else noOrdersState">
+        <div
+          *ngFor="let order of currentOrders; trackBy: trackByOrderId"
+          class="live-order-card"
+          [ngClass]="getOrderCardClass(order)">
+
+          <!-- Order Header -->
+          <div class="order-header">
+            <div class="order-badge">
+              <span class="order-id">#{{ order.id }}</span>
+              <div class="status-indicator" [ngClass]="'status-' + order.status">
+                <span class="status-dot"></span>
+                {{ getStatusLabel(order.status) }}
+              </div>
+            </div>
+            <div class="order-time">
+              <lucide-icon [img]="Clock" class="time-icon"></lucide-icon>
+              {{ order.time }}
+            </div>
+          </div>
+
+          <!-- Customer Info -->
+          <div class="customer-section">
+            <div class="customer-avatar">
+              <lucide-icon [img]="User"></lucide-icon>
+            </div>
+            <div class="customer-details">
+              <span class="customer-name">{{ order.customer }}</span>
+              <span class="order-summary">{{ order.items }} items • {{ formatCurrency(order.amount) }}</span>
+            </div>
+          </div>
+
+          <!-- Payment Status -->
+          <div class="payment-section" *ngIf="showPaymentStatus(order)">
+            <div class="payment-badge" [ngClass]="'payment-' + order.paymentStatus">
+              <lucide-icon [img]="getPaymentIcon(order.paymentStatus)"></lucide-icon>
+              <span>{{ getPaymentStatusText(order.paymentStatus) }}</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-section">
+            <!-- Pending Orders - Accept/Reject -->
+            <div class="action-buttons" *ngIf="order.status === 'pending' && order.paymentStatus !== 'paid'">
+              <button
+                class="btn-accept"
+                (click)="acceptOrder(order.id)"
+                [disabled]="isProcessingOrder(order.id)">
+                <lucide-icon [img]="CheckCircle"></lucide-icon>
+                Accept
+              </button>
+              <button
+                class="btn-reject"
+                (click)="rejectOrder(order.id)"
+                [disabled]="isProcessingOrder(order.id)">
+                <lucide-icon [img]="XCircle"></lucide-icon>
+                Reject
+              </button>
+            </div>
+
+            <!-- Accepted Orders - Mark Ready -->
+            <div class="action-buttons" *ngIf="order.status === 'accepted' && order.paymentStatus === 'paid'">
+              <button
+                class="btn-primary-action"
+                (click)="markAsReady(order.id)"
+                [disabled]="isProcessingOrder(order.id)">
+                <lucide-icon [img]="Timer"></lucide-icon>
+                Mark Ready
+              </button>
+            </div>
+
+            <!-- Ready Orders - Complete -->
+            <div class="action-buttons" *ngIf="order.status === 'ready' && order.paymentStatus === 'paid'">
+              <button
+                class="btn-complete"
+                (click)="completeOrder(order.id)"
+                [disabled]="isProcessingOrder(order.id)">
+                <lucide-icon [img]="CheckCircle"></lucide-icon>
+                Complete Order
+              </button>
+            </div>
+
+            <!-- Status Messages -->
+            <div class="status-message" *ngIf="getStatusMessage(order)">
+              <lucide-icon [img]="AlertCircle" class="status-icon"></lucide-icon>
+              {{ getStatusMessage(order) }}
+            </div>
+          </div>
+
+          <!-- Processing Overlay -->
+          <div class="processing-overlay" *ngIf="isProcessingOrder(order.id)">
+            <div class="spinner"></div>
+            <span>Processing...</span>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noOrdersState>
+        <div class="no-orders-state">
+          <div class="no-orders-icon">
+            <lucide-icon [img]="ShoppingBag"></lucide-icon>
+          </div>
+          <h3>No Active Orders</h3>
+          <p>New orders will appear here in real-time</p>
+        </div>
+      </ng-template>
+    </div>
   </div>
 </section>

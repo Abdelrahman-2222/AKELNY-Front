@@ -23,8 +23,10 @@
 </div>
 
 <a
-  routerLink="/checkout"
-  class="mt-6 block w-full bg-primary-orange hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full text-center"
+  (click)="proceedToCheckout()"
+  [class.opacity-50]="isProcessing"
+  [class.cursor-not-allowed]="isProcessing"
+  class="mt-6 block w-full bg-primary-orange hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full text-center cursor-pointer transition-opacity"
 >
-  Proceed to Checkout
+  {{ isProcessing ? 'Creating Order...' : 'Proceed to Checkout' }}
 </a>

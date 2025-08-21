@@ -10,6 +10,7 @@ import { Order } from '../../models/order-model';
   providedIn: 'root',
 })
 export class CartService {
+  public lastOrderId: number | null = null;
   orderDTO: OrderCreateDTO = {
     RestaurantId: 0,
     Items: [
@@ -26,6 +27,7 @@ export class CartService {
 
   http: HttpClient = inject(HttpClient);
   checkoutUrl = 'https://localhost:7045/api/Orders/create-ckeckout-session';
+  paymentSessionUrl = 'https://localhost:7045/api/Orders';
 
   public restaurantId = -1;
 
@@ -125,9 +127,19 @@ export class CartService {
     console.log(orderDTO);
   }
 
-  public checkoutOrder(): Observable<OrderCreateDTO> {
+  public checkoutOrder(): Observable<any> {
     this.transferToDto();
-    return this.http.post<OrderCreateDTO>(this.checkoutUrl, this.orderDTO);
+    return this.http.post<any>(this.checkoutUrl, this.orderDTO);
+  }
+
+  public createPaymentSession(orderId: number): Observable<any> {
+    return this.http.post<any>(`${this.paymentSessionUrl}/${orderId}/create-payment-session`, {});
+  }
+
+  public clearCart(): void {
+    this.cartItems = [];
+    this.restaurantId = -1;
+    this.calculateSummary();
   }
 }
 

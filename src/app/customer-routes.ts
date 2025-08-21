@@ -144,4 +144,11 @@ export const customerRoutes: Routes = [
         (m) => m.ItemDetails
       ),
   },
+  {
+    path: 'order-status',
+    loadComponent: () =>
+      import('./pages/cart/order-status.component/order-status.component').then(
+        (m) => m.OrderStatusComponent
+      ),
+  }
 ];

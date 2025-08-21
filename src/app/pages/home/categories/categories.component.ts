@@ -1,8 +1,8 @@
 import { FoodCategoryService } from './../../../services/food-category.service';
-import { NgFor } from '@angular/common';
+import {CommonModule, NgFor} from '@angular/common';
 import { Component } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
-import { FoodCategoryCardComponent } from '../food-category-card/food-category-card.component';
+
 
 interface Chef {
   id: number;
@@ -18,7 +18,7 @@ interface Chef {
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [LucideAngularModule, FoodCategoryCardComponent],
+  imports: [LucideAngularModule, CommonModule],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
 })

@@ -19,7 +19,10 @@ export class ExportOrderReport {
         from: data.from,
         to: data.to
       }, { responseType: 'blob' })
-      .subscribe((response: Blob) => saveAs(response, "report.xlsx"))
+      .subscribe((response: Blob) => {
+        console.log(response)
+        saveAs(response, "report.xlsx")
+      })
   }
 
 }
