@@ -15,7 +15,7 @@ export class GoogleAuthService {
     return this.http.post(`${this.apiUrl}/Auth/google`, {
       Provider: "Google",
       IdToken: idToken,
-      Role: role || 'Customer'
+      Role: role || 'Customer' || 'customer'
     });
   }
 

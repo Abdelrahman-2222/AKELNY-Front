@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap, shareReplay, catchError } from 'rxjs/operators';
 import { RestaurantDetails } from '../models/RestaurantDetails.model';
 import { GetService } from './requests/get-service';
+import { environment } from '../../environments/environment';
 
 interface CacheEntry {
   data: RestaurantDetails;
@@ -37,7 +38,7 @@ export class RestaurantCacheService {
 
     console.log('Fetching fresh restaurant data');
     return this.getService.get<RestaurantDetails>({
-      url: `https://localhost:7045/api/Restaurants/customer-restaurant/${restId}?page=${page}&pageSize=${pageSize}`,
+      url: `${environment.apiUrl}/Restaurants/customer-restaurant/${restId}?page=${page}&pageSize=${pageSize}`,
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + localStorage.getItem('token'),

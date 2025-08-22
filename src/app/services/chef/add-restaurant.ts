@@ -3,12 +3,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Restaurant, RestaurantInputDto, RestaurantResponseDto } from '../../models/AddRestaurant.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AddRestaurant {
-  private readonly apiUrl = 'https://localhost:7045/api/Restaurants';
+  private readonly apiUrl = `${environment.apiUrl}/Restaurants`;
 
   constructor(private http: HttpClient) {}
 

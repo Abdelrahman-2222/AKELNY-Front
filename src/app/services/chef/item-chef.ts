@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ItemDto, ItemCreateUpdateDto } from '../../models/AddItemChef';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemChef {
-  private readonly apiUrl = 'https://localhost:7045/api/Items';
+  private readonly apiUrl = `${environment.apiUrl}/Items`;
 
   constructor(private http: HttpClient) {}
 
