@@ -13,13 +13,14 @@ export class GetService {
 
     const isAbsolute = /^https?:\/\//i.test(url);
     const base = environment.apiUrl;
-    const path = isAbsolute
-      ? url
-      : `${base}${url.startsWith('/') ? '' : '/'}${url}`;
+
+    let path = url;
+    if (!isAbsolute && !url.startsWith(base)) {
+      const normalizedUrl = url.startsWith('/') ? url : `/${url}`;
+      path = `${base}${normalizedUrl}`;
+    }
 
     const fullUrl = query ? `${path}?${query}` : path;
-
-    // console.log(`${fullUrl} \n ${JSON.stringify({ headers })}`);
     return this.httpClient.get<T>(fullUrl, headers ? { headers } : {});
   }
 }
