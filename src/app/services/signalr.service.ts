@@ -26,14 +26,29 @@ export class SignalrService {
     this.startConnection();
     this.registerSignalREvents();
     this.registerConnectionLifecycle();
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'token' || e.key === 'authToken') {
+        this.restartWithNewToken();
+      }
+    });
   }
 
-  private createConnection(): void {
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  private getToken(): string | null {
+    return (
+      localStorage.getItem('token') ||
+      localStorage.getItem('authToken') ||
+      sessionStorage.getItem('token') ||
+      sessionStorage.getItem('authToken')
+    );
+  }
 
+
+
+  private createConnection(): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.apiUrl}/orderHub`, {
-        accessTokenFactory: () => token || ''
+        accessTokenFactory: () => this.getToken() || ''
       })
       .withAutomaticReconnect()
       .build();
@@ -43,13 +58,17 @@ export class SignalrService {
     this.hubConnection
       .start()
       .then(() => {
-        console.log('SignalR connection established');
         this.connectionEstablished.next(true);
       })
-      .catch(err => {
-        console.error('Error establishing SignalR connection:', err);
-        this.connectionEstablished.next(false);
-      });
+      .catch(() => this.connectionEstablished.next(false));
+  }
+
+  private restartWithNewToken(): void {
+    if (!this.hubConnection) return;
+    if (this.hubConnection.state === signalR.HubConnectionState.Connected) return;
+
+    this.createConnection();
+    this.startConnection();
   }
 
   private registerConnectionLifecycle(): void {
