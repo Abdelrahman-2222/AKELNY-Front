@@ -1,48 +1,66 @@
-<div class="bg-white min-h-screen mt-20">
+<div *ngIf="loading" class="relative h-screen">
+  <!-- Loading State -->
+  <div class="max-w-7xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div class="flex flex-col items-center justify-center">
+      <div class="relative mb-8">
+        <div class="animate-spin rounded-full h-16 w-16 border-4 border-orange-200"></div>
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-orange-500 absolute top-0 left-0"></div>
+      </div>
+      <p class="theme-text-secondary font-medium">Loading your delicious menu...</p>
+    </div>
+  </div>
+  <!-- Loading State -->
+</div>
+
+<!-- Error State -->
+<div *ngIf="error && !loading" class="relative h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+    <div class="glass-card rounded-2xl p-10 text-center border border-red-200 bg-red-50/80 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 ">
+      <div class="p-4 bg-red-100 rounded-full inline-block mb-4">
+        <lucide-angular [img]="Package" class="w-8 h-8 text-red-500"></lucide-angular>
+      </div>
+      <h3 class="text-xl font-bold text-red-700 mb-2">Oops! Something went wrong</h3>
+      <p class="text-red-600 font-medium mb-6">{{error}}</p>
+      <button (click)="loadRestaurantDetails()"
+        class="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-lg font-semibold">
+        Try Again
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<div *ngIf="(restDetails?.totalPages ?? 0) > 0 && error == null && !loading" class="theme-bg-primary min-h-screen mt-20">
   <!-- Header Banner -->
-  <div
-    class="relative h-48 bg-cover bg-center"
-    [ngStyle]="{ 'background-image': 'url(' + restDetails?.resImage + ')' }"
-  >
-    <div class="container mx-auto px-4 h-full flex items-center">
+  <div class="relative h-48 bg-cover bg-center restaurant-banner"
+    [ngStyle]="{ 'background-image': 'url(' + restDetails?.resImage + ')' }">
+    <div class="container mx-auto px-4 h-full flex items-center relative z-10">
       <div class="flex items-center gap-4">
-        <img
-          src="https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww"
-          alt="Chef"
-          class="w-32 h-32 rounded-full object-cover border-2 border-white"
-        />
-        <div class="text-white relative">
-          <div class="text-white py-2 px-5 inset-0 bg-black rounded-xl">
-            <h1 class="text-2xl font-bold">{{ restDetails?.resName }}</h1>
-            <p>Location : {{ restDetails?.location }}</p>
-          </div>
+        <img src="https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww" alt="Chef"
+             class="w-32 h-32 rounded-full object-cover border-2 border-white shadow-xl" />
+        <div class="restaurant-info glass-card">
+          <h1 class="text-2xl font-bold text-white">{{ restDetails?.resName }}</h1>
+          <p class="text-white/90">Location: {{ restDetails?.location }}</p>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Categories -->
-  <div class="bg-gray-100">
+  <div class="theme-bg-secondary">
     <div class="container mx-auto px-4 py-8">
-      <h2 class="text-3xl font-bold my-5">Categories</h2>
-      <!-- Menu Items Grid -->
-      <div
-        class="grid grid-cols-3 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-4"
-      >
-        <div *ngFor="let category of restDetails?.categories">
-          <div class="bg-yellow-100 rounded-full relative">
-            <img
-              src="https://wallpapers.com/images/hd/food-4k-m37wpodzrcbv5gvw.jpg"
-              alt="Chef"
-              class="size-44 rounded-full object-cover border-4 border-orange-500"
-            />
-            <div
-              class="absolute top-0 left-0 size-44 bg-black/25 rounded-full"
-            ></div>
-            <p
-              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center text-white font-bold text-xl"
-            >
-              {{ category.categoryName }}
+      <h2 class="text-3xl font-bold my-5 theme-text-primary">Categories</h2>
+      <div class="grid grid-cols-3 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-4">
+        <div *ngFor="let category of restDetails?.categories"
+             class="category-card hover:transform hover:scale-105 transition-transform duration-300">
+          <div class="relative rounded-full hover:cursor-pointer" (click)="showCategoryItems(category.id)">
+            <img src="https://wallpapers.com/images/hd/food-4k-m37wpodzrcbv5gvw.jpg" [alt]="category.name"
+                 class="size-44 rounded-full object-cover border-4 border-orange-500" />
+            <div class="category-overlay"></div>
+            <p class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full
+                      text-center text-white font-bold text-xl bg-black">
+              {{ category.name }}
             </p>
           </div>
         </div>
@@ -50,63 +68,63 @@
     </div>
   </div>
 
-  <!-- Categories -->
-
   <!-- Menu Items -->
   <div class="container mx-auto px-4 py-8">
-    <h2 class="text-3xl font-bold my-5">Menu Items</h2>
-    <!-- Menu Items Grid -->
+    <h2 class="text-3xl font-bold my-5 theme-text-primary">Menu Items</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div
-        *ngFor="let item of restDetails?.items"
-        [attr.data-rest-id]="restId"
-        [attr.data-item-id]="item.id"
-        class="bg-white rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
-      >
+      <div *ngFor="let item of restDetails?.items"
+           class="menu-item-card">
         <div class="relative">
-          <img
-            [src]="item.image"
-            [alt]="item.name"
-            class="w-full h-48 object-cover"
-          />
-          <span
-            class="absolute top-3 right-3 bg-orange-400 text-white text-sm px-3 py-1 rounded-full"
-          >
+          <img [src]="item.image" [alt]="item.name"
+               class="w-full h-48 object-cover rounded-t-lg" />
+          <span class="menu-category-badge absolute top-3 right-3 text-white text-sm px-3 py-1 rounded-full bg-[var(--menu-category-badge)]">
             {{ item.categoryName }}
           </span>
         </div>
 
         <div class="p-4">
           <div class="flex justify-between items-start mb-2">
-            <h3 class="font-semibold">{{ item.name }}</h3>
-            <p class="text-orange-600">${{ item.price }}</p>
+            <h3 class="font-semibold theme-text-primary">{{ item.name }}</h3>
+            <p class="menu-price">${{ item.price }}</p>
           </div>
 
-          <div class="flex items-center">
-            <button
-              (click)="showItemDetails(item.id)"
-              class="px-4 py-2 bg-orange-200 text-orange-600 rounded-lg hover:bg-orange-300 transition-colors"
-            >
+          <div class="flex items-center gap-2">
+            <button (click)="showItemDetails(item.id)"
+                    class="btn-secondary bg-green-400 rounded-md p-2 px-3 text-black font-semibold ">
               Item Details
             </button>
-            <button
-              (click)="cartService.addToCart(restId, item)"
-              class="px-4 py-2 ms-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors"
-            >
+            <button (click)="cartService.addToCart(restId, item)"
+                    class="btn-primary">
               Add to Cart
             </button>
           </div>
         </div>
       </div>
     </div>
+
     <app-pagination
-      class="col-span-1 xl:col-span-3 col-start-1 xl:col-start-2 xl:col-end-4"
+      class="mt-8"
       [page]="page"
       [pageSize]="pageSize"
       [totalPages]="totalPages"
-      (pageChange)="onPageChange($event)"
-    >
+      (pageChange)="onPageChange($event)">
     </app-pagination>
   </div>
-  <!-- Menu Items -->
 </div>
+
+
+  <!-- <div *ngIf="restDetails?.totalPages == 0 && !loading && error!=null" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="glass-card rounded-3xl p-16 text-center border theme-border empty-state">
+      <div class="p-6 bg-gradient-to-br from-orange-100 to-amber-100 rounded-full inline-block mb-6 badge-float">
+        <lucide-angular [img]="Package" class="w-12 h-12 text-orange-500"></lucide-angular>
+      </div>
+      <h3 class="text-2xl font-bold theme-text-primary mb-3">Your menu awaits</h3>
+      <p class="theme-text-secondary mb-8 text-lg max-w-md mx-auto">Start building your culinary masterpiece by adding your first delicious item</p>
+      <button
+        (click)="addNewItem()"
+        class="food-gradient text-white px-8 py-4 rounded-2xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 font-semibold text-lg micro-bounce">
+        <lucide-angular [img]="Plus" class="w-6 h-6 inline mr-3"></lucide-angular>
+        Create First Item
+      </button>
+    </div>
+  </div> -->

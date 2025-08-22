@@ -1,4 +1,5 @@
 
+
 export interface RestaurantDetails {
   resName: string;
   resImage: string;
@@ -11,12 +12,13 @@ export interface RestaurantDetails {
       price: string;
       image: string;
       categoryName: string;
+      categoryId:number
     }
   ];
   categories: [
     {
-      categoryId: number;
-      categoryName: string;
+      id: number;
+      name: string;
     }
   ]
   // Add pagination properties

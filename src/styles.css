@@ -42,6 +42,50 @@
   --accent-red: #ef4444;
   --accent-green: #10b981;
   --warm-yellow: #fbbf24;
+
+  /* Restaurant Details Theme */
+  --restaurant-banner-overlay: rgba(0, 0, 0, 0.4);
+  --category-card-overlay: rgba(0, 0, 0, 0.25);
+  --menu-item-bg: var(--card-bg);
+  --menu-item-hover-shadow: 0 10px 25px var(--shadow-color);
+  --menu-category-badge: var(--primary-orange);
+  --menu-price: var(--primary-orange);
+
+
+  /* Restaurant Component Theme */
+  --restaurant-card-bg: var(--card-bg);
+  --restaurant-card-shadow: 0 4px 6px var(--shadow-color);
+  --restaurant-card-hover-shadow: 0 10px 15px var(--shadow-color);
+  --restaurant-rating-star: var(--warm-yellow);
+  --restaurant-btn-bg: var(--primary-orange);
+  --restaurant-btn-hover: var(--primary-amber);
+
+    /* Filter Component Theme */
+  --filter-bg: var(--card-bg);
+  --filter-border: var(--border-color);
+  --filter-header-bg:white;
+  --filter-input-bg: var(--bg-accent);
+  --filter-input-checked: var(--primary-orange);
+  --filter-input-border: var(--border-color);
+  --filter-label-text: var(--text-primary);
+  --filter-clear-text: var(--primary-orange);
+
+   /* Pagination Theme */
+  --pagination-bg: var(--card-bg);
+  --pagination-border: var(--border-color);
+  --pagination-text: var(--text-primary);
+  --pagination-hover-bg: var(--bg-accent);
+  --pagination-active-bg: var(--primary-orange);
+  --pagination-active-text: white;
+  --pagination-disabled-text: var(--text-muted);
+
+      /* Popup Theme */
+  --popup-overlay: rgba(0, 0, 0, 0.5);
+  --popup-bg: var(--card-bg);
+  --popup-border: var(--border-color);
+  --popup-shadow: 0 25px 50px var(--shadow-color);
+  --popup-input-bg: var(--bg-accent);
+  --popup-input-border: var(--border-color);
 }
 
 [data-theme="dark"] {
@@ -71,6 +115,49 @@
   --footer-text-muted: rgba(249, 250, 251, 0.7);
   --footer-border: rgba(251, 146, 60, 0.2);
   --footer-card: rgba(255, 255, 255, 0.05);
+
+    /* Restaurant Details Dark Theme */
+  --restaurant-banner-overlay: rgba(0, 0, 0, 0.6);
+  --category-card-overlay: rgba(0, 0, 0, 0.45);
+  --menu-item-bg: var(--bg-secondary);
+  --menu-item-hover-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --menu-category-badge: var(--primary-amber);
+  --menu-price: var(--primary-amber);
+
+ /* Restaurant Component Dark Theme */
+  --restaurant-card-bg: var(--bg-secondary);
+  --restaurant-card-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --restaurant-card-hover-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+  --restaurant-rating-star: var(--primary-amber);
+  --restaurant-btn-bg: var(--primary-amber);
+  --restaurant-btn-hover: var(--primary-orange);
+
+    /* Filter Component Dark Theme */
+  --filter-bg: var(--bg-secondary);
+  --filter-border: var(--border-color);
+  --filter-header-bg: var(--bg-accent);
+  --filter-input-bg: var(--bg-primary);
+  --filter-input-checked: var(--primary-amber);
+  --filter-input-border: var(--border-color);
+  --filter-label-text: var(--text-primary);
+  --filter-clear-text: var(--primary-amber);
+
+   /* Pagination Dark Theme */
+  --pagination-bg: var(--bg-secondary);
+  --pagination-border: var(--border-color);
+  --pagination-text: var(--text-primary);
+  --pagination-hover-bg: var(--bg-accent);
+  --pagination-active-bg: var(--primary-amber);
+  --pagination-active-text: var(--text-primary);
+  --pagination-disabled-text: var(--text-muted);
+
+    /* Popup Dark Theme */
+  --popup-overlay: rgba(0, 0, 0, 0.7);
+  --popup-bg: var(--bg-secondary);
+  --popup-border: var(--border-color);
+  --popup-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  --popup-input-bg: var(--bg-primary);
+  --popup-input-border: var(--border-color);
 }
 
 body {

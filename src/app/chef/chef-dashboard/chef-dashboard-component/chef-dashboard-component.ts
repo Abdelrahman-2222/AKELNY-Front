@@ -5,7 +5,6 @@ import {Router, RouterModule} from '@angular/router';
 import { Subject, takeUntil, Subscription, firstValueFrom } from 'rxjs';
 import { ChefCurrentOrder } from '../../../models/ChefCurrentOrder.model';
 import { SignalrService } from '../../../services/signalr.service';
-import { ChefDashboardOrderComponent } from '../../chef-dashboard-order/chef-dashboard-order.component';
 import { ChefDashboardService } from '../../chef-dashboard.service';
 import { AddRestaurant } from '../../../services/chef/add-restaurant';
 import { AuthService } from '../../../services/auth.service';
@@ -20,12 +19,8 @@ import { LucideAngularModule, Clock, Star, CheckCircle, XCircle, DollarSign,
 
 // Component imports
 import { ChefDashboardHeaderComponent } from '../../chef-dashboard-header/chef-dashboard-header.component';
-// import { ChefDashboardEarningsComponent } from '../../chef-dashboard-earnings/chef-dashboard-earnings.component';
-// import { ChefDashboardPastOrdersComponent } from '../../chef-dashboard-past-orders/chef-dashboard-past-orders.component';
-// import { ChefDashboardStatsCardsComponent } from '../../chef-dashboard-stats-cards/chef-dashboard-stats-cards.component';
-// import { ChefDashboardCurrentOrdersComponent } from '../../chef-dashboard-current-orders/chef-dashboard-current-orders.component';
-// import { ChefDashboardMenuComponent } from '../../chef-dashboard-menu/chef-dashboard-menu.component';
 import { ChefRestaurantSettingsComponent } from '../../chef-restaurant-settings/chef-restaurant-settings';
+import { ChefOrderReport } from '../../chef-order-report/chef-order-report';
 
 @Component({
   selector: 'app-chef-dashboard',
@@ -34,13 +29,8 @@ import { ChefRestaurantSettingsComponent } from '../../chef-restaurant-settings/
     CommonModule,
     RouterModule,
     ChefDashboardHeaderComponent,
-    // ChefDashboardEarningsComponent,
-    // ChefDashboardPastOrdersComponent,
-    // ChefDashboardStatsCardsComponent,
-    // ChefDashboardCurrentOrdersComponent,
-    // ChefDashboardMenuComponent,
     ChefRestaurantSettingsComponent,
-    ChefDashboardOrderComponent,
+    ChefOrderReport,
     LucideAngularModule
   ],
   templateUrl: './chef-dashboard-component.html',
@@ -169,18 +159,6 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
     return statusMap[paymentStatus || 'pending'] || 'Payment Status Unknown';
   }
 
-  // private mapOrdersFromResponse(response: any[]): ChefCurrentOrder[] {
-  //   return response.map((r: any) => ({
-  //     id: Number(r.id ?? r.orderId),
-  //     customer: r.customerName ?? r.customer ?? 'Customer',
-  //     items: Array.isArray(r.items) ? r.items.length : (Number(r.itemsCount) || 0),
-  //     amount: Number(r.totalAmount ?? r.amount ?? r.total ?? 0),
-  //     time: new Date(r.createdAt ?? Date.now()).toLocaleTimeString(),
-  //     status: (String(r.status || 'pending').toLowerCase() as ChefCurrentOrder['status']),
-  //     paymentStatus: (String(r.paymentStatus || 'pending').toLowerCase() as ChefCurrentOrder['paymentStatus']),
-  //     createdAt: r.createdAt ? new Date(r.createdAt) : new Date()
-  //   }));
-  // }
   // Add this method to format time
   private formatTime(date: Date): string {
     return date.toLocaleTimeString('en-US', {
@@ -389,27 +367,6 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
     document.body.classList.remove('overflow-hidden');
   }
 
-  // private setupSignalRSubscriptions() {
-  //   this.subscriptions.push(
-  //     this.signalrService.getOrderRequests().subscribe((orderData) => {
-  //       if (orderData && orderData.orderId) {
-  //         // Convert the incoming order to ChefCurrentOrder format
-  //         const newOrder: ChefCurrentOrder = {
-  //           id: orderData.orderId,
-  //           customer: orderData.customerName || 'Customer',
-  //           items: orderData.items?.length || 0,
-  //           amount: orderData.totalAmount || 0,
-  //           time: new Date().toLocaleTimeString(),
-  //           status: 'pending',
-  //           paymentStatus: 'pending',
-  //           createdAt: orderData.createdAt ? new Date(orderData.createdAt) : new Date(),
-  //         };
-  //
-  //         this.currentOrders.unshift(newOrder);
-  //       }
-  //     })
-  //   );
-  // }
 
   private setupSignalRSubscriptions() {
     this.subscriptions.push(

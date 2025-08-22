@@ -1,0 +1,63 @@
+.filter-sidebar {
+  @apply w-80 overflow-y-auto;
+  background: var(--filter-bg);
+  border-color: var(--filter-border);
+}
+
+.filter-header {
+  @apply p-6 border-b;
+  background: var(--filter-header-bg);
+  border-color: var(--filter-border);
+}
+
+.filter-title {
+  @apply text-xl font-semibold;
+  color: var(--text-primary);
+}
+
+.clear-button {
+  @apply text-sm font-medium transition-colors;
+  color: var(--filter-clear-text);
+}
+
+.clear-button:hover {
+  filter: brightness(0.9);
+}
+
+.filter-section {
+  @apply p-6;
+}
+
+.filter-section-title {
+  @apply text-lg font-medium mb-4;
+  color: var(--text-primary);
+}
+
+.filter-input {
+  @apply w-4 h-4;
+  background-color: var(--filter-input-bg);
+  border-color: var(--filter-input-border);
+}
+
+.filter-input:checked {
+  background-color: var(--filter-input-checked);
+}
+
+.filter-input:focus {
+  --tw-ring-color: var(--filter-input-checked);
+}
+
+.filter-label {
+  @apply ml-3 text-sm cursor-pointer;
+  color: var(--filter-label-text);
+}
+
+.apply-button {
+  @apply w-full py-3 px-4 rounded-lg font-medium transition-colors duration-200;
+  background: var(--restaurant-btn-bg);
+  color: white;
+}
+
+.apply-button:hover {
+  background: var(--restaurant-btn-hover);
+}

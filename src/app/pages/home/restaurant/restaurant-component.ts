@@ -1,14 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { LucideAngularModule } from 'lucide-angular';
-import { FoodCategoryCardComponent } from '../food-category-card/food-category-card.component';
-import { NgFor } from '@angular/common';
+import { LucideAngularModule,Package } from 'lucide-angular';
+import { NgFor, NgIf } from '@angular/common';
 import { GetService } from '../../../services/requests/get-service';
 import { CustomerRestaurant } from '../../../models/CustomerRestaurant.model'; // Assuming you have a Restaurant model defined
-import { FilterItemView } from '../../../shared/components/filters/filter-item-view/filter-item-view';
 import { FilterRestaurantView } from '../../../shared/components/filters/filter-restaurant-view/filter-restaurant-view';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { Router, NavigationExtras } from '@angular/router';
 import { CartService } from '../../cart/cart.service';
+
 
 interface Chef {
   id: number;
@@ -26,15 +25,20 @@ interface Chef {
   selector: 'app-restaurant-component',
   imports: [
     LucideAngularModule,
-    FoodCategoryCardComponent,
     FilterRestaurantView,
-    FilterItemView,
     Pagination,
     NgFor,
+    NgIf
   ],
   templateUrl: './restaurant-component.html',
+  styleUrl:'./restaurant-component.css'
 })
 export class RestaurantComponent implements OnInit {
+
+  readonly Package = Package;
+  isLoading = true;
+  errorMessage = ''
+
   getService = inject(GetService);
   router = inject(Router);
   cartService: CartService = inject(CartService);
@@ -59,6 +63,9 @@ export class RestaurantComponent implements OnInit {
     this.loadRestaurants();
   }
   loadRestaurants(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
     this.getService
       .get<CustomerRestaurant[]>({
         url:
@@ -74,6 +81,7 @@ export class RestaurantComponent implements OnInit {
         next: (data: any) => {
           this.restaurants = data.categories;
           this.totalPages = data.totalCount;
+          this.isLoading = false;
           console.log(this.restaurants);
         },
         error: (err) => {
@@ -85,8 +93,10 @@ export class RestaurantComponent implements OnInit {
       });
   }
   onPageChange(event: { page: number; pageSize: number }): void {
+    this.isLoading = false;
     this.page = event.page;
     this.pageSize = event.pageSize;
+    this.errorMessage = "Can't fetch restaurants"
     this.loadRestaurants();
   }
   onSortChanged(event: { sortBy: string; sortOrder: string }): void {

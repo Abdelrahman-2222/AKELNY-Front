@@ -1,4 +1,4 @@
-<nav class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 mt-20 sm:px-6">
+<nav class="flex items-center justify-between border-t border-gray-200 bg-white dark:bg-[var(--pagination-bg)] dark:border-[var(--pagination-border)] px-4 py-3 mt-20 sm:px-6">
 
   <!-- Mobile view -->
   <!-- <div class="flex flex-1 justify-between sm:hidden">
@@ -7,7 +7,7 @@
       Previous
     </button>
 
-    <span class="text-sm text-gray-700">
+    <span class="text-sm text-gray-700 dark:text-[var(--pagination-text)]">
       Page {{ page }}
     </span>
 
@@ -21,8 +21,8 @@
   <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
     <!-- Results info -->
     <div>
-      <p class="text-sm text-gray-700">
-        Page {{ page }} • {{ pageSize }} per page
+      <p class="text-sm text-gray-700 dark:text-[var(--pagination-text)]">
+        Page {{ page }} • {{ totalPages }} per page
       </p>
     </div>
 
@@ -31,7 +31,7 @@
 
       <!-- Previous button -->
       <button (click)="previous()" [disabled]="page === 1"
-        class="relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-medium text-gray-500 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:cursor-not-allowed disabled:opacity-50">
+        class="relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-medium text-gray-500 dark:text-[var(--pagination-text)] ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:hover:bg-[--pagination-hover-bg] focus:z-20 disabled:cursor-not-allowed disabled:opacity-50">
         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd"
             d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
@@ -47,7 +47,7 @@
 
       <!-- Next button -->
       <button (click)="next()" [disabled]="page === totalPages"
-        class="relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-medium text-gray-500 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:cursor-not-allowed disabled:opacity-50">
+        class="relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-medium text-gray-500 dark:text-[var(--pagination-text)] ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:hover:bg-[--pagination-hover-bg] focus:z-20 disabled:cursor-not-allowed disabled:opacity-50">
         Next
         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd"

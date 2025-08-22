@@ -91,19 +91,21 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { RestaurantDetails } from '../../../models/RestaurantDetails.model';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { CartService } from '../../cart/cart.service';
 import { RestaurantCacheService } from '../../../services/restaurant-cache.service';
 import { Subject, takeUntil } from 'rxjs';
+import { LucideAngularModule , Package} from 'lucide-angular';
 
 @Component({
   selector: 'app-restaurant-details',
   templateUrl: './restaurant.details.component.html',
-  imports: [CommonModule, Pagination],
+  imports: [CommonModule, Pagination,LucideAngularModule],
 })
 export class RestaurantDetailsComponent implements OnInit, OnDestroy {
+  readonly Package = Package;
   router = inject(Router);
   cartService = inject(CartService);
   restaurantCacheService = inject(RestaurantCacheService);
@@ -176,4 +178,11 @@ export class RestaurantDetailsComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  showCategoryItems(catId:number):void{
+
+
+    this.router.navigate(['/customer/restaurant-category-items', this.restId ,catId]);
+  }
+
 }

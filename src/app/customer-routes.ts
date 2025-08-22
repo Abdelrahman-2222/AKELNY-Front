@@ -137,6 +137,13 @@ export const customerRoutes: Routes = [
         './pages/home/restaurant-details/restaurant.details.component'
       ).then((m) => m.RestaurantDetailsComponent),
   },
+   {
+    path: 'restaurant-category-items/:restId/:catId',
+    loadComponent: () =>
+      import(
+        './pages/home/restaurant-category-items/restaurant-category-items'
+      ).then((m) => m.RestaurantCategoryItems),
+  },
   {
     path: 'item-details/:id',
     loadComponent: () =>

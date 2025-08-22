@@ -32,6 +32,8 @@
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@microsoft/signalr": "^9.0.6",
     "@primeuix/themes": "^1.2.1",
+    "@types/file-saver": "^2.0.7",
+    "file-saver": "^2.0.5",
     "jwt-decode": "^4.0.0",
     "lucide-angular": "^0.525.0",
     "primeng": "^20.0.0",
