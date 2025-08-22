@@ -2,17 +2,19 @@
   "buildCommand": "npm install --include=dev && ng build --configuration=production",
   "outputDirectory": "dist/AKELNY-Front/browser",
   "rewrites": [
-    {
-      "source": "/uploads/(.*)",
-      "destination": "http://akelni.tryasp.net/uploads/$1"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "http://akelni.tryasp.net/api/$1"
-    },
+    { "source": "/uploads/(.*)", "destination": "http://akelni.tryasp.net/uploads/$1" },
+    { "source": "/api/(.*)", "destination": "http://akelni.tryasp.net/api/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; connect-src 'self' https://akelni.tryasp.net wss://akelni.tryasp.net; img-src 'self' data: https://res.cloudinary.com https://akelni.tryasp.net;"
+        }
+      ]
     }
   ]
 }

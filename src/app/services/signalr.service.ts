@@ -43,7 +43,9 @@ export class SignalrService {
   private createConnection(): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.signalrUrl}/orderHub`, {
-        accessTokenFactory: () => this.getToken() || ''
+        accessTokenFactory: () => this.getToken() || '',
+        transport: signalR.HttpTransportType.WebSockets,
+        skipNegotiation: true
       })
       .withAutomaticReconnect()
       .build();
