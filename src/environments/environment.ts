@@ -16,5 +16,6 @@
 export const environment = {
   production: false,
   apiUrl: 'https://localhost:7045/api', // or your local HTTPS URL
-  googleClientId: '811631518025-je1km7ums6m720ct9v09vgvjtgr2qb24.apps.googleusercontent.com'
+  googleClientId: '811631518025-je1km7ums6m720ct9v09vgvjtgr2qb24.apps.googleusercontent.com',
+  uploadsUrl: 'https://localhost:7045'
 };
