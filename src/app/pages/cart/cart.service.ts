@@ -5,6 +5,7 @@ import { OrderCreateDTO } from '../../models/order-create-dto';
 import { OrderItemCreateDTO } from '../../models/order-item-create-dto';
 import { catchError, Observable } from 'rxjs';
 import { Order } from '../../models/order-model';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +27,8 @@ export class CartService {
   };
 
   http: HttpClient = inject(HttpClient);
-  checkoutUrl = 'https://localhost:7045/api/Orders/create-ckeckout-session';
-  paymentSessionUrl = 'https://localhost:7045/api/Orders';
+  checkoutUrl = `${environment.apiUrl}Orders/create-ckeckout-session`;
+  paymentSessionUrl = `${environment.apiUrl}/Orders`;
 
   public restaurantId = -1;
 
