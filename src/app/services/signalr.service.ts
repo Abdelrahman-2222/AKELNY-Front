@@ -49,10 +49,10 @@ export class SignalrService {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.signalrUrl}/orderHub`, {
         accessTokenFactory: () => this.getToken() || '',
-        transport: signalR.HttpTransportType.WebSockets,
-        skipNegotiation: true
+        transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
+        skipNegotiation: false
       })
-      .withAutomaticReconnect()
+      .withAutomaticReconnect([0, 2000, 10000, 30000])
       .build();
   }
 
