@@ -1,7 +1,7 @@
-// TypeScript
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,7 @@ export class SignalrService {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7045/orderHub', {
+      .withUrl(`${environment.apiUrl}/orderHub`, {
         accessTokenFactory: () => token || ''
       })
       .withAutomaticReconnect()
@@ -211,16 +211,6 @@ export class SignalrService {
     }
   }
 
-  // // Server invocations (rename to match your hub methods)
-  // acceptOrder(orderId: string | number): Promise<void> {
-  //   return this.hubConnection.invoke('AcceptOrder', orderId);
-  // }
-  // rejectOrder(orderId: string | number): Promise<void> {
-  //   return this.hubConnection.invoke('RejectOrder', orderId);
-  // }
-  // updateOrderStatus(orderId: string | number, status: string): Promise<void> {
-  //   return this.hubConnection.invoke('UpdateOrderStatus', { orderId, status });
-  // }
 
   stopConnection(): void {
     if (this.hubConnection) {

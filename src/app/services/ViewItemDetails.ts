@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ItemClassDto } from '../models/ItemDetailsViewCustomer';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ViewItemDetailsService {
-  private readonly baseUrl = 'https://localhost:7045/api';
+  private readonly baseUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) {}
 

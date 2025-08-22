@@ -27,7 +27,7 @@ export class CartService {
   };
 
   http: HttpClient = inject(HttpClient);
-  checkoutUrl = `${environment.apiUrl}Orders/create-ckeckout-session`;
+  checkoutUrl = `${environment.apiUrl}/Orders/create-ckeckout-session`;
   paymentSessionUrl = `${environment.apiUrl}/Orders`;
 
   public restaurantId = -1;
