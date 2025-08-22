@@ -21,7 +21,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "output": "/"
               }
             ],
             "styles": [
@@ -45,7 +46,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
               "buildOptimizer": true,
               "budgets": [
                 {
@@ -95,7 +95,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "output": "/"
               }
             ],
             "styles": [
