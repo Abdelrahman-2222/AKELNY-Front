@@ -41,6 +41,11 @@ export class SignalrService {
   }
 
   private createConnection(): void {
+    const token = this.getToken();
+    if (!token) {
+      console.warn('No auth token available for SignalR connection');
+      return;
+    }
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.signalrUrl}/orderHub`, {
         accessTokenFactory: () => this.getToken() || '',
