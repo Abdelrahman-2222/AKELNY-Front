@@ -7,6 +7,7 @@ import { FilterRestaurantView } from '../../../shared/components/filters/filter-
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { Router, NavigationExtras } from '@angular/router';
 import { CartService } from '../../cart/cart.service';
+import { environment } from '../../../../environments/environment';
 
 
 interface Chef {
@@ -54,7 +55,7 @@ export class RestaurantComponent implements OnInit {
   sortBy: string = '';
   sortOrder: string = ''; // 'asc' for ascending, 'desc' for descending
   url =
-    'https://localhost:7045/api/restaurants?' +
+    `${environment.apiUrl}/restaurants?` +
     (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
     `page=${this.page}&pageSize=${this.pageSize}`;
 
@@ -69,7 +70,7 @@ export class RestaurantComponent implements OnInit {
     this.getService
       .get<CustomerRestaurant[]>({
         url:
-          'https://localhost:7045/api/restaurants?' +
+          `${environment.apiUrl}/api/restaurants?` +
           (this.sortBy ? `sorts=${this.sortOrder}${this.sortBy}&` : '') +
           `page=${this.page}&pageSize=${this.pageSize}`,
         headers: {
@@ -82,7 +83,7 @@ export class RestaurantComponent implements OnInit {
           this.restaurants = data.categories;
           this.totalPages = data.totalCount;
           this.isLoading = false;
-          console.log(this.restaurants);
+          // console.log(this.restaurants);
         },
         error: (err) => {
           console.error('Error fetching restaurants:', err);
@@ -104,7 +105,7 @@ export class RestaurantComponent implements OnInit {
     this.sortOrder = event.sortOrder;
     // Here you can implement the logic to sort the restaurants based on the selected criteria
     // For example, you might want to call a service to fetch sorted data from the backend
-    console.log(this.url);
+    // console.log(this.url);
     // You can also update the restaurant list based on the sorting criteria
     this.loadRestaurants();
   }
@@ -115,7 +116,7 @@ export class RestaurantComponent implements OnInit {
     const navigationExtras: NavigationExtras = {
       state: data,
     };
-    console.log(`restaurantId : ${restaurantId}`);
+    // console.log(`restaurantId : ${restaurantId}`);
     this.router.navigate(
       ['/customer/restaurant-details', restaurantId],
       navigationExtras
