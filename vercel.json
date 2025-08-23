@@ -8,11 +8,6 @@
     { "source": "/orderHub", "destination": "http://akelni.tryasp.net/orderHub" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "functions": {
-    "app/api/**/*.js": {
-      "includeFiles": "**"
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
