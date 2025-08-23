@@ -74,63 +74,78 @@ export class CartService {
   }
 
   public addToCart(restId: number, item: ItemType): void {
-    //ensure that all orders from the same restaurant
     if (this.restaurantId === -1) this.restaurantId = restId;
     else if (this.restaurantId !== restId) {
-      alert(
-        "You can't order items for more than a restaurant in the same order!"
-      );
+      alert("You can't order items for more than a restaurant in the same order!");
       return;
     }
-    //prevent item duplication
-    const isFound: boolean = this.cartItems
-      .map((el) => el.id)
-      .includes(item.id);
-    console.log(isFound);
+
+    const isFound = this.cartItems.some(el => el.id === item.id);
     if (isFound) {
-      console.log('The item already exists!!!');
+      console.log('The item already exists!');
       return;
     }
+
     this.cartItems.push({
       ...item,
       price: +item.price,
       quantity: 1,
       restId: restId,
-      addOnIds: [],
-      comboIds: [],
+      addOnIds: item.addOnIds || [],
+      comboIds: item.comboIds || []
     });
 
     this.calculateSummary();
-    console.log(this.cartItems);
+    console.log('Item added to cart:', this.cartItems);
   }
 
   public transferToDto() {
-    if (this.cartItems.length === 0) return;
+    if (this.cartItems.length === 0) {
+      console.error('Cart is empty - cannot create order');
+      return;
+    }
 
-    let orderDTO: OrderCreateDTO = {} as OrderCreateDTO;
-    let orderItemsDTOArr: OrderItemCreateDTO[] = [];
+    // Initialize orderDTO with proper structure
+    let orderDTO: OrderCreateDTO = {
+      RestaurantId: this.restaurantId,
+      DistanceKm: 0,
+      Items: []
+    };
 
-    orderDTO.RestaurantId = this.restaurantId;
-    orderDTO.DistanceKm = 0;
-    orderDTO.Items = [];
-
-    this.cartItems.forEach((el) => {
-      orderItemsDTOArr.push({
-        ItemId: el.id,
-        Quantity: el.quantity,
-        AddOnIds: [...el.addOnIds],
-        ComboIds: [...el.comboIds],
+    // Create order items array
+    this.cartItems.forEach((item) => {
+      orderDTO.Items.push({
+        ItemId: item.id,
+        Quantity: item.quantity,
+        AddOnIds: item.addOnIds || [],
+        ComboIds: item.comboIds || []
       });
     });
-    orderDTO.Items.push(...orderItemsDTOArr);
-    this.orderDTO = structuredClone(orderDTO);
-    console.log('class val: ', this.orderDTO);
-    console.log(orderDTO);
+
+    this.orderDTO = orderDTO;
+    console.log('Transfer to DTO - Final orderDTO:', this.orderDTO);
   }
 
   public checkoutOrder(): Observable<any> {
+    // Validate cart before transfer
+    if (this.cartItems.length === 0) {
+      throw new Error('Cart is empty');
+    }
+
+    if (this.restaurantId === -1) {
+      throw new Error('No restaurant selected');
+    }
+
     this.transferToDto();
-    return this.http.post<any>(this.checkoutUrl, this.orderDTO);
+
+    console.log('Sending checkout request with:', this.orderDTO);
+
+    return this.http.post<any>(this.checkoutUrl, this.orderDTO).pipe(
+      catchError(error => {
+        console.error('Checkout error:', error);
+        throw error;
+      })
+    );
   }
 
   public createPaymentSession(orderId: number): Observable<any> {

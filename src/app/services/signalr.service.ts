@@ -46,15 +46,30 @@ export class SignalrService {
       console.warn('No auth token available for SignalR connection');
       return;
     }
+
+    // If signalrUrl is empty (prod), use relative path → goes through Vercel proxy
+    const hubUrl = environment.signalrUrl
+      ? `${environment.signalrUrl}/orderHub`
+      : `/orderHub`;
+
+    // this.hubConnection = new signalR.HubConnectionBuilder()
+    //   .withUrl(hubUrl, {
+    //     accessTokenFactory: () => this.getToken() || '',
+    //     transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
+    //     skipNegotiation: false
+    //   })
+    //   .withAutomaticReconnect([0, 2000, 10000, 30000])
+    //   .build();
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${environment.signalrUrl}/orderHub`, {
+      .withUrl(hubUrl, {
         accessTokenFactory: () => this.getToken() || '',
-        transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
+        transport: signalR.HttpTransportType.LongPolling | signalR.HttpTransportType.WebSockets,
         skipNegotiation: false
       })
       .withAutomaticReconnect([0, 2000, 10000, 30000])
       .build();
   }
+
 
   private startConnection(): void {
     this.hubConnection

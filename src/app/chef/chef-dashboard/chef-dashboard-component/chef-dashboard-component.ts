@@ -36,8 +36,7 @@ import { ChefOrderReport } from '../../chef-order-report/chef-order-report';
   templateUrl: './chef-dashboard-component.html',
   styleUrl: './chef-dashboard-component.css'
 })
-export class ChefDashboardComponent implements OnInit, OnDestroy
-{
+export class ChefDashboardComponent implements OnInit, OnDestroy {
   currentOrders: ChefCurrentOrder[] = [];
   chefId: string = '';
   subscriptions: Subscription[] = [];
@@ -144,9 +143,12 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
 
   getPaymentIcon(paymentStatus: string | undefined) {
     switch (paymentStatus) {
-      case 'paid': return CheckCircle;
-      case 'cancelled': return XCircle;
-      default: return Clock;
+      case 'paid':
+        return CheckCircle;
+      case 'cancelled':
+        return XCircle;
+      default:
+        return Clock;
     }
   }
 
@@ -173,12 +175,25 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
       const status = String(order.status || 'pending').toLowerCase();
       const paymentStatus = String(order.payment_status || order.paymentStatus || 'pending').toLowerCase();
 
+      // Use itemTotalWithExtras if available, otherwise fall back to totalAmount
+      let calculatedAmount = 0;
+
+      if (order.items && Array.isArray(order.items)) {
+        // Calculate from items with add-ons and combos
+        calculatedAmount = order.items.reduce((sum: number, item: any) => {
+          return sum + (item.itemTotalWithExtras || item.totalPrice || 0);
+        }, 0);
+      } else {
+        // Fallback to totalAmount from order
+        calculatedAmount = parseFloat(order.totalAmount || order.total_amount || order.amount || order.total || 0);
+      }
+
       return {
         id: order.id || order.orderId,
         customer: order.customerName || order.customer_name || order.customer || 'Unknown Customer',
         items: order.items?.length || order.item_count || order.itemsCount || 1,
-        amount: parseFloat(order.total_amount || order.totalAmount || order.amount || order.total || 0),
-        status: status as ChefCurrentOrder['status'],   // type narrowing
+        amount: calculatedAmount, // Use the calculated amount that includes add-ons
+        status: status as ChefCurrentOrder['status'],
         paymentStatus: paymentStatus as ChefCurrentOrder['paymentStatus'],
         time: order.created_at ? this.formatTime(new Date(order.created_at)) : 'Just now',
         createdAt: order.created_at || order.createdAt || new Date().toISOString()
@@ -358,6 +373,7 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
       return [];
     }
   }
+
   onSettingsCancel(): void {
     this.closeSettingsModal();
   }
@@ -367,32 +383,58 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
     document.body.classList.remove('overflow-hidden');
   }
 
-
   private setupSignalRSubscriptions() {
     this.subscriptions.push(
-      this.signalrService.getOrderRequests().subscribe((orderData) => {
+      this.signalrService.getOrderRequests().subscribe(async (orderData) => {
         if (orderData && orderData.orderId) {
-          // Convert the incoming order to ChefCurrentOrder format
-          const incoming: ChefCurrentOrder = {
-            id: orderData.orderId,
-            customer: orderData.customerName || 'Customer',
-            items: Array.isArray(orderData.items) ? orderData.items.length : (orderData.itemsCount || 0),
-            amount: Number(orderData.totalAmount || 0),
-            time: new Date().toLocaleTimeString(),
-            status: 'pending',
-            paymentStatus: 'pending',
-            createdAt: orderData.createdAt ? new Date(orderData.createdAt) : new Date(),
-          };
+          try {
+            // Calculate the correct total from items with add-ons and combos
+            let calculatedAmount = 0;
+            if (orderData.items && Array.isArray(orderData.items)) {
+              calculatedAmount = orderData.items.reduce((sum: number, item: any) => {
+                return sum + (item.itemTotalWithExtras || item.totalPrice || 0);
+              }, 0);
+            } else {
+              calculatedAmount = Number(orderData.totalAmount || 0);
+            }
 
-          // Upsert into the list (avoid duplicates)
-          const idx = this.currentOrders.findIndex(o => o.id === incoming.id);
-          if (idx >= 0) {
-            this.currentOrders[idx] = { ...this.currentOrders[idx], ...incoming };
-          } else {
-            this.currentOrders.unshift(incoming);
+            const incoming: ChefCurrentOrder = {
+              id: orderData.orderId,
+              customer: orderData.customerName || 'Customer',
+              items: orderData.orderSummary?.itemCount || orderData.items?.length || 0,
+              amount: calculatedAmount, // Use calculated amount
+              time: new Date().toLocaleTimeString(),
+              status: 'pending',
+              paymentStatus: 'pending',
+              createdAt: orderData.createdAt ? new Date(orderData.createdAt) : new Date(),
+
+              // Include the detailed items with add-ons and combos from SignalR
+              itemsArray: orderData.items || [],
+              subTotal: orderData.subTotal,
+              deliveryFee: orderData.deliveryFee,
+              platformFee: orderData.platformFee,
+              totalAmount: calculatedAmount, // Update this too
+              distanceKm: orderData.distanceKm,
+              customerId: orderData.customerId,
+              restaurantId: orderData.restaurantId,
+              restaurantName: orderData.restaurantName
+            };
+
+            console.log('Calculated amount:', calculatedAmount);
+            console.log('Complete order received via SignalR:', orderData);
+
+            const idx = this.currentOrders.findIndex(o => o.id === incoming.id);
+            if (idx >= 0) {
+              this.currentOrders[idx] = {...this.currentOrders[idx], ...incoming};
+            } else {
+              this.currentOrders.unshift(incoming);
+            }
+
+            this.saveOrdersToLocalStorage();
+          } catch (error) {
+            console.error('Failed to process SignalR order data:', error);
           }
         }
-        this.saveOrdersToLocalStorage();
       })
     );
 
@@ -438,24 +480,26 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
       })
     );
   }
-  AddItems()
-  {
+
+  AddItems() {
     // navigate to chef-dashboard-item.component.html
     this.router.navigate(['/chef/chef-dashboard-item']);
   }
-  ViewMenu()
-  {
+
+  ViewMenu() {
     // Logic to view items in the restaurant menu
     this.router.navigate(['/chef/chef-dashboard-menu']);
 
     // You can implement the logic to navigate to a view items page or open a modal
   }
+
   ViewOrders() {
     // Logic to view orders for the restaurant
     console.log('View orders clicked');
     this.router.navigate(['/chef/chef-dashboard-order']);
     // You can implement the logic to navigate to a view orders page or open a modal
   }
+
   // Enhanced order management methods
   private processingOrders = new Set<number>();
 
@@ -537,5 +581,57 @@ export class ChefDashboardComponent implements OnInit, OnDestroy
       console.error('Failed to load current orders:', error);
     }
   }
-}
 
+  getOrderDetails(order: ChefCurrentOrder): string {
+    if (!order.itemsArray || order.itemsArray.length === 0) {
+      return `${order.items} items`;
+    }
+
+    const details = order.itemsArray.map(item => {
+      let itemDesc = `${item.quantity}x ${item.itemName}`;
+
+      if (item.addOns && item.addOns.length > 0) {
+        const addOnNames = item.addOns.map(addon => addon.name).join(', ');
+        itemDesc += ` + ${addOnNames}`;
+      }
+
+      if (item.combos && item.combos.length > 0) {
+        const comboNames = item.combos.map(combo => combo.name).join(', ');
+        itemDesc += ` + ${comboNames}`;
+      }
+
+      return itemDesc;
+    }).join('; ');
+
+    return details;
+  }
+
+// Method to check if order has add-ons or combos
+  hasExtras(order: ChefCurrentOrder): boolean {
+    if (!order.itemsArray) return false;
+
+    return order.itemsArray.some(item =>
+      (item.addOns && item.addOns.length > 0) ||
+      (item.combos && item.combos.length > 0)
+    );
+  }
+
+// Method to get extras summary
+  getExtrasInfo(order: ChefCurrentOrder): string {
+    if (!order.itemsArray) return '';
+
+    let addOnCount = 0;
+    let comboCount = 0;
+
+    order.itemsArray.forEach(item => {
+      if (item.addOns) addOnCount += item.addOns.length;
+      if (item.combos) comboCount += item.combos.length;
+    });
+
+    const parts = [];
+    if (addOnCount > 0) parts.push(`${addOnCount} add-ons`);
+    if (comboCount > 0) parts.push(`${comboCount} combos`);
+
+    return parts.join(', ');
+  }
+}

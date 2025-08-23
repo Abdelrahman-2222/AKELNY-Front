@@ -213,23 +213,23 @@
       </div>
 
       <div class="orders-grid" *ngIf="currentOrders.length > 0; else noOrdersState">
-        <div
-          *ngFor="let order of currentOrders; trackBy: trackByOrderId"
-          class="live-order-card"
-          [ngClass]="getOrderCardClass(order)">
-
+        <div *ngFor="let currentOrder of currentOrders" class="order-details">
+          <p class="text-sm text-gray-600">{{ getOrderDetails(currentOrder) }}</p>
+          <p *ngIf="hasExtras(currentOrder)" class="text-xs text-blue-600 mt-1">
+            Includes: {{ getExtrasInfo(currentOrder) }}
+          </p>
           <!-- Order Header -->
           <div class="order-header">
             <div class="order-badge">
-              <span class="order-id">#{{ order.id }}</span>
-              <div class="status-indicator" [ngClass]="'status-' + order.status">
+              <span class="order-id">#{{ currentOrder.id }}</span>
+              <div class="status-indicator" [ngClass]="'status-' + currentOrder.status">
                 <span class="status-dot"></span>
-                {{ getStatusLabel(order.status) }}
+                {{ getStatusLabel(currentOrder.status) }}
               </div>
             </div>
             <div class="order-time">
               <lucide-icon [img]="Clock" class="time-icon"></lucide-icon>
-              {{ order.time }}
+              {{ currentOrder.time }}
             </div>
           </div>
 
@@ -239,70 +239,70 @@
               <lucide-icon [img]="User"></lucide-icon>
             </div>
             <div class="customer-details">
-              <span class="customer-name">{{ order.customer }}</span>
-              <span class="order-summary">{{ order.items }} items • {{ formatCurrency(order.amount) }}</span>
+              <span class="customer-name">{{ currentOrder.customer }}</span>
+              <span class="order-summary">{{ currentOrder.items }} items • {{ formatCurrency(currentOrder.amount) }}</span>
             </div>
           </div>
 
           <!-- Payment Status -->
-          <div class="payment-section" *ngIf="showPaymentStatus(order)">
-            <div class="payment-badge" [ngClass]="'payment-' + order.paymentStatus">
-              <lucide-icon [img]="getPaymentIcon(order.paymentStatus)"></lucide-icon>
-              <span>{{ getPaymentStatusText(order.paymentStatus) }}</span>
+          <div class="payment-section" *ngIf="showPaymentStatus(currentOrder)">
+            <div class="payment-badge" [ngClass]="'payment-' + currentOrder.paymentStatus">
+              <lucide-icon [img]="getPaymentIcon(currentOrder.paymentStatus)"></lucide-icon>
+              <span>{{ getPaymentStatusText(currentOrder.paymentStatus) }}</span>
             </div>
           </div>
 
           <!-- Action Buttons -->
           <div class="action-section">
             <!-- Pending Orders - Accept/Reject -->
-            <div class="action-buttons" *ngIf="order.status === 'pending' && order.paymentStatus !== 'paid'">
+            <div class="action-buttons" *ngIf="currentOrder.status === 'pending' && currentOrder.paymentStatus !== 'paid'">
               <button
                 class="btn-accept"
-                (click)="acceptOrder(order.id)"
-                [disabled]="isProcessingOrder(order.id)">
+                (click)="acceptOrder(currentOrder.id)"
+                [disabled]="isProcessingOrder(currentOrder.id)">
                 <lucide-icon [img]="CheckCircle"></lucide-icon>
                 Accept
               </button>
               <button
                 class="btn-reject"
-                (click)="rejectOrder(order.id)"
-                [disabled]="isProcessingOrder(order.id)">
+                (click)="rejectOrder(currentOrder.id)"
+                [disabled]="isProcessingOrder(currentOrder.id)">
                 <lucide-icon [img]="XCircle"></lucide-icon>
                 Reject
               </button>
             </div>
 
             <!-- Accepted Orders - Mark Ready -->
-            <div class="action-buttons" *ngIf="order.status === 'accepted' && order.paymentStatus === 'paid'">
+            <div class="action-buttons" *ngIf="currentOrder.status === 'accepted' && currentOrder.paymentStatus === 'paid'">
               <button
                 class="btn-primary-action"
-                (click)="markAsReady(order.id)"
-                [disabled]="isProcessingOrder(order.id)">
+                (click)="markAsReady(currentOrder.id)"
+                [disabled]="isProcessingOrder(currentOrder.id)">
                 <lucide-icon [img]="Timer"></lucide-icon>
                 Mark Ready
               </button>
             </div>
 
             <!-- Ready Orders - Complete -->
-            <div class="action-buttons" *ngIf="order.status === 'ready' && order.paymentStatus === 'paid'">
+            <div class="action-buttons" *ngIf="currentOrder.status === 'ready' && currentOrder.paymentStatus === 'paid'">
               <button
                 class="btn-complete"
-                (click)="completeOrder(order.id)"
-                [disabled]="isProcessingOrder(order.id)">
+                (click)="completeOrder(currentOrder.id)"
+                [disabled]="isProcessingOrder(currentOrder.id)">
                 <lucide-icon [img]="CheckCircle"></lucide-icon>
                 Complete Order
               </button>
             </div>
 
             <!-- Status Messages -->
-            <div class="status-message" *ngIf="getStatusMessage(order)">
+            <div class="status-message" *ngIf="getStatusMessage(currentOrder)">
               <lucide-icon [img]="AlertCircle" class="status-icon"></lucide-icon>
-              {{ getStatusMessage(order) }}
+              {{ getStatusMessage(currentOrder) }}
             </div>
           </div>
 
           <!-- Processing Overlay -->
-          <div class="processing-overlay" *ngIf="isProcessingOrder(order.id)">
+          <div class="processing-overlay" *ngIf="isProcessingOrder(currentOrder.id)">
             <div class="spinner"></div>
             <span>Processing...</span>
           </div>

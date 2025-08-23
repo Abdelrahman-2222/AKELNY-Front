@@ -82,61 +82,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   }
 
-  // private setupSignalRSubscription(): void {
-  //   // Listen for order status updates
-  //   this.subscriptions.push(
-  //     this.signalrService.getOrderStatusUpdates().subscribe((update) => {
-  //       // Add null check here
-  //       if (!update || !update.orderId || update.orderId !== this.orderId) {
-  //         return;
-  //       }
-  //
-  //       if (update.status === 'accepted') {
-  //         // Chef accepted - proceed to order status for payment
-  //         this.navigateToOrderStatus();
-  //       } else if (update.status === 'rejected') {
-  //         // Chef rejected - show error and redirect
-  //         this.error = 'Chef rejected your order. Redirecting to cart...';
-  //         setTimeout(() => this.router.navigate(['/customer/cart']), 2000);
-  //       }
-  //     })
-  //   );
-  // }
-  // private setupSignalRSubscription(): void {
-  //   this.subscriptions.push(
-  //     this.signalrService.getOrderStatusUpdates().subscribe((update) => {
-  //       const orderId = update?.orderId ?? update?.id;
-  //       if (!orderId || orderId !== this.orderId) return;
-  //
-  //       const status = String(update?.status || '').toLowerCase();
-  //       if (status === 'accepted' || status === 'approved') {
-  //         this.navigateToOrderStatus();
-  //       } else if (status === 'rejected' || status === 'suspended') {
-  //         this.error = 'Chef rejected your order. Redirecting to cart...';
-  //         setTimeout(() => this.router.navigate(['/customer/cart']), 2000);
-  //       }
-  //     })
-  //   );
-  //
-  //   // Also listen to explicit accepted/rejected events in case server does not emit OrderStatusUpdate
-  //   this.subscriptions.push(
-  //     this.signalrService.getOrderAccepted().subscribe((resp) => {
-  //       const orderId = resp?.orderId ?? resp?.id;
-  //       if (!orderId || orderId !== this.orderId) return;
-  //       this.navigateToOrderStatus();
-  //     })
-  //   );
-  //
-  //   this.subscriptions.push(
-  //     this.signalrService.getOrderRejected().subscribe((resp) => {
-  //       const orderId = resp?.orderId ?? resp?.id;
-  //       if (!orderId || orderId !== this.orderId) return;
-  //       this.error = 'Chef rejected your order. Redirecting to cart...';
-  //       setTimeout(() => this.router.navigate(['/customer/cart']), 2000);
-  //     })
-  //   );
-  // }
-
   private setupSignalRSubscription(): void {
     // Unified status updates
     this.subscriptions.push(
@@ -196,16 +141,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }, 180000); // 3 minutes
   }
 
-  // private navigateToOrderStatus(): void {
-  //   // Clear timers
-  //   if (this.timeout) clearTimeout(this.timeout);
-  //   if (this.countdownInterval) clearInterval(this.countdownInterval);
-  //
-  //   // Navigate to order status
-  //   this.router.navigate(['/customer/order-status'], {
-  //     state: { orderId: this.orderId }
-  //   });
-  // }
   private navigateToOrderStatus(): void {
     // Clear timers
     if (this.timeout) clearTimeout(this.timeout);

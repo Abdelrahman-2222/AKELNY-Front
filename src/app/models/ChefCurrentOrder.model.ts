@@ -24,12 +24,24 @@ export interface ChefCurrentOrder {
 
 export interface OrderItem {
   id: number;
-  orderId: number;
   itemId: number;
   itemName: string;
   itemPrice: number;
   quantity: number;
   totalPrice: number;
-  addOns: any[];
-  combos: any[];
+  addOns: AddOnItem[];
+  combos: ComboItem[];
+  itemTotalWithExtras?: number; // This comes from your backend calculation
+}
+
+export interface AddOnItem {
+  id: number;
+  name: string;
+  price: number;
+}
+
+export interface ComboItem {
+  id: number;
+  name: string;
+  price: number;
 }
