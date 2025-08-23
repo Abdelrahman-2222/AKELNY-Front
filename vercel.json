@@ -3,10 +3,10 @@
   "outputDirectory": "dist/AKELNY-Front/browser",
   "rewrites": [
     { "source": "/uploads/(.*)", "destination": "http://akelni.tryasp.net/uploads/$1" },
-    { "source": "/api/(.*)", "destination": "http://akelni.tryasp.net/api/$1" },
-    { "source": "/orderHub/(.*)", "destination": "http://akelni.tryasp.net/orderHub/$1" },
-    { "source": "/orderHub", "destination": "http://akelni.tryasp.net/orderHub" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": "http://akelni.tryasp.net/api/$1" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
   ],
   "headers": [
     {

@@ -47,19 +47,11 @@ export class SignalrService {
       return;
     }
 
-    // If signalrUrl is empty (prod), use relative path → goes through Vercel proxy
+    // Always connect directly to the backend - Vercel can't proxy WebSockets
     const hubUrl = environment.signalrUrl
       ? `${environment.signalrUrl}/orderHub`
-      : `/orderHub`;
+      : `http://akelni.tryasp.net/orderHub`;
 
-    // this.hubConnection = new signalR.HubConnectionBuilder()
-    //   .withUrl(hubUrl, {
-    //     accessTokenFactory: () => this.getToken() || '',
-    //     transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
-    //     skipNegotiation: false
-    //   })
-    //   .withAutomaticReconnect([0, 2000, 10000, 30000])
-    //   .build();
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(hubUrl, {
         accessTokenFactory: () => this.getToken() || '',
