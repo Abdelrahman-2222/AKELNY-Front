@@ -1,164 +1,138 @@
-<section class="pt-24 pb-16 theme-bg-primary min-h-screen">
-  <div class="container mx-auto px-4">
+<section class="pt-20 pb-8 md:pt-24 md:pb-16 theme-bg-primary min-h-screen">
+  <div class="container mx-auto px-2 sm:px-4 lg:px-6">
     <app-chef-dashboard-header></app-chef-dashboard-header>
-    <div *ngIf="notification" class="fixed top-6 right-6 z-50 px-4 py-2 rounded shadow-lg"
+
+    <!-- Notification -->
+    <div *ngIf="notification"
+         class="fixed top-4 right-4 z-50 px-3 py-2 sm:px-4 sm:py-2 rounded shadow-lg max-w-xs sm:max-w-sm"
          [ngClass]="{'bg-green-500 text-white': notification.type === 'success', 'bg-red-500 text-white': notification.type === 'error'}">
-      {{ notification.message }}
+      <p class="text-sm break-words">{{ notification.message }}</p>
     </div>
 
     <!-- Loading State -->
     <div *ngIf="isLoading" class="flex justify-center items-center py-8">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-      <span class="ml-2 theme-text-primary">Loading restaurant details...</span>
+      <div class="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-orange-500"></div>
+      <span class="ml-2 theme-text-primary text-sm sm:text-base">Loading restaurant details...</span>
     </div>
 
     <!-- Error State -->
     <div *ngIf="errorMessage && !isLoading"
-         class="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-      <p class="text-red-700 dark:text-red-400 text-sm">{{ errorMessage }}</p>
+         class="mb-4 sm:mb-8 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+      <p class="text-red-700 dark:text-red-400 text-xs sm:text-sm break-words">{{ errorMessage }}</p>
     </div>
 
     <!-- No Restaurant State -->
-    <div *ngIf="!hasRestaurant && !isLoading && !errorMessage" class="text-center py-8">
-      <div
-        class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full mb-4">
-        <lucide-icon [img]="Store" class="w-8 h-8 text-white"></lucide-icon>
+    <div *ngIf="!hasRestaurant && !isLoading && !errorMessage" class="text-center py-6 sm:py-8 px-4">
+      <div class="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full mb-3 sm:mb-4">
+        <lucide-icon [img]="Store" class="w-6 h-6 sm:w-8 sm:h-8 text-white"></lucide-icon>
       </div>
-      <h3 class="text-xl font-bold theme-text-primary mb-2">No Restaurant Found</h3>
-      <p class="theme-text-secondary mb-4">You haven't created a restaurant yet. Create one to start serving
-        customers!</p>
-      <a
-        routerLink="/chef/add-restaurant"
-        class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-200"
-      >
+      <h3 class="text-lg sm:text-xl font-bold theme-text-primary mb-2">No Restaurant Found</h3>
+      <p class="theme-text-secondary mb-4 text-sm sm:text-base px-2">You haven't created a restaurant yet. Create one to start serving customers!</p>
+      <a routerLink="/chef/add-restaurant"
+         class="inline-block px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-lg sm:rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-200 text-sm sm:text-base">
         Create Restaurant
       </a>
     </div>
 
-    <!-- Restaurant Display Section (when hasRestaurant is true) -->
-    <div *ngIf="hasRestaurant && restaurant" class="mb-8">
-      <div class="glass-card rounded-2xl p-6">
+    <!-- Restaurant Display Section -->
+    <div *ngIf="hasRestaurant && restaurant" class="mb-4 sm:mb-8">
+      <div class="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6">
         <!-- Restaurant Header -->
-        <div class="flex justify-between items-start mb-6">
-          <h2 class="text-2xl font-bold theme-text-primary">Your Restaurant</h2>
-          <div class="flex gap-2">
-            <button
-              (click)="AddItems()"
-              class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
-            >
+        <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-6">
+          <h2 class="text-xl sm:text-2xl font-bold theme-text-primary">Your Restaurant</h2>
+
+          <!-- Action Buttons - Responsive Grid -->
+          <div class="grid grid-cols-2 sm:flex gap-2 text-xs sm:text-sm">
+            <button (click)="AddItems()"
+                    class="px-2 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200 whitespace-nowrap">
               Add Items
             </button>
-            <button
-              (click)="ViewMenu()"
-              class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
-            >
-              View All Items
+            <button (click)="ViewMenu()"
+                    class="px-2 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200 whitespace-nowrap">
+              View Menu
             </button>
-            <button
-              (click)="openRestaurantSettings()"
-              class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
-            >
-              Edit Restaurant
+            <button (click)="openRestaurantSettings()"
+                    class="px-2 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200 whitespace-nowrap">
+              Edit
             </button>
-
-             <!-- export orders report -->
-            <app-chef-order-report></app-chef-order-report>
-
-            <button
-              (click)="deleteRestaurant(restaurant.id)"
-              class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
-            >
+            <app-chef-order-report class="contents"></app-chef-order-report>
+            <button (click)="ViewOrders()"
+                    class="px-2 sm:px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap">
+              Orders
+            </button>
+            <button (click)="deleteRestaurant(restaurant.id)"
+                    class="px-2 sm:px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200">
               🗑️
             </button>
-
-
           </div>
         </div>
 
-        <!-- Restaurant Content Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Restaurant Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <!-- Restaurant Image -->
-          <div class="space-y-4">
-            <div class="aspect-video rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-700">
-              <img
-                [src]="restaurant.imageUrl"
-                [alt]="restaurant.name"
-                class="w-full h-full object-cover"
-              />
+          <div class="space-y-3 sm:space-y-4">
+            <div class="aspect-video rounded-lg sm:rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-700">
+              <img [src]="restaurant.imageUrl" [alt]="restaurant.name" class="w-full h-full object-cover" />
             </div>
 
-            <!-- Restaurant Status Badge -->
-            <div class="flex items-center gap-2">
-              <div
-                class="px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
-                [class]="restaurant.isOpen ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'"
-              >
-                <div
-                  class="w-2 h-2 rounded-full"
-                  [class]="restaurant.isOpen ? 'bg-green-500' : 'bg-red-500'"
-                ></div>
+            <!-- Restaurant Status -->
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex items-center gap-2"
+                   [class]="restaurant.isOpen ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'">
+                <div class="w-2 h-2 rounded-full"
+                     [class]="restaurant.isOpen ? 'bg-green-500' : 'bg-red-500'"></div>
                 {{ restaurant.isOpen ? 'Open' : 'Closed' }}
               </div>
 
-              <!-- Rating Display -->
-              <div
-                class="flex items-center gap-1 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 rounded-full text-sm">
-                <lucide-icon [img]="Star" class="w-4 h-4 fill-current"></lucide-icon>
-                {{ restaurant.rating || 0 }} ({{ restaurant.rating ? 'Rated' : 'No ratings yet' }})
+              <div class="flex items-center gap-1 px-2 sm:px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 rounded-full text-xs sm:text-sm">
+                <lucide-icon [img]="Star" class="w-3 h-3 sm:w-4 sm:h-4 fill-current"></lucide-icon>
+                {{ restaurant.rating || 0 }} ({{ restaurant.rating ? 'Rated' : 'No ratings' }})
               </div>
             </div>
           </div>
 
           <!-- Restaurant Details -->
-          <div class="space-y-4">
-            <!-- Restaurant Name -->
-            <div class="flex justify-between items-center gap-4">
-              <h3 class="text-xl font-bold theme-text-primary">{{ restaurant.name }}</h3>
-              <button
-                (click)="ViewOrders()"
-                class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
-              >
-                View Orders
-              </button>
+          <div class="space-y-3 sm:space-y-4">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
+              <h3 class="text-lg sm:text-xl font-bold theme-text-primary break-words">{{ restaurant.name }}</h3>
             </div>
 
             <!-- Description -->
             <div>
-              <h4 class="text-sm font-semibold theme-text-secondary mb-2">Description</h4>
-              <p class="theme-text-primary text-sm leading-relaxed">{{ restaurant.description }}</p>
+              <h4 class="text-xs sm:text-sm font-semibold theme-text-secondary mb-2">Description</h4>
+              <p class="theme-text-primary text-xs sm:text-sm leading-relaxed break-words">{{ restaurant.description }}</p>
             </div>
 
             <!-- Location -->
             <div>
-              <h4 class="text-sm font-semibold theme-text-secondary mb-2 flex items-center gap-2">
-                <lucide-icon [img]="MapPin" class="w-4 h-4"></lucide-icon>
+              <h4 class="text-xs sm:text-sm font-semibold theme-text-secondary mb-2 flex items-center gap-2">
+                <lucide-icon [img]="MapPin" class="w-3 h-3 sm:w-4 sm:h-4"></lucide-icon>
                 Location
               </h4>
-              <p class="theme-text-primary text-sm">{{ restaurant.location }}</p>
+              <p class="theme-text-primary text-xs sm:text-sm break-words">{{ restaurant.location }}</p>
             </div>
 
             <!-- Opening Hours -->
             <div>
-              <h4 class="text-sm font-semibold theme-text-secondary mb-2 flex items-center gap-2">
-                <lucide-icon [img]="Clock" class="w-4 h-4"></lucide-icon>
+              <h4 class="text-xs sm:text-sm font-semibold theme-text-secondary mb-2 flex items-center gap-2">
+                <lucide-icon [img]="Clock" class="w-3 h-3 sm:w-4 sm:h-4"></lucide-icon>
                 Opening Hours
               </h4>
-              <div class="space-y-2">
-                <div
-                  *ngIf="restaurant.openingHours && parseOpeningHours(restaurant.openingHours).length > 0; else noHours"
-                  class="text-sm theme-text-primary">
-                  <!-- Parse and display opening hours -->
+              <div class="space-y-1 sm:space-y-2">
+                <div *ngIf="restaurant.openingHours && parseOpeningHours(restaurant.openingHours).length > 0; else noHours"
+                     class="text-xs sm:text-sm theme-text-primary">
                   <div *ngFor="let dayHours of parseOpeningHours(restaurant.openingHours)"
-                       class="flex justify-between items-center py-2 px-3 rounded-lg border transition-colors"
+                       class="flex justify-between items-center py-1 sm:py-2 px-2 sm:px-3 rounded-lg border transition-colors"
                        [class]="dayHours.isOpen ? 'open-day-bg' : 'theme-bg-secondary theme-border'">
                     <span class="font-medium theme-text-primary">{{ dayHours.day }}</span>
-                    <span [class]="dayHours.isOpen ? 'open-day-message' : 'closed-day-message'">
-          {{ dayHours.hours }}
-        </span>
+                    <span class="text-right break-words"
+                          [class]="dayHours.isOpen ? 'open-day-message' : 'closed-day-message'">
+                      {{ dayHours.hours }}
+                    </span>
                   </div>
                 </div>
                 <ng-template #noHours>
-                  <p class="text-sm theme-text-muted italic">No opening hours set</p>
+                  <p class="text-xs sm:text-sm theme-text-muted italic">No opening hours set</p>
                 </ng-template>
               </div>
             </div>
@@ -167,38 +141,6 @@
       </div>
     </div>
 
-    <!-- Include your other dashboard components -->
-<!--    <app-chef-dashboard-stats-cards></app-chef-dashboard-stats-cards>-->
-<!--    <app-chef-dashboard-current-orders></app-chef-dashboard-current-orders>-->
-<!--    <app-chef-dashboard-menu></app-chef-dashboard-menu>-->
-<!--    <app-chef-dashboard-past-orders></app-chef-dashboard-past-orders>-->
-<!--    <app-chef-dashboard-earnings></app-chef-dashboard-earnings>-->
-
-    <!-- Restaurant Settings Modal -->
-    <app-chef-restaurant-settings
-      *ngIf="isSettingsModalOpen && restaurant"
-      [restaurant]="restaurant"
-      (save)="onSettingsSave($event)"
-      (cancel)="onSettingsCancel()"
-    ></app-chef-restaurant-settings>
-
-    <!-- Notification -->
-    <div *ngIf="notification"
-         class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg"
-         [class]="notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
-      {{ notification.message }}
-    </div>
-
-<!--    &lt;!&ndash; In chef-dashboard-component.html &ndash;&gt;-->
-<!--    <div class="orders-section">-->
-<!--      <h2>Current Orders</h2>-->
-<!--      <div *ngFor="let order of currentOrders" class="order-container">-->
-<!--        <app-chef-dashboard-order-->
-<!--          [order]="order"-->
-<!--          [chefId]="chefId">-->
-<!--        </app-chef-dashboard-order>-->
-<!--      </div>-->
-<!--    </div>-->
     <!-- Enhanced Current Orders Section -->
     <div class="current-orders-section">
       <div class="section-header">
@@ -213,11 +155,13 @@
       </div>
 
       <div class="orders-grid" *ngIf="currentOrders.length > 0; else noOrdersState">
-        <div *ngFor="let currentOrder of currentOrders" class="order-details">
-          <p class="text-sm text-gray-600">{{ getOrderDetails(currentOrder) }}</p>
-          <p *ngIf="hasExtras(currentOrder)" class="text-xs text-blue-600 mt-1">
+        <div *ngFor="let currentOrder of currentOrders; trackBy: trackByOrderId" class="order-details">
+          <!-- Order Details Text -->
+          <p class="text-xs sm:text-sm text-gray-600 mb-2 break-words">{{ getOrderDetails(currentOrder) }}</p>
+          <p *ngIf="hasExtras(currentOrder)" class="text-xs text-blue-600 mt-1 mb-3 break-words">
             Includes: {{ getExtrasInfo(currentOrder) }}
           </p>
+
           <!-- Order Header -->
           <div class="order-header">
             <div class="order-badge">
@@ -254,57 +198,45 @@
 
           <!-- Action Buttons -->
           <div class="action-section">
-            <!-- Pending Orders - Accept/Reject -->
+            <!-- Pending Orders -->
             <div class="action-buttons" *ngIf="currentOrder.status === 'pending' && currentOrder.paymentStatus !== 'paid'">
-              <button
-                class="btn-accept"
-                (click)="acceptOrder(currentOrder.id)"
-                [disabled]="isProcessingOrder(currentOrder.id)">
+              <button class="btn-accept" (click)="acceptOrder(currentOrder.id)" [disabled]="isProcessingOrder(currentOrder.id)">
                 <lucide-icon [img]="CheckCircle"></lucide-icon>
                 Accept
               </button>
-              <button
-                class="btn-reject"
-                (click)="rejectOrder(currentOrder.id)"
-                [disabled]="isProcessingOrder(currentOrder.id)">
+              <button class="btn-reject" (click)="rejectOrder(currentOrder.id)" [disabled]="isProcessingOrder(currentOrder.id)">
                 <lucide-icon [img]="XCircle"></lucide-icon>
                 Reject
               </button>
             </div>
 
-            <!-- Accepted Orders - Mark Ready -->
+            <!-- Accepted Orders -->
             <div class="action-buttons" *ngIf="currentOrder.status === 'accepted' && currentOrder.paymentStatus === 'paid'">
-              <button
-                class="btn-primary-action"
-                (click)="markAsReady(currentOrder.id)"
-                [disabled]="isProcessingOrder(currentOrder.id)">
+              <button class="btn-primary-action" (click)="markAsReady(currentOrder.id)" [disabled]="isProcessingOrder(currentOrder.id)">
                 <lucide-icon [img]="Timer"></lucide-icon>
                 Mark Ready
               </button>
             </div>
 
-            <!-- Ready Orders - Complete -->
+            <!-- Ready Orders -->
             <div class="action-buttons" *ngIf="currentOrder.status === 'ready' && currentOrder.paymentStatus === 'paid'">
-              <button
-                class="btn-complete"
-                (click)="completeOrder(currentOrder.id)"
-                [disabled]="isProcessingOrder(currentOrder.id)">
+              <button class="btn-complete" (click)="completeOrder(currentOrder.id)" [disabled]="isProcessingOrder(currentOrder.id)">
                 <lucide-icon [img]="CheckCircle"></lucide-icon>
-                Complete Order
+                Complete
               </button>
             </div>
 
             <!-- Status Messages -->
             <div class="status-message" *ngIf="getStatusMessage(currentOrder)">
               <lucide-icon [img]="AlertCircle" class="status-icon"></lucide-icon>
-              {{ getStatusMessage(currentOrder) }}
+              <span class="break-words">{{ getStatusMessage(currentOrder) }}</span>
             </div>
           </div>
 
           <!-- Processing Overlay -->
           <div class="processing-overlay" *ngIf="isProcessingOrder(currentOrder.id)">
             <div class="spinner"></div>
-            <span>Processing...</span>
+            <span class="text-sm">Processing...</span>
           </div>
         </div>
       </div>
@@ -315,9 +247,17 @@
             <lucide-icon [img]="ShoppingBag"></lucide-icon>
           </div>
           <h3>No Active Orders</h3>
-          <p>New orders will appear here in real-time</p>
+          <p class="text-sm sm:text-base">New orders will appear here in real-time</p>
         </div>
       </ng-template>
     </div>
+
+    <!-- Restaurant Settings Modal -->
+    <app-chef-restaurant-settings
+      *ngIf="isSettingsModalOpen && restaurant"
+      [restaurant]="restaurant"
+      (save)="onSettingsSave($event)"
+      (cancel)="onSettingsCancel()"
+    ></app-chef-restaurant-settings>
   </div>
 </section>
