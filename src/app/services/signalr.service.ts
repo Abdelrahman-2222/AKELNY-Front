@@ -47,10 +47,7 @@ export class SignalrService {
       return;
     }
 
-    // Always connect directly to the backend - Vercel can't proxy WebSockets
-    const hubUrl = environment.signalrUrl
-      ? `${environment.signalrUrl}/orderHub`
-      : `http://akelni.tryasp.net/orderHub`;
+    const hubUrl = `${environment.signalrUrl}/orderHub`;
 
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(hubUrl, {
