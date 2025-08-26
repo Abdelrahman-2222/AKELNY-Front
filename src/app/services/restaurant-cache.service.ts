@@ -1,98 +1,80 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap, shareReplay, catchError } from 'rxjs/operators';
 import { RestaurantDetails } from '../models/RestaurantDetails.model';
 import { GetService } from './requests/get-service';
 import { environment } from '../../environments/environment';
 
-interface CacheEntry {
-  data: RestaurantDetails;
-  timestamp: number;
-  page: number;
-  pageSize: number;
+interface RestaurantBasicInfo {
+  resName: string;
+  resImage: string;
+  rating: number;
+  location: string;
+  categories: { id: number; name: string }[];
+}
+
+interface RestaurantItemsPage {
+  items: any[];
+  totalPages: number;
+  totalItems: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class RestaurantCacheService {
-  private cache = new Map<string, CacheEntry>();
-  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-  constructor(private getService: GetService) {}
-
-  getRestaurantDetails(
-    restId: number,
-    page: number,
-    pageSize: number,
-    forceRefresh = false
-  ): Observable<RestaurantDetails> {
-    const cacheKey = `${restId}-${page}-${pageSize}`;
-    const cached = this.cache.get(cacheKey);
-
-    // Check if cache is valid and not forcing refresh
-    if (!forceRefresh && cached && this.isCacheValid(cached.timestamp)) {
-      console.log('Using cached restaurant data');
-      return of(cached.data);
-    }
-
-    console.log('Fetching fresh restaurant data');
-    return this.getService.get<RestaurantDetails>({
-      url: `${environment.apiUrl}/Restaurants/customer-restaurant/${restId}?page=${page}&pageSize=${pageSize}`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('token'),
-      },
-    }).pipe(
-      tap(data => {
-        // Ensure pagination properties exist
-        const restaurantData: RestaurantDetails = {
-          ...data,
-          totalPages: data.totalPages || 1,
-          currentPage: page,
-          pageSize: pageSize,
-          totalItems: data.totalItems || 0
-        };
-
-        // Cache the response
-        this.cache.set(cacheKey, {
-          data: restaurantData,
-          timestamp: Date.now(),
-          page,
-          pageSize
-        });
-      }),
-      shareReplay(1),
-      catchError((error) => {
-        console.error('Error fetching restaurant details:', error);
-        throw error;
-      })
-    );
-  }
+  private getService = inject(GetService);
+  private itemsCache = new Map<string, { data: any; timestamp: number }>();
+  private readonly CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
   private isCacheValid(timestamp: number): boolean {
     return Date.now() - timestamp < this.CACHE_DURATION;
   }
 
-  clearCache(restId?: number): void {
-    if (restId) {
-      const keysToDelete = Array.from(this.cache.keys())
-        .filter(key => key.startsWith(`${restId}-`));
-      keysToDelete.forEach(key => this.cache.delete(key));
-    } else {
-      this.cache.clear();
+
+  getRestaurantItems(restId: number, page: number, pageSize: number): Observable<any> {
+    const cacheKey = `${restId}-${page}-${pageSize}`;
+    const cached = this.itemsCache.get(cacheKey);
+
+    if (cached && this.isCacheValid(cached.timestamp)) {
+      return of(cached.data);
+    }
+
+    return this.getService.get<any>({
+      url: `${environment.apiUrl}/Restaurants/customer-restaurant/${restId}?page=${page}&pageSize=${pageSize}`,
+      headers: this.getHeaders()
+    }).pipe(
+      tap(data => {
+        // Cache the complete response
+        this.itemsCache.set(cacheKey, {
+          data: data,
+          timestamp: Date.now()
+        });
+      })
+    );
+  }
+
+  preloadNextPage(restId: number, currentPage: number, pageSize: number): void {
+    const nextPage = currentPage + 1;
+    const cacheKey = `${restId}-${nextPage}-${pageSize}`;
+
+    if (!this.itemsCache.has(cacheKey)) {
+      this.getRestaurantItems(restId, nextPage, pageSize)
+        .subscribe();
     }
   }
 
-  invalidateCache(restId: number): void {
-    this.clearCache(restId);
+  private getHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    };
   }
 
-  // Get cache statistics for debugging
-  getCacheStats(): { size: number; keys: string[] } {
-    return {
-      size: this.cache.size,
-      keys: Array.from(this.cache.keys())
-    };
+  refreshInBackground(restId: number, page: number, pageSize: number): void {
+    setTimeout(() => {
+      this.getRestaurantItems(restId, page, pageSize)
+        .subscribe();
+    }, 100);
   }
 }

@@ -1,16 +1,11 @@
-
-
-
-
-
-
-
-<div class="filter-sidebar">
+<div class="filter-sidebar" [class.opacity-50]="disabled">
   <!-- Filter Header -->
   <div class="filter-header">
     <div class="flex items-center justify-between">
       <h2 class="filter-title">Filters</h2>
-      <button (click)="clearAll()" class="clear-button">
+      <button (click)="clearAll()"
+              [disabled]="disabled"
+              class="clear-button disabled:opacity-50 disabled:cursor-not-allowed">
         Clear All
       </button>
     </div>
@@ -23,37 +18,65 @@
     <!-- Sort Field Selection -->
     <div class="space-y-3 mb-6">
       <div class="flex items-center">
-        <input [(ngModel)]='sortBy' id="sort-rating" type="radio" name="sortBy" value="rating" checked
-          class="filter-input">
-        <label for="sort-rating" class="filter-label">
+        <input [(ngModel)]='sortBy'
+               id="sort-rating"
+               type="radio"
+               name="sortBy"
+               value="rating"
+               [disabled]="disabled"
+               checked
+               class="filter-input disabled:opacity-50 disabled:cursor-not-allowed">
+        <label for="sort-rating"
+               class="filter-label"
+               [class.opacity-50]="disabled">
           Rating
         </label>
       </div>
       <div class="flex items-center">
-        <input [(ngModel)]='sortBy' id="sort-name" type="radio" name="sortBy" value="name"
-          class="filter-input">
-        <label for="sort-name" class="filter-label">
+        <input [(ngModel)]='sortBy'
+               id="sort-name"
+               type="radio"
+               name="sortBy"
+               value="name"
+               [disabled]="disabled"
+               class="filter-input disabled:opacity-50 disabled:cursor-not-allowed">
+        <label for="sort-name"
+               class="filter-label"
+               [class.opacity-50]="disabled">
           Restaurant Name
         </label>
       </div>
-
-      <!-- categories items -->
     </div>
 
     <!-- Sort Order Selection -->
     <div class="space-y-3">
       <h4 class="filter-section-title">Order</h4>
       <div class="flex items-center">
-        <input [(ngModel)]="sortOrder" id="sort-desc" type="radio" name="sortOrder" value="-" checked
-          class="filter-input">
-        <label for="sort-desc" class="filter-label">
+        <input [(ngModel)]="sortOrder"
+               id="sort-desc"
+               type="radio"
+               name="sortOrder"
+               value="-"
+               [disabled]="disabled"
+               checked
+               class="filter-input disabled:opacity-50 disabled:cursor-not-allowed">
+        <label for="sort-desc"
+               class="filter-label"
+               [class.opacity-50]="disabled">
           Highest to Lowest
         </label>
       </div>
       <div class="flex items-center">
-        <input [(ngModel)]="sortOrder" id="sort-asc" type="radio" name="sortOrder" value=""
-          class="filter-input">
-        <label for="sort-asc" class="filter-label">
+        <input [(ngModel)]="sortOrder"
+               id="sort-asc"
+               type="radio"
+               name="sortOrder"
+               value=""
+               [disabled]="disabled"
+               class="filter-input disabled:opacity-50 disabled:cursor-not-allowed">
+        <label for="sort-asc"
+               class="filter-label"
+               [class.opacity-50]="disabled">
           Lowest to Highest
         </label>
       </div>
@@ -63,13 +86,10 @@
   <!-- Apply Button -->
   <div class="p-6 border-t" style="border-color: var(--filter-border)">
     <button
-     (click)="applyFilters()"
-      class="apply-button">
+      (click)="applyFilters()"
+      [disabled]="disabled"
+      class="apply-button disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400">
       Apply Filters
     </button>
   </div>
 </div>
-
-
-
-

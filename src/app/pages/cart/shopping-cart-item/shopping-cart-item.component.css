@@ -1,3 +1,206 @@
+/* Base container styles with theme support */
+.shopping-cart-item {
+  @apply transition-all duration-300 p-4 rounded-xl;
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  backdrop-filter: blur(10px);
+}
+
+.shopping-cart-item:hover {
+  box-shadow: 0 4px 12px var(--shadow-color) !important;
+  transform: translateY(-1px);
+}
+
+/* Image styling with theme support */
 #itemImg {
-  display: inline-block;
+  @apply transition-transform duration-300;
+  border-radius: 8px;
+}
+
+#itemImg:hover {
+  @apply transform scale-105;
+}
+
+/* Responsive image container */
+.image-container {
+  background: var(--bg-accent) !important;
+  border-color: var(--border-color) !important;
+  @apply transition-colors duration-300;
+}
+
+/* Quantity controls with theme support */
+.quantity-controls {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  @apply shadow-sm backdrop-blur-sm;
+}
+
+.quantity-btn {
+  @apply transition-all duration-200 font-medium;
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+}
+
+.quantity-btn:hover:not(:disabled) {
+  color: var(--primary-orange) !important;
+  background: var(--bg-accent) !important;
+}
+
+.quantity-btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
+  color: var(--text-muted) !important;
+}
+
+/* Price styling */
+.item-price {
+  color: var(--primary-orange) !important;
+  @apply font-bold transition-colors duration-300;
+}
+
+/* Remove button styling */
+.remove-btn {
+  @apply rounded-full p-2 transition-all duration-200;
+  background: var(--glass-bg) !important;
+  color: var(--text-muted) !important;
+  border: 1px solid transparent;
+}
+
+.remove-btn:hover {
+  color: var(--accent-red) !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+  border-color: var(--accent-red) !important;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 640px) {
+  .shopping-cart-item {
+    @apply p-4 mb-3;
+    border-radius: 16px;
+  }
+
+  .item-content {
+    @apply space-y-3;
+  }
+
+  .quantity-controls {
+    @apply w-full max-w-xs;
+  }
+
+  .price-section {
+    @apply w-full flex justify-between items-center;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .shopping-cart-item {
+    @apply p-3;
+  }
+
+  .quantity-controls {
+    @apply scale-95;
+  }
+}
+
+@media (min-width: 769px) {
+  .shopping-cart-item {
+    @apply p-4;
+  }
+}
+
+/* Animation for quantity changes */
+@keyframes quantity-change {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.quantity-value {
+  animation: quantity-change 0.3s ease-in-out;
+  color: var(--text-primary) !important;
+}
+
+/* Enhanced accessibility */
+.remove-btn:focus {
+  @apply outline-none ring-2 ring-opacity-50;
+  ring-color: var(--accent-red) !important;
+}
+
+.quantity-btn:focus {
+  @apply outline-none ring-2 ring-opacity-50;
+  ring-color: var(--primary-orange) !important;
+}
+
+/* Line clamp utility for long item names */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Dark theme specific overrides with higher specificity */
+[data-theme="dark"] .shopping-cart-item {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .image-container {
+  background: var(--bg-accent) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .quantity-controls {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .quantity-btn {
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+}
+
+[data-theme="dark"] .quantity-btn:hover:not(:disabled) {
+  color: var(--primary-amber) !important;
+  background: var(--bg-accent) !important;
+}
+
+[data-theme="dark"] .quantity-btn:disabled {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .quantity-value {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .item-price {
+  color: var(--primary-amber) !important;
+}
+
+[data-theme="dark"] .remove-btn {
+  background: var(--glass-bg) !important;
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .remove-btn:hover {
+  color: #f87171 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: #f87171 !important;
+}
+
+[data-theme="dark"] .shopping-cart-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Text color overrides for dark theme */
+[data-theme="dark"] .theme-text-primary {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .theme-text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .theme-text-muted {
+  color: var(--text-muted) !important;
 }

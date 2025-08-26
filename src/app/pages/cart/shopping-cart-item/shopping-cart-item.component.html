@@ -1,39 +1,72 @@
-<div class="mb-2 flex items-center py-4 border-b border-gray-100 last:border-0">
-  <div class="bg-gray-200 border-2 border-dashed rounded-xl w-24 h-24">
-    <img class="w-full h-full" [src]="item.image" id="itemImg" alt="" />
+<div class="shopping-cart-item mb-2 flex flex-col sm:flex-row items-start sm:items-center py-4 border-b last:border-0 gap-4 sm:gap-0"
+     style="border-color: var(--border-color);">
+
+  <!-- Image Container -->
+  <div class="flex-shrink-0 w-full sm:w-24 h-24 sm:h-24 max-w-24 mx-auto sm:mx-0">
+    <div class="image-container border-2 border-dashed rounded-xl w-full h-full overflow-hidden">
+      <img
+        class="w-full h-full object-cover"
+        [src]="item.image"
+        id="itemImg"
+        alt="{{ item.name }}"
+      />
+    </div>
   </div>
 
-  <div class="ml-4 flex-1">
-    <div class="flex justify-between items-start">
-      <div>
-        <h3 class="text-lg font-bold text-dark-text">{{ item.name }}</h3>
-        <!-- <p class="text-gray-text">Hums</p> -->
+  <!-- Content Container -->
+  <div class="flex-1 w-full sm:ml-4 item-content">
+    <!-- Header with name and remove button -->
+    <div class="flex justify-between items-start mb-2">
+      <div class="flex-1 pr-2">
+        <h3 class="text-base sm:text-lg font-bold line-clamp-2 theme-text-primary">
+          {{ item.name }}
+        </h3>
+        <p class="text-sm mt-1 theme-text-secondary">
+          {{ item.categoryName }}
+        </p>
       </div>
       <button
-        (click)="cartService.removeItem(i)"
-        class="text-gray-400 hover:text-red-500"
+        (click)="removeItem()"
+        class="remove-btn flex-shrink-0 p-1 transition-colors duration-200"
+        aria-label="Remove item"
       >
         <lucide-icon [name]="X" size="20"></lucide-icon>
       </button>
     </div>
 
-    <div class="mt-4 flex justify-between items-center">
-      <div class="flex items-center border border-gray-200 rounded-full">
+    <!-- Quantity and Price Controls -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+      <!-- Quantity Controls -->
+      <div class="quantity-controls flex items-center border rounded-full shadow-sm">
         <button
-          (click)="cartService.updateQuantity(item, -1)"
-          class="px-3 py-1 text-gray-500 hover:text-primary-orange"
+          (click)="updateQuantity(-1)"
+          class="quantity-btn px-3 py-2 rounded-l-full"
+          [disabled]="item.quantity <= 1"
+          [class.opacity-50]="item.quantity <= 1"
+          [class.cursor-not-allowed]="item.quantity <= 1"
         >
           -
         </button>
-        <span class="px-3">{{ item.quantity }}</span>
+        <span class="quantity-value px-4 py-2 font-medium min-w-[3rem] text-center theme-text-primary">
+          {{ item.quantity }}
+        </span>
         <button
-          (click)="cartService.updateQuantity(item, 1)"
-          class="px-3 py-1 text-gray-500 hover:text-primary-orange"
+          (click)="updateQuantity(1)"
+          class="quantity-btn px-3 py-2 rounded-r-full"
         >
           +
         </button>
       </div>
-      <p class="text-lg font-bold">${{ item.price * item.quantity }}</p>
+
+      <!-- Price -->
+      <div class="price-section flex flex-col sm:items-end">
+        <p class="item-price text-lg sm:text-xl font-bold">
+          ${{ (item.price * item.quantity).toFixed(2) }}
+        </p>
+        <p class="text-sm theme-text-muted" *ngIf="item.quantity > 1">
+          ${{ item.price.toFixed(2) }} each
+        </p>
+      </div>
     </div>
   </div>
 </div>

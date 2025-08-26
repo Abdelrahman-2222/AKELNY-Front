@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { OrderPromocodeComponent } from '../order-promocode/order-promocode.component';
 import { OrderBodyComponent } from '../order-body/order-body.component';
 import { CartService } from '../cart.service';
@@ -7,7 +8,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-order-summary',
   standalone: true,
-  imports: [OrderPromocodeComponent, OrderBodyComponent],
+  imports: [CommonModule, OrderPromocodeComponent, OrderBodyComponent],
   templateUrl: './order-summary.component.html',
   styleUrl: './order-summary.component.css',
 })

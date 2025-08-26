@@ -35,3 +35,87 @@
   border: 4px solid var(--bg-accent);
   border-top-color: var(--primary-orange);
 }
+
+/* Responsive Grid Layout */
+.restaurant-grid-container {
+  @apply grid gap-4;
+  /* Mobile: Single column */
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "filters"
+    "content"
+    "pagination";
+}
+
+@media (min-width: 768px) {
+  .restaurant-grid-container {
+    /* Tablet: 2 columns with filters on top */
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "filters filters"
+      "content content"
+      "pagination pagination";
+  }
+}
+
+@media (min-width: 1024px) {
+  .restaurant-grid-container {
+    /* Desktop: 4 columns with sidebar */
+    grid-template-columns: 1fr 1fr 1fr 280px;
+    grid-template-areas:
+      "content content content filters"
+      "pagination pagination pagination filters";
+  }
+}
+
+.restaurant-content {
+  grid-area: content;
+}
+
+.restaurant-filters {
+  grid-area: filters;
+}
+
+.restaurant-pagination {
+  grid-area: pagination;
+}
+
+/* Restaurant cards responsive grid */
+.restaurant-cards-grid {
+  @apply grid gap-4;
+  /* Mobile: 1 column */
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .restaurant-cards-grid {
+    /* Small tablet: 2 columns */
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .restaurant-cards-grid {
+    /* Desktop: 3 columns */
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .restaurant-cards-grid {
+    /* Large desktop: 3 columns with better spacing */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Mobile filter adjustments */
+@media (max-width: 1023px) {
+  .mobile-filter-header {
+    @apply p-4 border-b border-gray-200 bg-white;
+  }
+
+  .mobile-filter-content {
+    @apply p-4;
+  }
+}

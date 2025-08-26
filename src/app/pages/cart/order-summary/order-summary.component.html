@@ -1,19 +1,28 @@
 <!-- Order Summary -->
 <div>
-  <div class="bg-white rounded-2xl shadow-sm p-6 sticky top-24">
-    <h2 class="text-xl font-bold text-dark-text mb-6">Order Summary</h2>
+  <div class="order-summary-card rounded-2xl shadow-sm p-6 sticky top-24">
+    <h2 class="text-xl font-bold theme-text-primary mb-6">Order Summary</h2>
 
     <div class="space-y-4">
       <app-order-body></app-order-body>
       <app-order-promocode></app-order-promocode>
-      <a
-        href="#"
+      <button
+        type="button"
         id="btn-checkout"
-        class="w-100 bg-orange-400 p-2 text-center font-bold rounded-full"
+        class="checkout-btn w-full p-3 text-center font-bold rounded-full transition-all duration-300"
         (click)="checkout($event)"
+        [disabled]="isProcessing"
+        [class.processing]="isProcessing"
       >
-        Continue to Checkout
-      </a>
+        <span *ngIf="!isProcessing">Continue to Checkout</span>
+        <span *ngIf="isProcessing" class="flex items-center justify-center gap-2">
+          <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+            <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Processing...
+        </span>
+      </button>
     </div>
   </div>
 </div>

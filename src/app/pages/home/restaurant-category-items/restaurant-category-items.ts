@@ -40,11 +40,11 @@ export class RestaurantCategoryItems implements OnInit {
       if (catId && restId != null) {
         this.catId = +catId;
         this.restId = +restId;
-        console.log(this.catId)
-        console.log(this.restId)
+        // console.log(this.catId)
+        // console.log(this.restId)
         this.loadCatItems();
       } else {
-        console.error('No Category ID and restaurant ID Not found in the route parameters.');
+        // console.error('No Category ID and restaurant ID Not found in the route parameters.');
       }
     });
   }
@@ -68,19 +68,19 @@ export class RestaurantCategoryItems implements OnInit {
             this.CategoryItem = data
             this.totalPages = data.totalCount;
             this.loading = false;
-            console.log(this.CategoryItem);
+            // console.log(this.CategoryItem);
           },
           error: (err) => {
-            console.error('Error fetching restaurants:', err);
+            // console.error('Error fetching restaurants:', err);
           },
           complete: () => {
-            console.log('Restaurant data fetch complete');
+            // console.log('Restaurant data fetch complete');
           },
         });
     }
 
     showItemDetails(itemId: number): void {
-    console.log(`Navigating to item: ${itemId}`);
+    // console.log(`Navigating to item: ${itemId}`);
     this.router.navigate(['/customer/item-details', itemId]);
   }
 

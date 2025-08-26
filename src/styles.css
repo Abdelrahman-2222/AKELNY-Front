@@ -51,7 +51,6 @@
   --menu-category-badge: var(--primary-orange);
   --menu-price: var(--primary-orange);
 
-
   /* Restaurant Component Theme */
   --restaurant-card-bg: var(--card-bg);
   --restaurant-card-shadow: 0 4px 6px var(--shadow-color);
@@ -60,17 +59,17 @@
   --restaurant-btn-bg: var(--primary-orange);
   --restaurant-btn-hover: var(--primary-amber);
 
-    /* Filter Component Theme */
+  /* Filter Component Theme */
   --filter-bg: var(--card-bg);
   --filter-border: var(--border-color);
-  --filter-header-bg:white;
+  --filter-header-bg: white;
   --filter-input-bg: var(--bg-accent);
   --filter-input-checked: var(--primary-orange);
   --filter-input-border: var(--border-color);
   --filter-label-text: var(--text-primary);
   --filter-clear-text: var(--primary-orange);
 
-   /* Pagination Theme */
+  /* Pagination Theme */
   --pagination-bg: var(--card-bg);
   --pagination-border: var(--border-color);
   --pagination-text: var(--text-primary);
@@ -79,7 +78,7 @@
   --pagination-active-text: white;
   --pagination-disabled-text: var(--text-muted);
 
-      /* Popup Theme */
+  /* Popup Theme */
   --popup-overlay: rgba(0, 0, 0, 0.5);
   --popup-bg: var(--card-bg);
   --popup-border: var(--border-color);
@@ -88,78 +87,83 @@
   --popup-input-border: var(--border-color);
 }
 
-[data-theme="dark"] {
-  /* Dark Theme Colors */
-  --bg-primary: #1f2937;
-  --bg-secondary: #374151;
-  --bg-accent: #4b5563;
-  --text-primary: #f9fafb;
-  --text-secondary: #e5e7eb;
-  --text-muted: #d1d5db;
-  --border-color: rgba(251, 146, 60, 0.3);
-  --card-bg: rgba(55, 65, 81, 0.9);
-  --glass-bg: rgba(55, 65, 81, 0.25);
-  --shadow-color: rgba(0, 0, 0, 0.3);
+/* Dark Theme - Higher Specificity */
+html[data-theme="dark"],
+html[data-theme="dark"] *,
+[data-theme="dark"],
+[data-theme="dark"] * {
+  /* Dark Theme Core Colors */
+  --bg-primary: #111827 !important;
+  --bg-secondary: #1f2937 !important;
+  --bg-accent: #374151 !important;
+  --text-primary: #f9fafb !important;
+  --text-secondary: #e5e7eb !important;
+  --text-muted: #d1d5db !important;
+  --border-color: rgba(251, 146, 60, 0.3) !important;
+  --card-bg: rgba(31, 41, 55, 0.95) !important;
+  --glass-bg: rgba(31, 41, 55, 0.7) !important;
+  --shadow-color: rgba(0, 0, 0, 0.4) !important;
 
   /* Opening Hours Colors for Dark Theme */
-  --closed-day-text: #9ca3af;
-  --open-day-text: #6ee7b7;
-  --open-day-bg: rgba(6, 78, 59, 0.3);
-  --open-day-border: rgba(6, 78, 59, 0.8);
+  --closed-day-text: #9ca3af !important;
+  --open-day-text: #34d399 !important;
+  --open-day-bg: rgba(6, 78, 59, 0.3) !important;
+  --open-day-border: rgba(52, 211, 153, 0.5) !important;
 
   /* Footer Specific Colors for Dark Theme */
-  --footer-bg: #1f2937;
-  --footer-secondary: #111827;
-  --footer-accent: #374151;
-  --footer-text: #f9fafb;
-  --footer-text-muted: rgba(249, 250, 251, 0.7);
-  --footer-border: rgba(251, 146, 60, 0.2);
-  --footer-card: rgba(255, 255, 255, 0.05);
+  --footer-bg: #111827 !important;
+  --footer-secondary: #0f172a !important;
+  --footer-accent: #1f2937 !important;
+  --footer-text: #f9fafb !important;
+  --footer-text-muted: rgba(249, 250, 251, 0.7) !important;
+  --footer-border: rgba(251, 146, 60, 0.2) !important;
+  --footer-card: rgba(31, 41, 55, 0.8) !important;
 
-    /* Restaurant Details Dark Theme */
-  --restaurant-banner-overlay: rgba(0, 0, 0, 0.6);
-  --category-card-overlay: rgba(0, 0, 0, 0.45);
-  --menu-item-bg: var(--bg-secondary);
-  --menu-item-hover-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  --menu-category-badge: var(--primary-amber);
-  --menu-price: var(--primary-amber);
+  /* Restaurant Details Dark Theme */
+  --restaurant-banner-overlay: rgba(0, 0, 0, 0.7) !important;
+  --category-card-overlay: rgba(0, 0, 0, 0.6) !important;
+  --menu-item-bg: var(--card-bg) !important;
+  --menu-item-hover-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  --menu-category-badge: var(--primary-amber) !important;
+  --menu-price: var(--primary-amber) !important;
 
- /* Restaurant Component Dark Theme */
-  --restaurant-card-bg: var(--bg-secondary);
-  --restaurant-card-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  --restaurant-card-hover-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
-  --restaurant-rating-star: var(--primary-amber);
-  --restaurant-btn-bg: var(--primary-amber);
-  --restaurant-btn-hover: var(--primary-orange);
+  /* Restaurant Component Dark Theme */
+  --restaurant-card-bg: var(--card-bg) !important;
+  --restaurant-card-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+  --restaurant-card-hover-shadow: 0 12px 20px rgba(0, 0, 0, 0.5) !important;
+  --restaurant-rating-star: var(--primary-amber) !important;
+  --restaurant-btn-bg: var(--primary-amber) !important;
+  --restaurant-btn-hover: var(--primary-orange) !important;
 
-    /* Filter Component Dark Theme */
-  --filter-bg: var(--bg-secondary);
-  --filter-border: var(--border-color);
-  --filter-header-bg: var(--bg-accent);
-  --filter-input-bg: var(--bg-primary);
-  --filter-input-checked: var(--primary-amber);
-  --filter-input-border: var(--border-color);
-  --filter-label-text: var(--text-primary);
-  --filter-clear-text: var(--primary-amber);
+  /* Filter Component Dark Theme */
+  --filter-bg: var(--card-bg) !important;
+  --filter-border: var(--border-color) !important;
+  --filter-header-bg: var(--bg-accent) !important;
+  --filter-input-bg: var(--bg-primary) !important;
+  --filter-input-checked: var(--primary-amber) !important;
+  --filter-input-border: var(--border-color) !important;
+  --filter-label-text: var(--text-primary) !important;
+  --filter-clear-text: var(--primary-amber) !important;
 
-   /* Pagination Dark Theme */
-  --pagination-bg: var(--bg-secondary);
-  --pagination-border: var(--border-color);
-  --pagination-text: var(--text-primary);
-  --pagination-hover-bg: var(--bg-accent);
-  --pagination-active-bg: var(--primary-amber);
-  --pagination-active-text: var(--text-primary);
-  --pagination-disabled-text: var(--text-muted);
+  /* Pagination Dark Theme */
+  --pagination-bg: var(--card-bg) !important;
+  --pagination-border: var(--border-color) !important;
+  --pagination-text: var(--text-primary) !important;
+  --pagination-hover-bg: var(--bg-accent) !important;
+  --pagination-active-bg: var(--primary-amber) !important;
+  --pagination-active-text: var(--bg-primary) !important;
+  --pagination-disabled-text: var(--text-muted) !important;
 
-    /* Popup Dark Theme */
-  --popup-overlay: rgba(0, 0, 0, 0.7);
-  --popup-bg: var(--bg-secondary);
-  --popup-border: var(--border-color);
-  --popup-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
-  --popup-input-bg: var(--bg-primary);
-  --popup-input-border: var(--border-color);
+  /* Popup Dark Theme */
+  --popup-overlay: rgba(0, 0, 0, 0.8) !important;
+  --popup-bg: var(--card-bg) !important;
+  --popup-border: var(--border-color) !important;
+  --popup-shadow: 0 25px 50px rgba(0, 0, 0, 0.6) !important;
+  --popup-input-bg: var(--bg-primary) !important;
+  --popup-input-border: var(--border-color) !important;
 }
 
+/* Body styling with proper dark theme support */
 body {
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-accent) 100%);
@@ -167,6 +171,12 @@ body {
   min-height: 100vh;
   position: relative;
   transition: all 0.3s ease;
+}
+
+/* Dark theme body override */
+[data-theme="dark"] body {
+  background: linear-gradient(135deg, #0f172a 0%, #111827 30%, #1f2937 70%, #374151 100%) !important;
+  color: var(--text-primary) !important;
 }
 
 body::before {
@@ -183,6 +193,14 @@ body::before {
   pointer-events: none;
   z-index: -1;
   transition: all 0.3s ease;
+}
+
+/* Dark theme background overlay */
+[data-theme="dark"] body::before {
+  background: radial-gradient(circle at 20% 30%, rgba(251, 146, 60, 0.05) 0%, transparent 50%),
+  radial-gradient(circle at 80% 70%, rgba(245, 158, 11, 0.03) 0%, transparent 45%),
+  radial-gradient(circle at 60% 20%, rgba(251, 191, 36, 0.02) 0%, transparent 40%),
+  radial-gradient(circle at 40% 80%, rgba(239, 68, 68, 0.02) 0%, transparent 35%) !important;
 }
 
 /* Global Dashboard Utility Classes */
@@ -312,13 +330,14 @@ body::before {
     ring-color: var(--primary-orange);
   }
 
-  /* Status Components */
+  /* Status Components with Dark Theme Support */
   .status-badge {
     @apply px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2;
   }
 
   .status-pending {
-    @apply bg-amber-100 text-amber-800;
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
   }
 
   .status-accepted {
@@ -337,24 +356,44 @@ body::before {
   }
 
   .status-in_progress {
-    @apply bg-purple-100 text-purple-800;
+    background: rgba(147, 51, 234, 0.1);
+    color: #9333ea;
   }
 
   .status-ready {
-    @apply bg-green-100 text-green-800;
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
   }
 
   /* Dark theme status adjustments */
   [data-theme="dark"] .status-pending {
-    @apply bg-amber-900 text-amber-300;
+    background: rgba(245, 158, 11, 0.2) !important;
+    color: #fbbf24 !important;
+  }
+
+  [data-theme="dark"] .status-accepted {
+    background: rgba(249, 115, 22, 0.2) !important;
+    color: var(--primary-amber) !important;
+  }
+
+  [data-theme="dark"] .status-completed {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #34d399 !important;
+  }
+
+  [data-theme="dark"] .status-rejected {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
   }
 
   [data-theme="dark"] .status-in_progress {
-    @apply bg-purple-900 text-purple-300;
+    background: rgba(147, 51, 234, 0.2) !important;
+    color: #a855f7 !important;
   }
 
   [data-theme="dark"] .status-ready {
-    @apply bg-green-900 text-green-300;
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #4ade80 !important;
   }
 
   /* Payment Status */
@@ -363,15 +402,23 @@ body::before {
   }
 
   .payment-pending {
-    @apply text-amber-600;
+    color: #f59e0b;
   }
 
   .payment-cancelled {
     color: var(--accent-red);
   }
 
+  [data-theme="dark"] .payment-paid {
+    color: #34d399 !important;
+  }
+
   [data-theme="dark"] .payment-pending {
-    @apply text-amber-400;
+    color: #fbbf24 !important;
+  }
+
+  [data-theme="dark"] .payment-cancelled {
+    color: #f87171 !important;
   }
 
   /* Quick Action Buttons */
@@ -380,11 +427,21 @@ body::before {
   }
 
   .accept-btn {
-    @apply bg-green-100 text-green-600 hover:bg-green-200;
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+  }
+
+  .accept-btn:hover {
+    background: rgba(34, 197, 94, 0.2);
   }
 
   .reject-btn {
-    @apply bg-red-100 text-red-600 hover:bg-red-200;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
+
+  .reject-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
   }
 
   .complete-btn {
@@ -398,20 +455,30 @@ body::before {
   }
 
   [data-theme="dark"] .accept-btn {
-    @apply bg-green-900 text-green-400 hover:bg-green-800;
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #4ade80 !important;
+  }
+
+  [data-theme="dark"] .accept-btn:hover {
+    background: rgba(34, 197, 94, 0.3) !important;
   }
 
   [data-theme="dark"] .reject-btn {
-    @apply bg-red-900 text-red-400 hover:bg-red-800;
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+  }
+
+  [data-theme="dark"] .reject-btn:hover {
+    background: rgba(239, 68, 68, 0.3) !important;
   }
 
   [data-theme="dark"] .complete-btn {
-    background: rgba(249, 115, 22, 0.2);
-    color: var(--primary-amber);
+    background: rgba(249, 115, 22, 0.2) !important;
+    color: var(--primary-amber) !important;
   }
 
   [data-theme="dark"] .complete-btn:hover {
-    background: rgba(249, 115, 22, 0.3);
+    background: rgba(249, 115, 22, 0.3) !important;
   }
 
   /* Trend Components */
@@ -420,36 +487,45 @@ body::before {
   }
 
   .metric-trend.up {
-    @apply bg-green-100 text-green-700;
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
   }
 
   .metric-trend.down {
-    @apply bg-red-100 text-red-700;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
   }
 
   .metric-trend.stable {
-    @apply bg-gray-100 text-gray-700;
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
   }
 
   [data-theme="dark"] .metric-trend.up {
-    @apply bg-green-900 text-green-300;
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #4ade80 !important;
   }
 
   [data-theme="dark"] .metric-trend.down {
-    @apply bg-red-900 text-red-300;
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
   }
 
   [data-theme="dark"] .metric-trend.stable {
-    @apply bg-gray-700 text-gray-300;
+    background: rgba(107, 114, 128, 0.2) !important;
+    color: #d1d5db !important;
   }
 
   /* Loading Components */
   .modern-spinner {
-    @apply w-8 h-8 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin;
+    @apply w-8 h-8 border-2 rounded-full animate-spin;
+    border-color: var(--border-color);
+    border-top-color: var(--primary-orange);
   }
 
   .loading-overlay {
-    @apply absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center rounded-xl;
+    @apply absolute inset-0 flex items-center justify-center rounded-xl;
+    background: var(--glass-bg);
     backdrop-filter: blur(2px);
   }
 
@@ -491,43 +567,43 @@ body::before {
 
 /* Global Theme Classes */
 .theme-bg-primary {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-primary) !important;
 }
 
 .theme-bg-secondary {
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-secondary) !important;
 }
 
 .theme-bg-accent {
-  background-color: var(--bg-accent);
+  background-color: var(--bg-accent) !important;
 }
 
 .theme-text-primary {
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
 }
 
 .theme-text-secondary {
-  color: var(--text-secondary);
+  color: var(--text-secondary) !important;
 }
 
 .theme-text-muted {
-  color: var(--text-muted);
+  color: var(--text-muted) !important;
 }
 
 .theme-border {
-  border-color: var(--border-color);
+  border-color: var(--border-color) !important;
 }
 
 .theme-card-bg {
-  background-color: var(--card-bg);
+  background-color: var(--card-bg) !important;
 }
 
 .theme-glass-bg {
-  background-color: var(--glass-bg);
+  background-color: var(--glass-bg) !important;
 }
 
 .theme-shadow {
-  box-shadow: 0 10px 25px var(--shadow-color);
+  box-shadow: 0 10px 25px var(--shadow-color) !important;
 }
 
 /* Opening Hours Styling Classes */
@@ -546,31 +622,31 @@ body::before {
 
 /* Footer Theme Classes */
 .footer-bg {
-  background-color: var(--footer-bg);
+  background-color: var(--footer-bg) !important;
 }
 
 .footer-bg-secondary {
-  background-color: var(--footer-secondary);
+  background-color: var(--footer-secondary) !important;
 }
 
 .footer-bg-accent {
-  background-color: var(--footer-accent);
+  background-color: var(--footer-accent) !important;
 }
 
 .footer-text {
-  color: var(--footer-text);
+  color: var(--footer-text) !important;
 }
 
 .footer-text-muted {
-  color: var(--footer-text-muted);
+  color: var(--footer-text-muted) !important;
 }
 
 .footer-border {
-  border-color: var(--footer-border);
+  border-color: var(--footer-border) !important;
 }
 
 .footer-card {
-  background-color: var(--footer-card);
+  background-color: var(--footer-card) !important;
   backdrop-filter: blur(10px);
   border: 1px solid var(--footer-border);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
@@ -578,19 +654,19 @@ body::before {
 
 /* Enhanced Components */
 .food-gradient {
-  background: linear-gradient(135deg, var(--primary-orange), var(--primary-amber));
+  background: linear-gradient(135deg, var(--primary-orange), var(--primary-amber)) !important;
 }
 
 .appetizing-card {
-  background: var(--card-bg);
-  border: 2px solid var(--border-color);
-  box-shadow: 0 8px 32px var(--shadow-color);
+  background: var(--card-bg) !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 0 8px 32px var(--shadow-color) !important;
   transition: all 0.3s ease;
 }
 
 .appetizing-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 40px var(--shadow-color);
+  box-shadow: 0 20px 40px var(--shadow-color) !important;
 }
 
 /* Theme Toggle Button */
@@ -600,16 +676,50 @@ body::before {
   right: 20px;
   transform: translateY(-50%);
   z-index: 1000;
-  background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  background: var(--card-bg) !important;
+  border: 2px solid var(--border-color) !important;
   border-radius: 50px;
   padding: 12px;
-  box-shadow: 0 8px 25px var(--shadow-color);
+  box-shadow: 0 8px 25px var(--shadow-color) !important;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  color: var(--text-primary) !important;
 }
 
 .theme-toggle:hover {
   transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 12px 35px var(--shadow-color);
+  box-shadow: 0 12px 35px var(--shadow-color) !important;
+}
+
+/* Additional Dark Theme Overrides for Better Compatibility */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: var(--bg-accent) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Scrollbar Dark Theme */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary) !important;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--bg-accent) !important;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--border-color) !important;
 }
