@@ -28,8 +28,12 @@ export class RestaurantListCacheService {
       return of(cached.data);
     }
 
-    const sorts = sortBy ? `sorts=${sortOrder}${sortBy}&` : '';
-    const query = `${sorts}page=${page}&pageSize=${pageSize}`;
+    let query = `page=${page}&pageSize=${pageSize}`;
+
+    if (sortBy) {
+      const sortValue = sortOrder === '-' ? `-${sortBy}` : sortBy;
+      query = `sorts=${sortValue}&${query}`;
+    }
 
     return this.getService.get<RestaurantListResponse>({
       url: '/restaurants',
